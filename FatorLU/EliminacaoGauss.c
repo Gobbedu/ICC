@@ -26,6 +26,7 @@ void pivot(SistLinear_t *SL, int i) {
   }
 } 
 
+// calcula retrossub com SL-b e salva em X
 void retrossubs(SistLinear_t *SL, double *X) {
   for (int i = SL->n-1; i >=0; --i) {
     X[i] = SL->b[i];
@@ -35,9 +36,19 @@ void retrossubs(SistLinear_t *SL, double *X) {
   }
 }
 
+// calcula retrossub em L, com SL-b e salva em X
+void normsubs(SistLinear_t *SL, double *X) {
+  // para fatoracao LU, diagonal = 1
+  for (int i = 0; i < SL->n; i++) {
+    X[i] = SL->b[i];
+    for (int j = 0; j < i; j++)
+      X[i] -= SL->A[i][j] * X[j];
+  }
+}
+
 void triang(SistLinear_t *SL) {
   for (int i = 0; i < SL->n; ++i) {
-    pivot(SL, i);
+    // pivot(SL, i);
     for (int k = i+1; k < SL->n; ++k) {
       double m = SL->A[k][i] / SL->A[i][i];
       if (isnan(m))
