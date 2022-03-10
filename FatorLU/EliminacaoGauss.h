@@ -6,6 +6,7 @@
 void pivot(SistLinear_t *SL, int i);
 
 void retrossubs(SistLinear_t *SL, double *X);
+void normsubs(SistLinear_t *SL, double *X);
 
 void triang(SistLinear_t *SL);
 
