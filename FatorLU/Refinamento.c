@@ -69,7 +69,7 @@ void refinamento(SistLinear_t *SL, double *X, int MAXIT) {
     // A->b = b
     // E->b = res
 
-    // eliminacaoGauss(E, W); // -> triang(SL); retrossub(E, W)
+
     
     // A = LU
     // LUw = r
