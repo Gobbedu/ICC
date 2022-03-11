@@ -45,7 +45,7 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
   for (int i = 0; i < SL->n; ++i)
     LX[i] = (long double) X[i];
 
-  // chamar fatoracao LU aki,  PIVO DESABILITADO
+  // chamar fatoracao LU aki,  PIVO HABILITADO
   LU = dupSL(SL);
   FatorLU(SL, LU);
 
@@ -66,12 +66,12 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
     //L(Z) = res
     for (int j = 0; j < LU->n; ++j)
-      LU->b[j] = (double) res[j];
+      LU->b[ LU->t[j] ] = (double) res[j];
     normsubs(LU, Z);
 
     // UZ = w
     for (int j = 0; j < LU->n; ++j)
-      LU->b[j] = (double) Z[j];
+      LU->b[ LU->t[j] ] = (double) Z[j];
     retrossubs(LU, W);
 
     for(int k = 0; k < SL->n; ++k)
@@ -86,16 +86,21 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 // L e U presentes na msm matriz
 void FatorLU(SistLinear_t *SL, SistLinear_t *LU)
 {
-
   // TRIANGULACAO(triang) -> L = m  & U -> triangular normal
-    for (int i = 0; i < LU->n; ++i) {
-    // pivot(LU, i);
-    for (int k = i+1; k < LU->n; ++k) {
-      double m = LU->A[k][i] / LU->A[i][i];
+  int max_i, aux;
+  double m;
+
+  for (int i = 0; i < LU->n; ++i) 
+  {
+    pivot(LU, i);
+
+    for (int k = i+1; k < LU->n; ++k) 
+    {
+      m = LU->A[k][i] / LU->A[i][i];
       if (isnan(m))
         printf("ERRO: %g ", LU->A[i][i]);
-      // LU->A[k][i] = 0.0; // guarda m em L (Ld = 1)
-      LU->A[k][i] = m;
+      // guarda m em L (ALTERA DEPOIS DA PRIMEIRA ITER)
+      LU->A[ k ][i] = m;     
 
       for (int j = i+1; j < LU->n; ++j)
         LU->A[k][j] -= LU->A[i][j] * m;

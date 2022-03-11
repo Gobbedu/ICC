@@ -23,6 +23,10 @@ void pivot(SistLinear_t *SL, int i) {
     double aux = SL->b[i];
     SL->b[i] = SL->b[max_i];
     SL->b[max_i] = aux;
+
+    int iaux = SL->t[i];
+    SL->t[i] = SL->t[max_i];
+    SL->t[max_i] = iaux;
   }
 } 
 

@@ -15,6 +15,11 @@ typedef struct {
   double *M;        // vetor nxn de posições da matriz
   double **A;       // matriz dos coeficientes do SL (vetor de ponteiros para posições de M)
   double *b;        // termos independentes do SL
+
+  /////////////////////////////////
+  int *t;        /* trocas efetuadas em LU
+  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
 } SistLinear_t;
 
 SistLinear_t *alocaSistLinear(unsigned int n);

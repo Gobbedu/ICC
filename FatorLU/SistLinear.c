@@ -34,13 +34,30 @@ SistLinear_t *alocaSistLinear(unsigned int n) {
       free(SL);
       return NULL;
     }
-  }
+
+
+    /*ADICIONEI*/
+    /////////////////////////////////
+    SL->t = (int *) malloc(sizeof(int)*n); 
+      if (!(SL->t)) {
+        free(SL->M);
+        free(SL->A);
+        free(SL);
+        return NULL;
+      }            
+      for(int i = 0; i < n; i++)       
+        SL->t[i] = i;
+
+    /* aloca vetor p/ trocas efetuadas em LU
+    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+    }
 
   return SL;
 }
 
 void liberaSistLinear(SistLinear_t *SL) {
   free(SL->b);
+  free(SL->t);
   free(SL->M);
   free(SL->A);
   free(SL);
@@ -54,13 +71,10 @@ SistLinear_t *dupSL(SistLinear_t *SL) {
       for(int j = 0; j < SL->n; ++j)
         dup->A[i][j] = SL->A[i][j];
       dup->b[i] = SL->b[i];
+      dup->t[i] = SL->t[i];
     }
   }
 
-  // eu adicionei ////
-  // dup->n = SL->n;
-  //////////
-  
   return dup;
 }
 
