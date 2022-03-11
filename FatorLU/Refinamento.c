@@ -38,7 +38,8 @@ void refinamento(SistLinear_t *SL, double *X, int MAXIT) {
 void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
   SistLinear_t *LU;
-  double *W, *Z = (double *) malloc(sizeof(double)*SL->n);
+  double *Z = (double *) malloc(sizeof(double)*SL->n);
+  double *W = (double *) malloc(sizeof(double)*SL->n);
 
   long double *LX = (long double *) malloc(sizeof(long double)*SL->n); 
   for (int i = 0; i < SL->n; ++i)
@@ -48,7 +49,7 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
   LU = dupSL(SL);
   FatorLU(SL, LU);
 
-  printf("  --> Refinamento:\n");
+  printf("  --> Refinamento LU:\n");
   for (int i = 0; i < MAXIT; ++i) 
   {
     long double *res = long_residuo(SL, LX);
@@ -63,13 +64,12 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
     // U(^x) = z , // retrossub(U, ^x)
     //onde ^x => w (Aw = r)
 
-    //L(Z) 
+    //L(Z) = res
     for (int j = 0; j < LU->n; ++j)
       LU->b[j] = (double) res[j];
     normsubs(LU, Z);
 
-
-    // passa Z para LU->b
+    // UZ = w
     for (int j = 0; j < LU->n; ++j)
       LU->b[j] = (double) Z[j];
     retrossubs(LU, W);
