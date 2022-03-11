@@ -56,6 +56,10 @@ SistLinear_t *dupSL(SistLinear_t *SL) {
       dup->b[i] = SL->b[i];
     }
   }
+
+  // eu adicionei ////
+  // dup->n = SL->n;
+  //////////
   
   return dup;
 }

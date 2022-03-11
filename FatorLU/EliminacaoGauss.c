@@ -48,11 +48,11 @@ void normsubs(SistLinear_t *SL, double *X) {
 
 void triang(SistLinear_t *SL) {
   for (int i = 0; i < SL->n; ++i) {
-    // pivot(SL, i);
+    pivot(SL, i);
     for (int k = i+1; k < SL->n; ++k) {
       double m = SL->A[k][i] / SL->A[i][i];
       if (isnan(m))
-        printf("ERRO: %g\n", SL->A[i][i]);
+        printf("ERRO: %g ", SL->A[i][i]);
       SL->A[k][i] = 0.0;
       for (int j = i+1; j < SL->n; ++j)
         SL->A[k][j] -= SL->A[i][j] * m;
