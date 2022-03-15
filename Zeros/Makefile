@@ -18,6 +18,6 @@ $(PROG):  $(OBJS) $(PROG).o
 limpa:
 	@rm -f *~ *.bak
 
-faxina:   limpa
+purge:   limpa
 	@rm -f *.o core a.out
 	@rm -f $(PROG)
