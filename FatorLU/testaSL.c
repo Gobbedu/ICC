@@ -41,7 +41,7 @@ int main() {
     prnVetorDouble(res, CP->n);
 
     tTotal = timestamp();
-    refinamentoLU(CP, X, MAXIT_REFINAMENTO);
+    refinamento(CP, X, MAXIT_REFINAMENTO);
     tTotal = timestamp() - tTotal;
     printf("  --> Tempo: %lf ms\n", tTotal);
 
