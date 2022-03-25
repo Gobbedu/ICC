@@ -191,19 +191,36 @@ double *genValues(int n, double init){
     return values;
 }
 
-void **genJacobiana(void *f, int count){
-    void **Jacobiana = malloc(count * sizeof(void *));
+void genJacobiana(void *f, SistNl_t *snl){
+    void **Jacobiana = snl->Bf;
 
     char name[2];
     name[0] = 'x';
 
-    for(int i = 0; i < count; i++){
+    for(int i = 0; i < snl->n; i++){
         name[1] = i+1+'0';
         printf("derivating in %s\n", name);
         Jacobiana[i] = evaluator_derivative(f, name);
     }
 
-    return Jacobiana;
+    snl->Bf = Jacobiana;
+}
+
+void genHessiana(SistNl_t *snl){
+    void ***Hessiana = snl->Hf;
+    char name[2];
+    name[0] = 'x';
+
+    for(int i = 0; i < snl->n; i++){
+        for(int j = 0; j < snl->n; j++)
+        {
+            // deriva Jacob[i] n vezes em x1..xn
+            name[1] = j+1+'0';
+            Hessiana[i][j] = evaluator_derivative(snl->Bf[i], name);
+        }
+    }
+
+    snl->Hf = Hessiana;
 }
 
 int main() {
@@ -219,21 +236,28 @@ int main() {
     //derivate (J)
     //derivate (H)
 
-    SistNl_t *S;
-    S = lerSistNL();
+    SistNl_t *snl;
+    snl = lerSistNL();
 
-    void *f = evaluator_create(S->funcao);
-    double *values = genValues(S->n, 1);
-    char **names = genNames(S->n);
+    void *f = evaluator_create(snl->funcao);
+    double *values = genValues(snl->n, 1);
+    char **names = genNames(snl->n);
 
-    S->Bf = genJacobiana(f, S->n);
+    genJacobiana(f, snl);
+    // for(int i = 0 ; i < snl->n; i++)
+    //     printf("jacob %i : %f\n",i , evaluator_evaluate(snl->Bf[i], snl->n, names, values));
     
+    genHessiana(snl);
+    // printf("HESSIANA:\n");
+    // for(int i = 0 ; i < snl->n; i++){
+    //     for(int j = 0; j < snl->n; j++)
+    //         printf("%3f  ", evaluator_evaluate(snl->Hf[i][j], snl->n, names, values));
+    //     printf("\n");}
 
-    // printf("%f\n", evaluator_evaluate(S->Bf[0], S->n, names, values));
-    // for(int i = 0 ; i < S->n; i++)
-    //     printf("jacob %i : %f\n",i , evaluator_evaluate(S->Bf[i], S->n, names, values));
-    
 
+    // H[X]
+    // J[X]
+    // H[X]*delta = - J[X]
     
     return 0;
 }
