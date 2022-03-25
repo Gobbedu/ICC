@@ -180,19 +180,13 @@ void testaSnL(void){
 
 void genNames(SistNl_t *snl){
     snl->names = malloc(snl->n * sizeof(char *));
-
+    
     for(int i = 0; i < snl->n; i++){
         snl->names[i] = malloc(2 * sizeof(char));
 
         snl->names[i][0] = 'x';
         snl->names[i][1] = i+1+'0';
     }
-
-    // for(int i = 0; i < n; i++){
-    //     printf("name %i : %s\n", i, names[i]);
-    // }
-
-    // return names;
 }
 // freeNames
 
@@ -207,18 +201,14 @@ double *genValues(int n, double init){
 // freeValues
 
 void genJacobiana(void *f, SistNl_t *snl){
-    void **Jacobiana = snl->Bf;
-
     char name[2];
     name[0] = 'x';
 
     for(int i = 0; i < snl->n; i++){
         name[1] = i+1+'0';
         // printf("derivating in %s\n", name);
-        Jacobiana[i] = evaluator_derivative(f, name);
+        snl->Bf[i] = evaluator_derivative(f, name);
     }
-
-    snl->Bf = Jacobiana;
 }
 
 void genHessiana(SistNl_t *snl){
@@ -242,7 +232,7 @@ void substituteX(SistNl_t *snl, double *X){
     {
         for(int j = 0; j < snl->n; j++)
             // snl->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, X);
-            snl->He[i][j] = 0.0;
+            snl->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, X);
 
         // J[X]
         snl->Be[i] = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, X);
@@ -270,12 +260,26 @@ void snlinfo(SistNl_t *S){
     printf("\n-------------SNL INFO-------------\n");
     printf("#  n: %i\n", S->n);
     printf("#  funcao: %s\n", S->funcao);
-    printf("#  eps1: %lf\n", S->eps1);
-    printf("#  eps2: %lf\n", S->eps2);
+    printf("#  eps1: %g\n", S->eps1);
+    printf("#  eps2: %g\n", S->eps2);
     printf("#  iteracao: %i\n", S->iteracao);
 
     for(int i = 0; S->names[i]; i++)
         printf("#  name %i: %s\n", i, S->names[i]);
+
+    // JACOBIANA
+    printf("\nJACOBIANA\n#");
+    for(int i = 0; i < S->n; i++)
+        printf("  %f   ", S->Be[i]);
+        
+    // HESSIANA
+    printf("\nHESSIANA\n#");
+    for(int i = 0; i < S->n; i++){
+        for(int j = 0; j < S->n; j++){
+            printf("  %f  ", S->He[i][j]);
+        }
+        printf("\n");
+    }
 
     printf("---------------------------------\n");
 
@@ -287,27 +291,19 @@ int omain()
     // testaSnL();
 
     SistNl_t *snl;
+    snl = lerSistNL();
+    double *valores = genValues(snl->n, 1);
+    genNames(snl);
 
-    char **names = (char **) malloc(sizeof(char *) * 3);
-    names[0] = malloc(sizeof(char) * 2);
-    names[1] = malloc(sizeof(char) * 2);
-    names[2] = '\0';
-
-    names[0][0] = names[1][0] = 'x';
-    names[0][1] = '1';
-    names[1][1] = '2';
-
-    double values[2]; 
-    values[0] = 1.0;
-    values[1] = 2.0;
-
-    void *f;
-    f = evaluator_create("7*x2-log(x1)");
+    void *f = evaluator_create(snl->funcao);
     assert(f);
 
-    printf("evaluate: %f\n", evaluator_evaluate(f, 2, names, values));
-    void *aux = evaluator_derivative(f, names[0]);
-    printf("derivate: %f\n", evaluator_evaluate(aux, 2, names, values));
+    genJacobiana(f, snl);
+    genHessiana(snl);
+
+    printf("evaluator %f\n", evaluator_evaluate(f, snl->n, snl->names, valores));
+    printf("jacob %f\n", evaluator_evaluate(snl->Bf[0], 1, snl->names, valores));
+    printf("hessiana %f\n", evaluator_evaluate(snl->Hf[0][0], snl->n, snl->names, valores));
 
 }
 
@@ -317,12 +313,6 @@ int main() {
     SistNl_t *snl;
     snl = lerSistNL();
 
-    //create
-    //derivate (J)
-    //derivate (H)
-
-    double *old_values = genValues(snl->n, 0.1);
-    double *new_values = genValues(snl->n, 0);
     void *f = evaluator_create(snl->funcao);
     assert(f);
 
@@ -342,21 +332,18 @@ int main() {
     //         printf("%3f  ", evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, old_values));
     //     printf("\n");}
 
-
-    // snlinfo(snl);
+    SistLinear_t *sl = alocaSistLinear(snl->n);
+    double *old_values = genValues(snl->n, 0.1); // 0.1 
+    double *new_values = genValues(snl->n, 0);
+    double *delta = genValues(snl->n, 0);
 
     for(int i = 0; i < snl->iteracao; i++)
     {
-        
-        for(int k = 0; snl->names[k]; k++)
-            printf("names %s\n", snl->names[k]);
+        // calcula H[X] & J[X]
+        if(i % HESS_STEP == 0)
+            substituteX(snl, old_values);
 
-        // H[X] // J[X]
-        substituteX(snl, old_values);
-
-        SistLinear_t *sl = alocaSistLinear(snl->n);
-
-        // H[X]*delta = - J[X]  // A*x = b
+        // H[X]*delta = - J[X]  // A*x = -b
         for(int i = 0; i < snl->n; ++i) {
             for(int j = 0; j < snl->n; ++j)
                 sl->A[i][j] = snl->He[i][j];
@@ -364,25 +351,25 @@ int main() {
             /* dup->t[i] = SL->t[i]; // trocas ????? */
         }
 
-        double *delta = genValues(snl->n, 0);
+        // snlinfo(snl);
 
         eliminacaoGauss(sl, delta);
 
         // calcDelta(new_values, old_values, delta);
 
-        for(int i = 0; new_values[i]; i++){
+        for(int i = 0; i < snl->n ; i++){
             new_values[i] = old_values[i] + delta[i];
             old_values[i] = new_values[i];
         }
 
         printf("iter %d: Xnew %f  Xold %f   delta %f \n", i, new_values[0], old_values[0], delta[0]);
         
-        if(minDelta(delta) < snl->eps2)
+        if(fabs(minDelta(delta)) < snl->eps2)
             break;
     }
 
     printf("raiz: %f\n", new_values[0]);
-
+    liberaSistLinear(sl);
     
     return 0;
 }
