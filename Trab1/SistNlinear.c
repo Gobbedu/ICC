@@ -9,9 +9,117 @@
 #include "SistLinear.h"
 #include "EliminacaoGauss.h"
 #include "Refinamento.h"
-
 #include "SistNlinear.h"
 
+double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
+{
+    substituteX(snl, np->x0);               // calcula H[X] e J[X]
+    snl2sl(snl, np->sl);                    // copia dados de snl em sl
+    eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
+
+    calcDelta(np->x1, np->x0, np->delta, snl->n);
+
+    // printf("raiz funcao: ");
+    // for(int i = 0; i < snl->n; i++)
+    //     printf(" %g ", x1[i]);
+    // printf("\n");
+
+    // Devolve f(X), ponto critico estimado
+    return evaluator_evaluate(snl->f, snl->n, snl->names, np->x1);
+}
+
+double NewtonModificado()
+{
+    /* NEWTON MODIFICADO
+ 
+    if(i % HESS_STEP == 0) 
+        substituteX(snl, old_values); // calcula H[X] & J[X]
+
+    snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
+    // FATORACAO LU (TODO)
+    eliminacaoGauss(sl, delta);
+
+    calcDelta(new_values, old_values, delta, snl->n);
+
+
+    */
+   return 0;
+}
+
+double NewtonInexato()
+{
+    /* NEWTON INEXATO
+
+    snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
+
+    // GAUSS SEIDEL (TODO)
+
+    calcDelta(new_values, old_values, delta, snl->n);
+
+  
+    */
+   return 0;
+}
+
+
+SistNl_t *CopySnL(SistNl_t *snl)
+{
+    SistNl_t *new = alocaSistNl(snl->n);
+
+    new->eps = snl->eps;
+    new->f = snl->f;
+    new->iteracao = snl->iteracao;
+    new->n = snl->n;
+
+    for(int i = 0; i < snl->n; i++){
+        for(int j = 0; j < snl->n; j++)
+        {
+            new->Hf[i][j] = snl->Hf[i][j];
+            new->He[i][j] = snl->He[i][j];
+        }
+        new->funcao[i] = snl->funcao[i];
+        new->chute[i] = snl->chute[i];
+        new->names[i] = snl->names[i];
+        new->Bf[i] = snl->Bf[i];
+        new->Be[i] = snl->Be[i];
+    }
+    
+    return new;
+}
+
+SnlVar_t *genSnlVar(SistNl_t *snl)
+{
+    SnlVar_t *var = malloc(sizeof(SnlVar_t));
+
+    var->sl = alocaSistLinear(snl->n);
+    var->x0 = genValues(snl->n, 0);
+    var->x1 = genValues(snl->n, 0);
+    var->delta = genValues(snl->n, 0);
+
+    // chute inicial
+    for(int i = 0; i < snl->n; i++) 
+        var->x0[i] = snl->chute[i]; 
+
+    return var;
+}
+
+void liberaSnlVar(SnlVar_t *var)
+{
+    liberaSistLinear(var->sl);
+    free(var->x0);
+    free(var->x1);
+    free(var->delta);
+}
+
+void snl2sl(SistNl_t *snl, SistLinear_t *sl)
+{
+    for(int i = 0; i < snl->n; ++i) {
+        for(int j = 0; j < snl->n; ++j)
+            sl->A[i][j] = snl->He[i][j];
+        sl->b[i] = - snl->Be[i];
+        /* dup->t[i] = SL->t[i]; // trocas ????? */
+    }
+}
 
 SistNl_t *alocaSistNl(unsigned int n){
     SistNl_t *SnL = (SistNl_t *) malloc(sizeof(SistNl_t));
@@ -26,7 +134,7 @@ SistNl_t *alocaSistNl(unsigned int n){
 
         // vetor de chutes
         SnL->chute = malloc(sizeof(double)*n);
-        
+        SnL->names = malloc(SnL->n * sizeof(char *));
 
         SnL->Hf = (void ***) malloc(sizeof(void **)*n);
         if (!(SnL->Hf)) {
@@ -65,6 +173,7 @@ SistNl_t *alocaSistNl(unsigned int n){
 }
 
 void liberaSistNl(SistNl_t *SL) {
+  free(SL->names);
   free(SL->Be);
   free(SL->Bf);
   free(SL->He);
@@ -96,69 +205,7 @@ SistNl_t *lerSistNL(void)
   return SnL;
 }
 
-/* FUNCIONA */
-void testaSnL(void){
-    void *f;
-
-    char *names[] = { "x1" };
-
-    double X_new[] = { 0 }; 
-    double X_old[1];
-    double delta[1];
-    double A;
-    double b;
-
-    int count = 1;
-
-    f = evaluator_create("7*x1-log(x1)"); assert(f);
-
-    // F'(Xi) = J(Xi) ou  parciais numericas
-    void *d = evaluator_derivative(f, "x1");
-
-    // HESSIANA
-    void *h = evaluator_derivative(d, "x1");
-
-    SistLinear_t *SL = alocaSistLinear(1);
-    SL->n = 1;
-    X_old[0] = 0.1;
-
-    SL->A[0][0] = 1.0;
-
-    int i;
-    for( i = 0; i < 20; i++)
-    {
-        if( SL->A[0][0] < 0.1 )
-            break;            
-
-		// x_new = x_old - (Px/Dx); 
-        // deriva tudo mais uma vez
-        // H(Xi)*(delta - Xi) =  - D(Xi)
-        
-        SL->A[0][0] = evaluator_evaluate(h, 1, names, X_old);
-        SL->b[0] = - (evaluator_evaluate(d, 1, names, X_old));
-        // SL->b[0] = 0.01;
-        
-        // calcula w
-        // SL->A * w = SL->b
-        eliminacaoGauss(SL, delta);
-
-        printf("A: %f   w: %f  b: %f\n", SL->A[0][0], delta[0], SL->b[0]);
-        X_new[0] = X_old[0] + delta[0];
-
-        printf("iter %d: Xnew %f  Xold %f   delt %f \n", i, X_new[0], X_old[0], delta[0]);
-
-        X_old[0] = X_new[0];
-
-        if( delta[0] < 0.0000001)
-            break;
-    }
-    liberaSistLinear(SL);
-    printf("raiz:  %f\n", X_new[0]);
-}
-
-void genNames(SistNl_t *snl){
-    snl->names = malloc(snl->n * sizeof(char *));
-    
+void genNames(SistNl_t *snl){    
     for(int i = 0; i < snl->n; i++){
         snl->names[i] = malloc(2 * sizeof(char));
 
@@ -166,7 +213,6 @@ void genNames(SistNl_t *snl){
         snl->names[i][1] = i+1+'0';
     }
 }
-// freeNames
 
 double *genValues(int n, double init){
     double *values = malloc(n * sizeof(double));

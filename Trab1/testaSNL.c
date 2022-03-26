@@ -1,16 +1,14 @@
 /********************************************************
-*    Resolução de Sistemas Lineares
-*    profs. Armando Delgado e Guilherme Derenievicz
-*    CI1164 - DInf/UFPR
+*    Resolução de Sistemas Nao Lineares
+*    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
+*    CI1164 - Introducao a Computacao Cientifica
 *
-*    make ou make LONGDOUBLE=1
 *    ./testaSNL < sistemas.dat
 ********************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
 #include <matheval.h>
 #include <assert.h>
 
@@ -18,105 +16,121 @@
 #include "SistLinear.h"
 #include "EliminacaoGauss.h"
 #include "Refinamento.h"
-
 #include "SistNlinear.h"
 
-#define MAXIT_REFINAMENTO 5
+// #define MAXIT_REFINAMENTO 5
 
 // #define DEBUG_FLAG
 
-void snl2sl(SistNl_t *snl, SistLinear_t *sl)
-{
-    for(int i = 0; i < snl->n; ++i) {
-        for(int j = 0; j < snl->n; ++j)
-            sl->A[i][j] = snl->He[i][j];
-        sl->b[i] = - snl->Be[i];
-        /* dup->t[i] = SL->t[i]; // trocas ????? */
-    }
-}
-
-// NEWTON PADRAO
-double NewtonPadrao(SistNl_t *snl)
-{
-    SistLinear_t *sl = alocaSistLinear(snl->n);
-
-    double *x0 = genValues(snl->n, 0);
-    double *x1 = genValues(snl->n, 0);
-    double *delta = genValues(snl->n, 0);
-
-    // chute inicial
-    for(int i = 0; i < snl->n; i++) 
-        x0[i] = snl->chute[i];
-
-    for(int i = 0; i < snl->iteracao; i++)
-    {
-        substituteX(snl, x0);   // calcula H[X] e J[X]
-
-        snl2sl(snl, sl);                // copia dados de snl em sl
-        eliminacaoGauss(sl, delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
-
-        calcDelta(x1, x0, delta, snl->n);
-
-        // calcular normal de delta (TODO)
-        if(fabs(minDelta(delta)) < snl->eps)
-            break;
-    }
-    liberaSistLinear(sl);
-
-    // printf("raiz funcao: ");
-    // for(int i = 0; i < snl->n; i++)
-    //     printf(" %g ", x1[i]);
-    // printf("\n");
-
-    return evaluator_evaluate(snl->f, snl->n, snl->names, x1);
-}
-void NewtonModificado()
-{
-    /* NEWTON MODIFICADO
-    for(int i = 0; i < snl->iteracao; i++)
-    {
-        if(i % HESS_STEP == 0) 
-            substituteX(snl, old_values); // calcula H[X] & J[X]
-
-        snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
-        // FATORACAO LU (TODO)
-        eliminacaoGauss(sl, delta);
-
-        calcDelta(new_values, old_values, delta, snl->n);
-
-        // calcular normal de delta (TODO)
-        if(fabs(minDelta(delta)) < snl->eps)
-            break;
-    }*/
-
-}
-void NewtonInexato()
-{
-    /* NEWTON INEXATO
-    for(int i = 0; i < snl->iteracao; i++)
-    {
-
-        snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
-        // GAUSS SEIDEL (TODO)
-
-        calcDelta(new_values, old_values, delta, snl->n);
-
-        // calcular normal de delta (TODO)
-        if(fabs(minDelta(delta)) < snl->eps)
-            break;
-    }*/
-
-}
 
 int main() {
     // testaSnL();
-    SistNl_t *snl;
+    SnlVar_t *np, *nm, *ni;
+    SistNl_t *snl, *Psnl, *Msnl, *Isnl;
+    double ptoPadrao, ptoModif, ptoInexato;
+
+    double TtotalEG, TtotalLU, TtotalGS, 
+    TderivadasEG, TderivadasLU, TderivadasGS, 
+    TslEG, TslLU, TslGS;
+
+    TtotalEG = TtotalLU = TtotalGS = 
+    TderivadasEG = TderivadasLU = TderivadasGS = 
+    TslEG = TslLU = TslGS = 0;
+
     while(snl = lerSistNL())
     {      
-        genSistNaoLinear(snl);   // calcula Jacobiana e Hessiana
+        genSistNaoLinear(snl);  // calcula Jacobiana e Hessiana
         snlinfo(snl);           // imprime dados do sistema
 
-        printf("ponto critico:  %1.14e\n#\n", NewtonPadrao(snl));
+        // snl precisa de copia, muda o He
+
+        // x0, x1, delta e SL para NEWTON PADRAO
+        SnlVar_t *np = genSnlVar(snl);
+        SistNl_t *Psnl = CopySnL(snl);
+
+        // x0, x1, delta e SL para NEWTON MODIFICADO
+        SnlVar_t *nm = genSnlVar(snl);
+        SistNl_t *Msnl = CopySnL(snl);
+
+        // x0, x1, delta e SL para NEWTON INEXATO
+        SnlVar_t *ni = genSnlVar(snl);
+        SistNl_t *Isnl = CopySnL(snl);
+
+
+        printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+
+        // --------LOOP PRINCIPAL-------- //
+        for(int i = 0; i < snl->iteracao; i++)
+        {
+            printf("%-12d \t| ", i); // imprime iteração
+
+            // ELIMINACAO GAUSS / NEWTON PADRAO //
+            if(!(fabs(minDelta(np->delta)) < Psnl->eps) || i == 0){
+                TtotalEG = timestamp();
+                ptoPadrao = NewtonPadrao(Psnl, np);
+                TtotalEG = timestamp() - TtotalEG;
+            }
+
+            // se nesta iteração o valor da primeira coluna existe, imprime
+            if (isnan(ptoPadrao) || isinf(ptoPadrao))
+                printf("%1.14e\t\t\t| ", ptoPadrao);
+            else if (fabs(minDelta(np->delta)) >= Psnl->eps)
+                printf("%1.14e\t| ", ptoPadrao);
+            else
+                printf("\t\t\t| ");
+
+            /*
+            // FATORACAO LU / NEWTON MODIFICADO //
+            if(!(fabs(minDelta(nm->delta)) < Msnl->eps) || i == 0){
+                TtotalLU = timestamp();
+                ptoModif = NewtonModificado(Msnl, nm);
+                TtotalLU = timestamp() - TtotalLU;
+            }
+
+            // se nesta iteração o valor da primeira coluna existe, imprime
+            if (isnan(ptoModif) || isinf(ptoModif))
+                printf("%1.14e\t\t\t| ", ptoModif);
+            else if (fabs(minDelta(nm->delta)) >= Msnl->eps)
+                printf("%1.14e\t| ", ptoModif);
+            else
+                printf("\t\t\t| ");
+
+
+            // GAUSS SEIDEL / NEWTON INEXATO //
+            if(!(fabs(minDelta(ni->delta)) < Isnl->eps) || i == 0){
+                TtotalGS = timestamp();
+                ptoInexato = NewtonInexato(Isnl, ni);
+                TtotalGS = timestamp() - TtotalGS;
+            }
+
+            // se nesta iteração o valor da primeira coluna existe, imprime
+            if (isnan(ptoInexato) || isinf(ptoInexato))
+                printf("%1.14e\t\t\t| ", ptoInexato);
+            else if (fabs(minDelta(ni->delta)) >= Isnl->eps)
+                printf("%1.14e\t| ", ptoInexato);
+            else
+                printf("\t\t\t| ");
+            */
+
+
+            printf("\n");
+            // se min || delta || dos 3 metodo for < eps, break(TODO)
+            if((fabs(minDelta(np->delta)) < Psnl->eps) && 
+                (fabs(minDelta(nm->delta)) < Msnl->eps) && 
+                (fabs(minDelta(ni->delta)) < Isnl->eps) )
+                break;
+        }
+        printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n", TtotalEG, TtotalLU, TtotalGS);
+        printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n", TderivadasEG, TderivadasLU, TderivadasGS);
+        printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n", TslEG, TslLU, TslGS);
+
+        liberaSnlVar(np);
+        liberaSnlVar(nm);
+        liberaSnlVar(ni);
+
+        liberaSistNl(Psnl);
+        liberaSistNl(Msnl);
+        liberaSistNl(Isnl);
     }    
     return 0;
 }
