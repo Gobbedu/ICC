@@ -335,3 +335,13 @@ void snlinfo(SistNl_t *S){
     printf("---------------------------------\n");
     */
 }
+
+void printCol(double pto, SistNl_t *snl, SnlVar_t *nt)
+{
+    if (isnan(pto) || isinf(pto))
+        printf("%1.14e\t\t\t| ", pto);
+    else if (fabs(minDelta(nt->delta)) >= snl->eps)
+        printf("%1.14e\t| ", pto);
+    else
+        printf("\t\t\t| ");
+}

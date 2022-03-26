@@ -51,6 +51,7 @@ void liberaSistNl(SistNl_t *SL);
 void genHessiana(SistNl_t *snl);
 void genNames(SistNl_t *snl);
 
+void printCol(double pto, SistNl_t *snl, SnlVar_t *nt);
 
 void calcDelta(double *new_values, double *old_values, double *delta, int n);
 void substituteX(SistNl_t *snl, double *X);

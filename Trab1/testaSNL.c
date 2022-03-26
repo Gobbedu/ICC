@@ -72,12 +72,7 @@ int main() {
             }
 
             // se nesta iteração o valor da primeira coluna existe, imprime
-            if (isnan(ptoPadrao) || isinf(ptoPadrao))
-                printf("%1.14e\t\t\t| ", ptoPadrao);
-            else if (fabs(minDelta(np->delta)) >= Psnl->eps)
-                printf("%1.14e\t| ", ptoPadrao);
-            else
-                printf("\t\t\t| ");
+            printCol(ptoPadrao, Psnl, np);
 
             /*
             // FATORACAO LU / NEWTON MODIFICADO //
@@ -87,13 +82,7 @@ int main() {
                 TtotalLU = timestamp() - TtotalLU;
             }
 
-            // se nesta iteração o valor da primeira coluna existe, imprime
-            if (isnan(ptoModif) || isinf(ptoModif))
-                printf("%1.14e\t\t\t| ", ptoModif);
-            else if (fabs(minDelta(nm->delta)) >= Msnl->eps)
-                printf("%1.14e\t| ", ptoModif);
-            else
-                printf("\t\t\t| ");
+            printCol(ptoModif, Msnl, nm);
 
 
             // GAUSS SEIDEL / NEWTON INEXATO //
@@ -103,13 +92,7 @@ int main() {
                 TtotalGS = timestamp() - TtotalGS;
             }
 
-            // se nesta iteração o valor da primeira coluna existe, imprime
-            if (isnan(ptoInexato) || isinf(ptoInexato))
-                printf("%1.14e\t\t\t| ", ptoInexato);
-            else if (fabs(minDelta(ni->delta)) >= Isnl->eps)
-                printf("%1.14e\t| ", ptoInexato);
-            else
-                printf("\t\t\t| ");
+            printCol(ptoInexato, Isnl, ni);
             */
 
 
