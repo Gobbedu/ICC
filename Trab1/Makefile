@@ -2,15 +2,15 @@
     CFLAGS = -g -std=c11
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
 
-    PROG = testaSL
-    OBJS = utils.o SistLinear.o EliminacaoGauss.o Refinamento.o
+    PROG = testaSNL
+    OBJS = utils.o SistLinear.o EliminacaoGauss.o Refinamento.o SistNlinear.o
 
 .PHONY: clean purge all
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $<
 
-$(PROG):  $(OBJS) testaSL.o
+$(PROG):  $(OBJS) testaSNL.o
 	$(CC) -o $@ $^ $(LFLAGS)
 
 clear: 
