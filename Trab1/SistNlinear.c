@@ -21,7 +21,10 @@ double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
     
     snl2sl(snl, np->sl);                    // copia dados de snl em sl
     eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
+    // varinfo(*np, *snl);
     calcDelta(np, snl->n);                  // X[i+1] = X[i] + delta[i]
+
+
 
     // printf("raiz funcao: ");
     // for(int i = 0; i < snl->n; i++)
@@ -136,7 +139,9 @@ void snl2sl(SistNl_t *snl, SistLinear_t *sl)
 {
     for(int i = 0; i < snl->n; ++i) {
         for(int j = 0; j < snl->n; ++j)
+        {
             sl->A[i][j] = snl->He[i][j];
+        }
         sl->b[i] = - snl->Be[i];
         /* dup->t[i] = SL->t[i]; // trocas ????? */
     }
@@ -245,26 +250,17 @@ double *genValues(int n, double init){
 // freeValues (TODO)
 
 void genJacobiana(SistNl_t *snl){
-    char name[2];
-    name[0] = 'x';
-
     for(int i = 0; i < snl->n; i++){
-        name[1] = i+1+'0';
-        // printf("derivating in %s\n", name);
-        snl->Bf[i] = evaluator_derivative(snl->f, name);
+        snl->Bf[i] = evaluator_derivative(snl->f, snl->names[i]);
     }
 }
 
 void genHessiana(SistNl_t *snl){
-    char name[2];
-    name[0] = 'x';
-
     for(int i = 0; i < snl->n; i++){
         for(int j = 0; j < snl->n; j++)
         {
             // deriva Jacob[i] n vezes em x1..xn
-            name[1] = j+1+'0';
-            snl->Hf[i][j] = evaluator_derivative(snl->Bf[i], name);
+            snl->Hf[i][j] = evaluator_derivative(snl->Bf[i], snl->names[j]);
         }
     }
 }
@@ -300,10 +296,11 @@ void snlinfo(SistNl_t *S){
     printf("\n------------------------------------SNL INFO------------------------------------\n");
     printf("#  n: %i\n", S->n);
     printf("#  funcao: %s\n", S->funcao);
-    printf("#  chute:");
 
+    printf("#  chute:");
     for(int i = 0; i < S->n; i++)
         printf(" %g ", S->chute[i]);
+    printf("\n");
 
     printf("#  eps: %g\n", S->eps);
     printf("#  iteracao: %i\n", S->iteracao);
@@ -318,15 +315,16 @@ void snlinfo(SistNl_t *S){
         printf("  %f, ", S->chute[i]);
     printf("\nEVALUATOR\n#  f(CHUTE) = %g\n",evaluator_evaluate(S->f, S->n, S->names, S->chute));
 
-    /*
     // JACOBIANA
     printf("\nJACOBIANA\n#");
     for(int i = 0; i < S->n; i++)
-        printf("  %f   ", S->Be[i]);
+        printf(" %f ", S->Be[i]);
+    printf("\n");
     // for(int i = 0 ; i < snl->n; i++)
     //     printf("jacob %i : %f\n",i , evaluator_evaluate(snl->Bf[i], snl->n, names, values));
 
         
+    /*
     // HESSIANA
     printf("\nHESSIANA\n#");
     for(int i = 0; i < S->n; i++){
@@ -341,6 +339,16 @@ void snlinfo(SistNl_t *S){
     //     printf("\n");}
     */
 
+    printf("--------------------------------------END SNL INFO-----------------------------------------\n");
+}
+
+void varinfo(SnlVar_t nt, SistNl_t snl)
+{
+    printf("\n------------------------------------INFO VARIAVEIS------------------------------------\n");
+    printf("x0: "); for(int i = 0; i < snl.n; i++) printf(" %f ", nt.x0[i]); printf("\n");
+    printf("x1: "); for(int i = 0; i < snl.n; i++) printf(" %f ", nt.x1[i]); printf("\n");
+    printf("delta: "); for(int i = 0; i < snl.n; i++) printf(" %f ", nt.delta[i]); printf("\n");
+    printf("evaluator[x0] = %1.14e\n", evaluator_evaluate(snl.f, snl.n, snl.names, nt.x0));
     printf("-------------------------------------------------------------------------------\n");
 }
 

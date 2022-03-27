@@ -57,7 +57,7 @@ void calcDelta(SnlVar_t *var, int n);
 void substituteX(SistNl_t *snl, double *X);
 double minDelta(double *delta, int n);
 void snlinfo(SistNl_t *snl);
-
+void varinfo(SnlVar_t var, SistNl_t snl);
 
 void snl2sl(SistNl_t *snl, SistLinear_t *sl);
 void liberaSnlVar(SnlVar_t *var);

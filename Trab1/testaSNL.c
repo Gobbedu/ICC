@@ -43,6 +43,8 @@ int main() {
         printf("%i\n", snl->n);
         printf("%s\n", snl->funcao);
 
+        // snlinfo(snl);
+
         // snl precisa de copia, muda o He
 
         // x0, x1, delta e SL para NEWTON PADRAO
