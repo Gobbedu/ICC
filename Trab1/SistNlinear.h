@@ -53,9 +53,9 @@ void genNames(SistNl_t *snl);
 
 void printCol(double pto, SistNl_t *snl, SnlVar_t *nt);
 
-void calcDelta(double *new_values, double *old_values, double *delta, int n);
+void calcDelta(SnlVar_t *var, int n);
 void substituteX(SistNl_t *snl, double *X);
-double minDelta(double *delta);
+double minDelta(double *delta, int n);
 void snlinfo(SistNl_t *snl);
 
 

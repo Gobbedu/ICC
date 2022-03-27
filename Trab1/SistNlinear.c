@@ -14,10 +14,14 @@
 double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
 {
     substituteX(snl, np->x0);               // calcula H[X] e J[X]
+
+    // calcula f(X) antes de atualizar o valor
+    // se valor existe, imprime na coluna
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, np->x0), snl, np);
+    
     snl2sl(snl, np->sl);                    // copia dados de snl em sl
     eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
-
-    calcDelta(np->x1, np->x0, np->delta, snl->n);
+    calcDelta(np, snl->n);                  // X[i+1] = X[i] + delta[i]
 
     // printf("raiz funcao: ");
     // for(int i = 0; i < snl->n; i++)
@@ -62,6 +66,23 @@ double NewtonInexato()
 }
 
 
+void calcDelta(SnlVar_t *var, int n){
+    for(int i = 0; i < n; i++){
+        var->x1[i] = var->x0[i] + var->delta[i];
+        var->x0[i] = var->x1[i];
+    }
+}
+
+double minDelta(double *delta, int n){
+    double min = +INFINITY;
+
+    for(int i = 0; i < n ; i++)
+        min = (delta[i] < min) ? delta[i] : min;
+        
+    return min;
+}
+
+
 SistNl_t *CopySnL(SistNl_t *snl)
 {
     SistNl_t *new = alocaSistNl(snl->n);
@@ -94,7 +115,7 @@ SnlVar_t *genSnlVar(SistNl_t *snl)
     var->sl = alocaSistLinear(snl->n);
     var->x0 = genValues(snl->n, 0);
     var->x1 = genValues(snl->n, 0);
-    var->delta = genValues(snl->n, 0);
+    var->delta = genValues(snl->n, 1);
 
     // chute inicial
     for(int i = 0; i < snl->n; i++) 
@@ -121,6 +142,7 @@ void snl2sl(SistNl_t *snl, SistLinear_t *sl)
     }
 }
 
+// FALTA REVISAR    
 SistNl_t *alocaSistNl(unsigned int n){
     SistNl_t *SnL = (SistNl_t *) malloc(sizeof(SistNl_t));
 
@@ -207,10 +229,8 @@ SistNl_t *lerSistNL(void)
 
 void genNames(SistNl_t *snl){    
     for(int i = 0; i < snl->n; i++){
-        snl->names[i] = malloc(2 * sizeof(char));
-
-        snl->names[i][0] = 'x';
-        snl->names[i][1] = i+1+'0';
+        snl->names[i] = malloc(4 * sizeof(char)); // maximo 999 variaveis
+        sprintf(snl->names[i], "x%i", i+1);
     }
 }
 
@@ -222,7 +242,7 @@ double *genValues(int n, double init){
 
     return values;
 }
-// freeValues
+// freeValues (TODO)
 
 void genJacobiana(SistNl_t *snl){
     char name[2];
@@ -276,28 +296,8 @@ void substituteX(SistNl_t *snl, double *X){
 
 }
 
-void calcDelta(double *new_values, double *old_values, double *delta, int n){
-    for(int i = 0; i < n; i++){
-        new_values[i] = old_values[i] + delta[i];
-        old_values[i] = new_values[i];
-    }
-}
-
-double minDelta(double *delta){
-    double min = INFINITY;
-
-    for(int i = 0; delta[i] ; i++)
-        min = (delta[i] < min) ? delta[i] : min;
-        
-    return min;
-}
-
 void snlinfo(SistNl_t *S){
-    printf("%i\n", S->n);
-    printf("%s\n#\n", S->funcao);
-
-    /*
-    printf("\n-------------SNL INFO-------------\n");
+    printf("\n------------------------------------SNL INFO------------------------------------\n");
     printf("#  n: %i\n", S->n);
     printf("#  funcao: %s\n", S->funcao);
     printf("#  chute:");
@@ -308,9 +308,17 @@ void snlinfo(SistNl_t *S){
     printf("#  eps: %g\n", S->eps);
     printf("#  iteracao: %i\n", S->iteracao);
 
+    printf("#  names: ");
     for(int i = 0; i < S->n ; i++)
-        printf("#  name %i: %s\n", i, S->names[i]);
+        printf(" %s ", S->names[i]);
+    printf("\n");
 
+    printf("\nVETOR CHUTE's:\n#");
+    for(int i = 0; i < S->n; i++)
+        printf("  %f, ", S->chute[i]);
+    printf("\nEVALUATOR\n#  f(CHUTE) = %g\n",evaluator_evaluate(S->f, S->n, S->names, S->chute));
+
+    /*
     // JACOBIANA
     printf("\nJACOBIANA\n#");
     for(int i = 0; i < S->n; i++)
@@ -331,16 +339,16 @@ void snlinfo(SistNl_t *S){
     //     for(int j = 0; j < snl->n; j++)
     //         printf("%3f  ", evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, old_values));
     //     printf("\n");}
-
-    printf("---------------------------------\n");
     */
+
+    printf("-------------------------------------------------------------------------------\n");
 }
 
 void printCol(double pto, SistNl_t *snl, SnlVar_t *nt)
 {
     if (isnan(pto) || isinf(pto))
         printf("%1.14e\t\t\t| ", pto);
-    else if (fabs(minDelta(nt->delta)) >= snl->eps)
+    else if (fabs(minDelta(nt->delta, snl->n)) >= snl->eps)
         printf("%1.14e\t| ", pto);
     else
         printf("\t\t\t| ");

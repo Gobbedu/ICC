@@ -40,7 +40,8 @@ int main() {
     while(snl = lerSistNL())
     {      
         genSistNaoLinear(snl);  // calcula Jacobiana e Hessiana
-        snlinfo(snl);           // imprime dados do sistema
+        printf("%i\n", snl->n);
+        printf("%s\n", snl->funcao);
 
         // snl precisa de copia, muda o He
 
@@ -57,7 +58,7 @@ int main() {
         SistNl_t *Isnl = CopySnL(snl);
 
 
-        printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+        printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
         // --------LOOP PRINCIPAL-------- //
         for(int i = 0; i < snl->iteracao; i++)
@@ -65,14 +66,12 @@ int main() {
             printf("%-12d \t| ", i); // imprime iteração
 
             // ELIMINACAO GAUSS / NEWTON PADRAO //
-            if(!(fabs(minDelta(np->delta)) < Psnl->eps) || i == 0){
+            if(fabs(minDelta(np->delta, snl->n)) >= Psnl->eps || i == 0){
                 TtotalEG = timestamp();
                 ptoPadrao = NewtonPadrao(Psnl, np);
                 TtotalEG = timestamp() - TtotalEG;
             }
 
-            // se nesta iteração o valor da primeira coluna existe, imprime
-            printCol(ptoPadrao, Psnl, np);
 
             /*
             // FATORACAO LU / NEWTON MODIFICADO //
@@ -97,15 +96,13 @@ int main() {
 
 
             printf("\n");
-            // se min || delta || dos 3 metodo for < eps, break(TODO)
-            if((fabs(minDelta(np->delta)) < Psnl->eps) && 
-                (fabs(minDelta(nm->delta)) < Msnl->eps) && 
-                (fabs(minDelta(ni->delta)) < Isnl->eps) )
+            // se max(normal(dos 3 deltas)) for < eps, break(TODO)
+            if((fabs(minDelta(np->delta, snl->n)) < snl->eps) )
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n", TtotalEG, TtotalLU, TtotalGS);
         printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n", TderivadasEG, TderivadasLU, TderivadasGS);
-        printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n", TslEG, TslLU, TslGS);
+        printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n", TslEG, TslLU, TslGS);
 
         liberaSnlVar(np);
         liberaSnlVar(nm);
@@ -118,42 +115,16 @@ int main() {
     return 0;
 }
 
-/*
 
-// cabeçalho
-printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
-
-// para cada iteração
-for (...) {
-    printf("%d \t\t| ", i); // imprime iteração
-
-    if (...) {  // se nesta iteração o valor da primeira coluna existe, imprime
-        if (isnan(fx) || isinf(fx))
-            printf("%1.14e\t\t\t| ", fx);
-        else
-            printf("%1.14e\t| ", fx);
-    }
-    else
-        printf("\t\t\t| ");
-
-    // repete para as outras duas colunas...
-}
-
-// imprimir os tempos
-printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", TtotalEG, TtotalLU, TtotalGS);
-printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", TderivadasEG, TderivadasLU, TderivadasGS);
-printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", TslEG, TslLU, TslGS);
-
-*/
-
-int Testee()
+int omain()
 {
     // testaSnL();
 
     SistNl_t *snl;
     snl = lerSistNL();
-    double *valores = genValues(snl->n, 1);
     genSistNaoLinear(snl);
+
+    snlinfo(snl);
     // genNames(snl);
 
     // void *f = evaluator_create(snl->funcao);
@@ -162,9 +133,11 @@ int Testee()
     // genJacobiana(snl);
     // genHessiana(snl);
 
-    printf("evaluator %f\n", evaluator_evaluate(snl->f, snl->n, snl->names, valores));
-    printf("jacobiana %f\n", evaluator_evaluate(snl->Bf[0], 1, snl->names, valores));
-    printf("hessiana  %f\n", evaluator_evaluate(snl->Hf[0][0], snl->n, snl->names, valores));
+    printf("evaluator %f\n", evaluator_evaluate(snl->f, snl->n, snl->names, snl->chute));
+    // printf("jacobiana %f\n", evaluator_evaluate(snl->Bf[0], 1, snl->names, snl->chute));
+    // printf("hessiana  %f\n", evaluator_evaluate(snl->Hf[0][0], snl->n, snl->names, snl->chute));
+
+    // funcao 1:
     // evaluator: 7.000
     // jacobiana: 6.000
     // hessiana:  1.000
