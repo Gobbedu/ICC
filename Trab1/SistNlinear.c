@@ -233,18 +233,18 @@ void liberaMatheval(SistNl_t *snl)
     free(snl->Hf);
 }
 
-SnlVar_t *genSnlVar(SistNl_t *snl)
+SnlVar_t *genSnlVar(double *chute, int n)
 {
     SnlVar_t *var = malloc(sizeof(SnlVar_t));
 
-    var->sl = alocaSistLinear(snl->n);
-    var->x0 = genValues(snl->n, 0);
-    var->x1 = genValues(snl->n, 0);
-    var->delta = genValues(snl->n, 1);
+    var->sl = alocaSistLinear(n);
+    var->x0 = genValues(n, 0);
+    var->x1 = genValues(n, 0);
+    var->delta = genValues(n, 1);
 
     // chute inicial
-    for(int i = 0; i < snl->n; i++) 
-        var->x0[i] = snl->chute[i]; 
+    for(int i = 0; i < n; i++) 
+        var->x0[i] = chute[i]; 
 
     return var;
 }

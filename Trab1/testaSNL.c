@@ -48,9 +48,9 @@ int main() {
 
         // snl precisa de copia, muda o He & o Je
         // calcula o He & o Je dentro de cada metodo usando np/nm/ni
-        SnlVar_t *np = genSnlVar(snl); // x0, x1, delta e SL para NEWTON PADRAO
-        SnlVar_t *nm = genSnlVar(snl); // x0, x1, delta e SL para NEWTON MODIFICADO
-        SnlVar_t *ni = genSnlVar(snl); // x0, x1, delta e SL para NEWTON INEXATO
+        SnlVar_t *np = genSnlVar(snl->chute, snl->n); // x0, x1, delta e SL para NEWTON PADRAO
+        SnlVar_t *nm = genSnlVar(snl->chute, snl->n); // x0, x1, delta e SL para NEWTON MODIFICADO
+        SnlVar_t *ni = genSnlVar(snl->chute, snl->n); // x0, x1, delta e SL para NEWTON INEXATO
 
         printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
@@ -90,7 +90,7 @@ int main() {
         printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n", TderivadasEG, TderivadasLU, TderivadasGS);
         printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n", TslEG, TslLU, TslGS);
 
-        // liberar antes de destruir sistema
+        // liberar matheval antes de destruir sistema
         liberaMatheval(snl);
 
         liberaSnlVar(np);
@@ -102,7 +102,7 @@ int main() {
     return 0;
 }
 
-
+// funcao de teste
 int omain()
 {
     // testaSnL();

@@ -36,7 +36,7 @@ typedef struct {
 
 
 SistNl_t *alocaSistNl(unsigned int n);
-SnlVar_t *genSnlVar(SistNl_t *snl);
+SnlVar_t *genSnlVar(double *chute, int n);
 SistNl_t *lerSistNL(void);
 
 double NewtonPadrao(SistNl_t *snl, SnlVar_t *np);
