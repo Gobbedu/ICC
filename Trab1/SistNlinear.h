@@ -37,12 +37,11 @@ typedef struct {
 
 SistNl_t *alocaSistNl(unsigned int n);
 SnlVar_t *genSnlVar(SistNl_t *snl);
-SistNl_t *CopySnL(SistNl_t *snl);
 SistNl_t *lerSistNL(void);
 
 double NewtonPadrao(SistNl_t *snl, SnlVar_t *np);
-double NewtonModificado();
-double NewtonInexato();
+double NewtonModificado(SistNl_t *snl, SnlVar_t *nm);
+double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
 double *genValues(int n, double init);
 void genSistNaoLinear(SistNl_t *snl);
@@ -59,6 +58,7 @@ double minDelta(double *delta, int n);
 void snlinfo(SistNl_t *snl);
 void varinfo(SnlVar_t var, SistNl_t snl);
 
+void liberaMatheval(SistNl_t *snl);
 void snl2sl(SistNl_t *snl, SistLinear_t *sl);
 void liberaSnlVar(SnlVar_t *var);
 

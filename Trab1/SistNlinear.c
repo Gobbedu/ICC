@@ -35,39 +35,73 @@ double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
     return evaluator_evaluate(snl->f, snl->n, snl->names, np->x1);
 }
 
-double NewtonModificado()
+double NewtonModificado(SistNl_t *snl, SnlVar_t *nm)
 {
     /* NEWTON MODIFICADO
  
     if(i % HESS_STEP == 0) 
         substituteX(snl, old_values); // calcula H[X] & J[X]
 
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, np->x0), snl, np);
+
     snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
     // FATORACAO LU (TODO)
     eliminacaoGauss(sl, delta);
 
     calcDelta(new_values, old_values, delta, snl->n);
-
-
     */
-   return 0;
+
+    //PODE DELETAR AKI
+    substituteX(snl, nm->x0);               // calcula H[X] e J[X]
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
+    snl2sl(snl, nm->sl);                    // copia dados de snl em sl
+    eliminacaoGauss(nm->sl, nm->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
+    calcDelta(nm, snl->n);                  // X[i+1] = X[i] + delta[i]
+    return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
 }
 
-double NewtonInexato()
+double NewtonInexato(SistNl_t *snl, SnlVar_t *nm)
 {
     /* NEWTON INEXATO
 
-    snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
-
     // GAUSS SEIDEL (TODO)
 
-    calcDelta(new_values, old_values, delta, snl->n);
-
-  
     */
-   return 0;
+
+    //PODE DELETAR AKI
+    substituteX(snl, nm->x0);               // calcula H[X] e J[X]
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
+    snl2sl(snl, nm->sl);                    // copia dados de snl em sl
+    eliminacaoGauss(nm->sl, nm->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
+    calcDelta(nm, snl->n);                  // X[i+1] = X[i] + delta[i]
+    return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
+
 }
 
+
+SistNl_t *lerSistNL(void)
+{
+    unsigned int n;
+
+    SistNl_t *SnL = NULL;
+  
+    if (scanf("%d",&n) != EOF) 
+    {  
+        SnL = alocaSistNl(n);
+        if (!SnL) return NULL;
+        
+        scanf("%s", SnL->funcao);
+
+        for(int i = 0; i < n; i++)
+            scanf("%lf", &(SnL->chute[i]));
+
+        scanf("%lf", &(SnL->eps));
+        scanf("%i", &(SnL->iteracao));
+
+    }
+  
+  return SnL;
+}
 
 void calcDelta(SnlVar_t *var, int n){
     for(int i = 0; i < n; i++){
@@ -76,92 +110,62 @@ void calcDelta(SnlVar_t *var, int n){
     }
 }
 
-double minDelta(double *delta, int n){
-    double min = +INFINITY;
-
-    for(int i = 0; i < n ; i++)
-        min = (delta[i] < min) ? delta[i] : min;
-        
-    return min;
+void genNames(SistNl_t *snl){  
+    for(int i = 0; i < snl->n; i++){
+        sprintf(snl->names[i], "x%i\0", i+1);
+    }
 }
 
+double *genValues(int n, double init){
+    double *values = malloc(n * sizeof(double));
 
-SistNl_t *CopySnL(SistNl_t *snl)
-{
-    SistNl_t *new = alocaSistNl(snl->n);
+    for(int i = 0; i < n; i++)
+        values[i] = init;
 
-    new->eps = snl->eps;
-    new->f = snl->f;
-    new->iteracao = snl->iteracao;
-    new->n = snl->n;
+    return values;
+}
 
+void genJacobiana(SistNl_t *snl){
+    for(int i = 0; i < snl->n; i++){
+        snl->Bf[i] = evaluator_derivative(snl->f, snl->names[i]);
+    }
+}
+
+void genHessiana(SistNl_t *snl){
     for(int i = 0; i < snl->n; i++){
         for(int j = 0; j < snl->n; j++)
         {
-            new->Hf[i][j] = snl->Hf[i][j];
-            new->He[i][j] = snl->He[i][j];
+            // deriva Jacob[i] n vezes em x1..xn
+            snl->Hf[i][j] = evaluator_derivative(snl->Bf[i], snl->names[j]);
         }
-        new->funcao[i] = snl->funcao[i];
-        new->chute[i] = snl->chute[i];
-        new->names[i] = snl->names[i];
-        new->Bf[i] = snl->Bf[i];
-        new->Be[i] = snl->Be[i];
-    }
-    
-    return new;
-}
-
-SnlVar_t *genSnlVar(SistNl_t *snl)
-{
-    SnlVar_t *var = malloc(sizeof(SnlVar_t));
-
-    var->sl = alocaSistLinear(snl->n);
-    var->x0 = genValues(snl->n, 0);
-    var->x1 = genValues(snl->n, 0);
-    var->delta = genValues(snl->n, 1);
-
-    // chute inicial
-    for(int i = 0; i < snl->n; i++) 
-        var->x0[i] = snl->chute[i]; 
-
-    return var;
-}
-
-void liberaSnlVar(SnlVar_t *var)
-{
-    liberaSistLinear(var->sl);
-    free(var->x0);
-    free(var->x1);
-    free(var->delta);
-}
-
-void snl2sl(SistNl_t *snl, SistLinear_t *sl)
-{
-    for(int i = 0; i < snl->n; ++i) {
-        for(int j = 0; j < snl->n; ++j)
-        {
-            sl->A[i][j] = snl->He[i][j];
-        }
-        sl->b[i] = - snl->Be[i];
-        /* dup->t[i] = SL->t[i]; // trocas ????? */
     }
 }
 
-// FALTA REVISAR    
+void genSistNaoLinear(SistNl_t *snl)
+{
+        // precisa ser chamado nesta ordem
+        snl->f = evaluator_create(snl->funcao);
+        assert(snl->f);
+
+        genNames(snl);          // nomes das variaveis x1, x2 .. xn
+        genJacobiana(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
+        genHessiana(snl);       // possiveis combinacoes de segunda derivada
+
+}
+
 SistNl_t *alocaSistNl(unsigned int n){
     SistNl_t *SnL = (SistNl_t *) malloc(sizeof(SistNl_t));
 
     if (SnL){
         SnL->n = n;
 
-        // tratar !SnL -> free
-        // SnL->names = (char **) malloc(sizeof(char *) * n);
-        // for(int i = 0; i < n; i++)
-        //     SnL->names[i] = malloc( 2*sizeof(char));
-
         // vetor de chutes
         SnL->chute = malloc(sizeof(double)*n);
+
+        // snl->names[i] = malloc(4 * sizeof(char)); // maximo 999 variaveis
         SnL->names = malloc(SnL->n * sizeof(char *));
+        for(int i = 0; i < SnL->n; i++)
+            SnL->names[i] = malloc(5 * sizeof(char));
 
         SnL->Hf = (void ***) malloc(sizeof(void **)*n);
         if (!(SnL->Hf)) {
@@ -199,82 +203,59 @@ SistNl_t *alocaSistNl(unsigned int n){
   return SnL;
 }
 
-void liberaSistNl(SistNl_t *SL) {
-  free(SL->names);
-  free(SL->Be);
-  free(SL->Bf);
-  free(SL->He);
-  free(SL->Hf);
-  free(SL);
+void liberaSistNl(SistNl_t *snl) {
+    for(int i = 0; i < snl->n; i++)
+    {
+        free(snl->names[i]);
+        free(snl->He[i]);
+    }
+
+    free(snl->names);
+    free(snl->He);
+    free(snl->chute);
+    free(snl->Be);
+    
+    free(snl);
 }
 
-SistNl_t *lerSistNL(void)
+void liberaMatheval(SistNl_t *snl)
 {
-    unsigned int n;
-
-    SistNl_t *SnL = NULL;
-  
-    if (scanf("%d",&n) != EOF) 
-    {  
-        SnL = alocaSistNl(n);
-        if (!SnL) return NULL;
-        
-        scanf("%s", SnL->funcao);
-
-        for(int i = 0; i < n; i++)
-            scanf("%lf", &(SnL->chute[i]));
-
-        scanf("%lf", &(SnL->eps));
-        scanf("%i", &(SnL->iteracao));
-
-    }
-  
-  return SnL;
-}
-
-void genNames(SistNl_t *snl){    
-    for(int i = 0; i < snl->n; i++){
-        snl->names[i] = malloc(4 * sizeof(char)); // maximo 999 variaveis
-        sprintf(snl->names[i], "x%i", i+1);
-    }
-}
-
-double *genValues(int n, double init){
-    double *values = malloc(n * sizeof(double));
-
-    for(int i = 0; i < n; i++)
-        values[i] = init;
-
-    return values;
-}
-// freeValues (TODO)
-
-void genJacobiana(SistNl_t *snl){
-    for(int i = 0; i < snl->n; i++){
-        snl->Bf[i] = evaluator_derivative(snl->f, snl->names[i]);
-    }
-}
-
-void genHessiana(SistNl_t *snl){
     for(int i = 0; i < snl->n; i++){
         for(int j = 0; j < snl->n; j++)
         {
-            // deriva Jacob[i] n vezes em x1..xn
-            snl->Hf[i][j] = evaluator_derivative(snl->Bf[i], snl->names[j]);
+            evaluator_destroy(snl->Hf[i][j]);
         }
+        evaluator_destroy(snl->Bf[i]);
+        free(snl->Hf[i]);
     }
+    evaluator_destroy(snl->f);
+    free(snl->Bf);
+    free(snl->Hf);
 }
 
-void genSistNaoLinear(SistNl_t *snl)
+SnlVar_t *genSnlVar(SistNl_t *snl)
 {
-        // precisa ser chamado nesta ordem
-        snl->f = evaluator_create(snl->funcao);
-        assert(snl->f);
+    SnlVar_t *var = malloc(sizeof(SnlVar_t));
 
-        genNames(snl);          // nomes das variaveis x1, x2 .. xn
-        genJacobiana(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
-        genHessiana(snl);       // possiveis combinacoes de segunda derivada
+    var->sl = alocaSistLinear(snl->n);
+    var->x0 = genValues(snl->n, 0);
+    var->x1 = genValues(snl->n, 0);
+    var->delta = genValues(snl->n, 1);
 
+    // chute inicial
+    for(int i = 0; i < snl->n; i++) 
+        var->x0[i] = snl->chute[i]; 
+
+    return var;
+}
+
+void liberaSnlVar(SnlVar_t *var)
+{
+    liberaSistLinear(var->sl);
+    free(var->x0);
+    free(var->x1);
+    free(var->delta);
+    free(var);
 }
 
 void substituteX(SistNl_t *snl, double *X){
@@ -290,6 +271,27 @@ void substituteX(SistNl_t *snl, double *X){
         snl->Be[i] = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, X);
     }
 
+}
+
+double minDelta(double *delta, int n){
+    double min = +INFINITY;
+
+    for(int i = 0; i < n ; i++)
+        min = (delta[i] < min) ? delta[i] : min;
+        
+    return min;
+}
+
+void snl2sl(SistNl_t *snl, SistLinear_t *sl)
+{
+    for(int i = 0; i < snl->n; ++i) {
+        for(int j = 0; j < snl->n; ++j)
+        {
+            sl->A[i][j] = snl->He[i][j];
+        }
+        sl->b[i] = - snl->Be[i];
+        /* dup->t[i] = SL->t[i]; // trocas ????? */
+    }
 }
 
 void snlinfo(SistNl_t *S){
