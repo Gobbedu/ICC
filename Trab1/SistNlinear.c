@@ -37,27 +37,34 @@ double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
 
 double NewtonModificado(SistNl_t *snl, SnlVar_t *nm)
 {
-    /* NEWTON MODIFICADO
+    // NEWTON MODIFICADO
  
     if(i % HESS_STEP == 0) 
+    {
         substituteX(snl, old_values); // calcula H[X] & J[X]
 
-    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, np->x0), snl, np);
+        snl2sl(snl, nm->sl); // H[X]*delta = - J[X]  // A*x = -b
+
+        FatorLU(nm->sl); // transforma sl em LU
+    }
+
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, np);
 
     snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
     // FATORACAO LU (TODO)
-    eliminacaoGauss(sl, delta);
+    EliminacaoLU(sl, delta);
 
-    calcDelta(new_values, old_values, delta, snl->n);
-    */
+    calcDelta(np, snl->n);                  // X[i+1] = X[i] + delta[i]
 
+    return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
+    /* 
     //PODE DELETAR AKI
     substituteX(snl, nm->x0);               // calcula H[X] e J[X]
     printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
     snl2sl(snl, nm->sl);                    // copia dados de snl em sl
     eliminacaoGauss(nm->sl, nm->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
     calcDelta(nm, snl->n);                  // X[i+1] = X[i] + delta[i]
-    return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
+    */
 }
 
 double NewtonInexato(SistNl_t *snl, SnlVar_t *nm)

@@ -5,7 +5,7 @@
 #include "SistLinear.h"
 #include "EliminacaoGauss.h"
 #include "Refinamento.h"
-
+/* pode deletar?
 // aplica MAXIT iterações do Refinamento em SL com solução X
 void refinamento(SistLinear_t *SL, double *X, int MAXIT) {
 
@@ -34,7 +34,6 @@ void refinamento(SistLinear_t *SL, double *X, int MAXIT) {
     free(res);
   }
 }
-
 void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
   SistLinear_t *LU;
@@ -82,9 +81,9 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
   liberaSistLinear(LU);
 }
-
+*/
 // L e U presentes na msm matriz
-void FatorLU(SistLinear_t *SL, SistLinear_t *LU)
+void FatorLU(SistLinear_t *LU)
 {
   // TRIANGULACAO(triang) -> L = m  & U -> triangular normal
   int max_i, aux;
@@ -119,4 +118,24 @@ void normsubs(SistLinear_t *SL, double *X) {
     for (int j = 0; j < i; j++)
       X[i] -= SL->A[i][j] * X[j];
   }
+}
+
+// calcula X com o sistema LUx = b
+void EliminacaoLU(SistLinear *LU, double *X)
+{
+  double *Z = malloc(sizeof(double)* LU->n);
+
+  // considerar trocas do pivoteamento
+  //trocas nas posicoes de b 
+    for (int i = 0; i < LU->n; ++i)
+      LU->b[ LU->t[i] ] = LU->b[i];
+    normsubs(LU, Z);
+
+    // Ux = Z (as trocas ja foram feitas em Z)
+    for (int j = 0; j < LU->n; ++j)
+      LU->b[ j ] = (double) Z[j];
+    retrossubs(LU, X);
+
+  free(Z);
+  return;
 }
