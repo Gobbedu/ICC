@@ -40,7 +40,7 @@ SnlVar_t *genSnlVar(double *chute, int n);
 SistNl_t *lerSistNL(void);
 
 double NewtonPadrao(SistNl_t *snl, SnlVar_t *np);
-double NewtonModificado(SistNl_t *snl, SnlVar_t *nm);
+double NewtonModificado(SistNl_t *snl, SnlVar_t *nm, int i);
 double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
 double *genValues(int n, double init);
@@ -52,7 +52,7 @@ void genNames(SistNl_t *snl);
 
 void printCol(double pto, SistNl_t *snl, SnlVar_t *nt);
 
-void calcDelta(SnlVar_t *var, int n);
+void calcDelta(SistNl_t *snl, SnlVar_t *var);
 void substituteX(SistNl_t *snl, double *X);
 double minDelta(double *delta, int n);
 void snlinfo(SistNl_t *snl);

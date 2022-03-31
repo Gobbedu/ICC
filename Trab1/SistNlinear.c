@@ -22,52 +22,84 @@ double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
     snl2sl(snl, np->sl);                    // copia dados de snl em sl
     eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
     // varinfo(*np, *snl);
-    calcDelta(np, snl->n);                  // X[i+1] = X[i] + delta[i]
-
-
-
-    // printf("raiz funcao: ");
-    // for(int i = 0; i < snl->n; i++)
-    //     printf(" %g ", x1[i]);
-    // printf("\n");
+    calcDelta(snl, np);                  // X[i+1] = X[i] + delta[i]
 
     // Devolve f(X), ponto critico estimado
     return evaluator_evaluate(snl->f, snl->n, snl->names, np->x1);
 }
 
-double NewtonModificado(SistNl_t *snl, SnlVar_t *nm)
+double NewtonModificado(SistNl_t *snl, SnlVar_t *nm, int i)
 {
     // NEWTON MODIFICADO
  
     if(i % HESS_STEP == 0) 
     {
-        substituteX(snl, old_values); // calcula H[X] & J[X]
-
-        snl2sl(snl, nm->sl); // H[X]*delta = - J[X]  // A*x = -b
-
-        FatorLU(nm->sl); // transforma sl em LU
+        substituteX(snl, nm->x0);   // calcula H[X] e J[X]
+        snl2sl(snl, nm->sl);        // H[X]*delta = - J[X]  // A*x = -b
+        FatorLU(nm->sl);            // transforma sl em LU
     }
 
-    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, np);
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
 
-    snl2sl(snl, sl); // H[X]*delta = - J[X]  // A*x = -b
-    // FATORACAO LU (TODO)
-    EliminacaoLU(sl, delta);
+    snl2sl(snl, nm->sl);                // H[X]*delta = - J[X]  // A*x = -b
+    EliminacaoLU(nm->sl, nm->delta);    // FATORACAO LU (TODO)
 
-    calcDelta(np, snl->n);                  // X[i+1] = X[i] + delta[i]
+    calcDelta(snl, nm);              // X[i+1] = X[i] + delta[i]
 
     return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
-    /* 
-    //PODE DELETAR AKI
-    substituteX(snl, nm->x0);               // calcula H[X] e J[X]
-    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
-    snl2sl(snl, nm->sl);                    // copia dados de snl em sl
-    eliminacaoGauss(nm->sl, nm->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
-    calcDelta(nm, snl->n);                  // X[i+1] = X[i] + delta[i]
-    */
 }
 
-double NewtonInexato(SistNl_t *snl, SnlVar_t *nm)
+/*Gauss seidel do Vods, n funciona 100%*/
+void gauss_seidel(SistLinear_t *SL, double *X)
+{
+    int i,j,q,d;
+  unsigned int n = SL->n;
+  double *r =  malloc((SL->n) * sizeof (double)) ;
+  double temp,sum,erroMaximo,erroCalculado;
+  double **A = SL->A;
+  double *b = SL->b;
+  double *x = malloc((SL->n) * sizeof(double));
+  //X = malloc((SL->n) * sizeof(double));
+
+  // A[n][n] = Matriz principal (e->f)
+  // b[n] = vetor_independente (e->termos_independentes)
+
+  for(i=0;i<n;i++){
+      r[i] = 0;
+  }
+  
+  q = 0;
+  do{
+      erroCalculado = 0;
+      q++;
+      for(i=0;i<n;i++){
+          sum = 0;
+          for(j=0;j<n;j++){
+              if(i != j){
+                  sum = sum + (A[i][j] * r[j]);
+              }
+            }
+          temp = (-1.0 / A[i][i]) * sum + b[i] / A[i][i];
+          erroMaximo = fabs(temp - r[i]);
+          r[i] = temp;
+          if(erroMaximo > erroCalculado)
+              erroCalculado = erroMaximo;
+        }
+  }while(erroCalculado >= 1e-6  && q<=50);
+
+  for(i=0;i<n;i++){ //copiar dados calculados para *x
+    x[i] = r[i];
+  }
+
+  //X= x; //copiar dados para estrutura
+
+  free(r);
+  free(x);
+  //free(X);
+
+
+}
+double NewtonInexato(SistNl_t *snl, SnlVar_t *ni)
 {
     /* NEWTON INEXATO
 
@@ -76,12 +108,12 @@ double NewtonInexato(SistNl_t *snl, SnlVar_t *nm)
     */
 
     //PODE DELETAR AKI
-    substituteX(snl, nm->x0);               // calcula H[X] e J[X]
-    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
-    snl2sl(snl, nm->sl);                    // copia dados de snl em sl
-    eliminacaoGauss(nm->sl, nm->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
-    calcDelta(nm, snl->n);                  // X[i+1] = X[i] + delta[i]
-    return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
+    substituteX(snl, ni->x0);               // calcula H[X] e J[X]
+    printCol(evaluator_evaluate(snl->f, snl->n, snl->names, ni->x0), snl, ni);
+    snl2sl(snl, ni->sl);                    // copia dados de snl em sl
+    gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
+    calcDelta(snl, ni);                  // X[i+1] = X[i] + delta[i]
+    return evaluator_evaluate(snl->f, snl->n, snl->names, ni->x1);  
 
 }
 
@@ -110,8 +142,9 @@ SistNl_t *lerSistNL(void)
   return SnL;
 }
 
-void calcDelta(SnlVar_t *var, int n){
-    for(int i = 0; i < n; i++){
+void calcDelta(SistNl_t *snl, SnlVar_t *var){
+    if(fabs(minDelta(var->delta, snl->n)) >= snl->eps)
+    for(int i = 0; i < snl->n; i++){
         var->x1[i] = var->x0[i] + var->delta[i];
         var->x0[i] = var->x1[i];
     }

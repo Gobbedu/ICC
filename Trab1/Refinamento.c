@@ -2,10 +2,16 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifndef __SIST_LINEAR__
 #include "SistLinear.h"
+#endif
+
+#ifndef __ELIM_GAUSS__
 #include "EliminacaoGauss.h"
+#endif
+
 #include "Refinamento.h"
-/* pode deletar?
+
 // aplica MAXIT iterações do Refinamento em SL com solução X
 void refinamento(SistLinear_t *SL, double *X, int MAXIT) {
 
@@ -34,6 +40,8 @@ void refinamento(SistLinear_t *SL, double *X, int MAXIT) {
     free(res);
   }
 }
+
+
 void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
   SistLinear_t *LU;
@@ -46,7 +54,7 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
   // chamar fatoracao LU aki,  PIVO HABILITADO
   LU = dupSL(SL);
-  FatorLU(SL, LU);
+  FatorLU(LU);
 
   printf("  --> Refinamento LU:\n");
   for (int i = 0; i < MAXIT; ++i) 
@@ -81,10 +89,10 @@ void refinamentoLU(SistLinear_t *SL, double *X, int MAXIT) {
 
   liberaSistLinear(LU);
 }
-*/
+
+
 // L e U presentes na msm matriz
-void FatorLU(SistLinear_t *LU)
-{
+void FatorLU(SistLinear_t *LU){ 
   // TRIANGULACAO(triang) -> L = m  & U -> triangular normal
   int max_i, aux;
   double m;
@@ -96,8 +104,8 @@ void FatorLU(SistLinear_t *LU)
     for (int k = i+1; k < LU->n; ++k) 
     {
       m = LU->A[k][i] / LU->A[i][i];
-      if (isnan(m))
-        printf("ERRO: %g ", LU->A[i][i]);
+      // if (isnan(m))
+      //   printf("ERRO: %g ", LU->A[i][i]);
       // guarda m em L (ALTERA DEPOIS DA PRIMEIRA ITER)
       LU->A[ k ][i] = m;     
 
@@ -107,11 +115,10 @@ void FatorLU(SistLinear_t *LU)
     }
   }
 
-
 }
 
 // calcula retrossub em L, com SL-b e salva em X
-void normsubs(SistLinear_t *SL, double *X) {
+void normsubs(SistLinear_t *SL, double *X)  {
   // para fatoracao LU, diagonal = 1
   for (int i = 0; i < SL->n; i++) {
     X[i] = SL->b[i];
@@ -121,21 +128,21 @@ void normsubs(SistLinear_t *SL, double *X) {
 }
 
 // calcula X com o sistema LUx = b
-void EliminacaoLU(SistLinear *LU, double *X)
-{
+void EliminacaoLU(SistLinear_t *LU, double *X){
   double *Z = malloc(sizeof(double)* LU->n);
 
   // considerar trocas do pivoteamento
   //trocas nas posicoes de b 
-    for (int i = 0; i < LU->n; ++i)
+    for (int i = 0; i < LU->n; ++i){
       LU->b[ LU->t[i] ] = LU->b[i];
+    }
     normsubs(LU, Z);
 
     // Ux = Z (as trocas ja foram feitas em Z)
-    for (int j = 0; j < LU->n; ++j)
+    for (int j = 0; j < LU->n; ++j){
       LU->b[ j ] = (double) Z[j];
+    }
     retrossubs(LU, X);
 
   free(Z);
-  return;
 }

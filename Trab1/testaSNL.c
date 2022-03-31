@@ -60,7 +60,7 @@ int main() {
             printf("%-12d \t| ", i); // imprime iteração
 
             // ELIMINACAO GAUSS / NEWTON PADRAO //
-            if(fabs(minDelta(np->delta, snl->n)) >= snl->eps || i == 0){
+            if(!(fabs(minDelta(np->delta, snl->n)) < snl->eps) || i == 0){
                 TtotalEG = timestamp();
                 ptoPadrao = NewtonPadrao(snl, np);
                 TtotalEG = timestamp() - TtotalEG;
@@ -69,7 +69,7 @@ int main() {
             // FATORACAO LU / NEWTON MODIFICADO //
             if(!(fabs(minDelta(nm->delta, snl->n)) < snl->eps) || i == 0){
                 TtotalLU = timestamp();
-                ptoModif = NewtonModificado(snl, nm);
+                ptoModif = NewtonModificado(snl, nm, i);
                 TtotalLU = timestamp() - TtotalLU;
             }
 
@@ -83,7 +83,8 @@ int main() {
 
             printf("\n");
             // se max(normal(dos 3 deltas)) for < eps, break(TODO)
-            if((fabs(minDelta(np->delta, snl->n)) < snl->eps) )
+            if( (fabs(minDelta(np->delta, snl->n)) < snl->eps) &&
+                (fabs(minDelta(nm->delta, snl->n)) < snl->eps) )
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n", TtotalEG, TtotalLU, TtotalGS);
