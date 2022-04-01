@@ -28,12 +28,4 @@ SistLinear_t *dupSL(SistLinear_t *SL);
 // ordem de leitura: n A b
 SistLinear_t *lerSistLinear();
 
-/*
-// devolve um vetor com o resíduo do SL com incógnitas X
-double *residuo(SistLinear_t *SL, double *X);
-
-// faz o cálculo do resíduo usando variáveis do tipo long double
-long double *long_residuo(SistLinear_t *SL, long double *X);
-*/
-
 #endif

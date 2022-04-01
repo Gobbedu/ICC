@@ -1,8 +1,8 @@
 #ifndef __ELIM_GAUSS__
 #define __ELIM_GAUSS__
 
+#include "utils.h"
 #include "SistLinear.h"
-
 
 //////////////////// ELIMINACAO DE GAUSS ////////////////////
 void pivot(SistLinear_t *SL, int i);

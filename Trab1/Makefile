@@ -3,7 +3,7 @@
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
 
     PROG = newtonPC
-    OBJS = utils.o SistLinear.o EliminacaoGauss.o FatoracaoLU.o SistNlinear.o NewtonPadrao.o
+    OBJS = utils.o SistLinear.o EliminacaoGauss.o NewtonModificado.o SistNlinear.o NewtonPadrao.o
 
 .PHONY: clean purge all
 

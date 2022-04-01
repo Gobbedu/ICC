@@ -6,18 +6,8 @@
 *    ./testaSNL < sistemas.dat
 ********************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <matheval.h>
-#include <assert.h>
-
 #include "utils.h"
-#include "SistLinear.h"
-#include "EliminacaoGauss.h"
-#include "FatoracaoLU.h"
-#include "SistNlinear.h"
-
+#include "NewtonModificado.h"
 #include "NewtonPadrao.h"
 
 // #define MAXIT_REFINAMENTO 5
@@ -56,7 +46,9 @@ int main() {
         // snl precisa de copia, muda o He & o Je
         // calcula o He & o Je dentro de cada metodo usando np/nm/ni
 
-        NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+            NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+        NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
+
 
         printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
@@ -65,7 +57,7 @@ int main() {
         {
             printf("%-12d \t| ", i); // imprime iteração
             printCol(respPadrao, i, iterPadrao);
-            // printCol(respModifi, i, iterModifi);
+            printCol(respModifi, i, iterModifi);
             // printCol(respInexat, i, iterInexat);
             printf("\n");
 
@@ -75,7 +67,7 @@ int main() {
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
         printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
-        printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tPadrao.totalSL,tPadrao.totalSL);
+        printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tModifi.totalSL);
 
         // LIBERA respMETODO
         free(respPadrao);

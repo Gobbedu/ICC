@@ -1,44 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
-#include <matheval.h>
-#include <assert.h>
-
-#include "utils.h"
-#include "SistLinear.h"
-#include "EliminacaoGauss.h"
-#include "FatoracaoLU.h"
 #include "SistNlinear.h"
-
-double NewtonModificado(SistNl_t *snl, SnlVar_t *nm, int i)
-{
-    // NEWTON MODIFICADO
- 
-    if(i % HESS_STEP == 0) 
-    {
-        substituteX(snl, nm);   // calcula H[X] e J[X]
-
-        // ERRO EM substituteX()
-        // for(int i = 0; i < snl->n; i++){
-        //     for(int j = 0; j < snl->n; j++){
-        //         if( isnan(snl->He[i][j]) ){printf("\nTA AKI PORRA\n"); break;}
-        //     }
-        // }
-
-        snl2sl(snl, nm);        // H[X]*delta = - J[X]  // A*x = -b
-        FatorLU(nm->sl);            // transforma sl em LU
-    }
-
-    // printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm), snl, nm);
-
-    snl2sl(snl, nm);                // H[X]*delta = - J[X]  // A*x = -b
-    EliminacaoLU(nm->sl, nm->delta);    // resolve SL com LU
-
-    calcDelta(snl, nm);              // X[i+1] = X[i] + delta[i]
-
-    return evaluator_evaluate(snl->f, snl->n, snl->names, nm->x1);  
-}
 
 /*Gauss seidel do Vods, n funciona 100%*/
 void gauss_seidel(SistLinear_t *SL, double *X)
@@ -332,7 +293,7 @@ void substituteX(SistNl_t *snl, SnlVar_t *nt)
     {
         for(int j = 0; j < snl->n; j++){
             aux = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, nt->x0);
-            if(isnan(aux)) printf("TA AKI O ERROOOOOOOOOO\n");
+            // if(isnan(aux)) printf("TA AKI O ERROOOOOOOOOO\n");
             nt->He[i][j] = aux;
         }
 

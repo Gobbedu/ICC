@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
-#include "SistLinear.h"
 #include "EliminacaoGauss.h"
 
 void pivot(SistLinear_t *SL, int i) {

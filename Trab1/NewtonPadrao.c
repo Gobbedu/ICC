@@ -6,18 +6,6 @@
 *    ./testaSNL < sistemas.dat
 ********************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <matheval.h>
-#include <assert.h>
-
-#include "utils.h"
-#include "SistLinear.h"
-#include "EliminacaoGauss.h"
-#include "FatoracaoLU.h"
-
-#include "SistNlinear.h"
 #include "NewtonPadrao.h"
 
 // ELIMINACAO GAUSS ou NEWTON PADRAO
@@ -25,7 +13,7 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
     // inicializa tudo que precisa
     // double *resposta = malloc(sizeof(double) * snl->iteracao);
-    double tauxP, tauxder, tauxsl;
+    double tauxP, tauxder, tauxSL;
 
     int itr = 0;
 

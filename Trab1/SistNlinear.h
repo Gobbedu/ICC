@@ -1,11 +1,9 @@
 #ifndef __SIST_N_LINEAR__
 #define __SIST_N_LINEAR__
 
-#ifndef __SIST_LINEAR__
+#include "utils.h"
 #include "SistLinear.h"
-#endif
 
-#define HESS_STEP 1
 #define STR_BUFFER 1000
 
 typedef struct {
@@ -37,7 +35,6 @@ SistNl_t *alocaSistNl(unsigned int n);
 SnlVar_t *alocaSnlVar(double *chute, int n);
 SistNl_t *lerSistNL(void);
 
-double NewtonModificado(SistNl_t *snl, SnlVar_t *nm, int i);
 double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
 double *genValues(int n, double init);

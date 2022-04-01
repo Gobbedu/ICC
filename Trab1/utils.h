@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <matheval.h>
+#include <assert.h>
+
 typedef struct {
     double totalSL; // tempo total do sistema linear & derivadas (matheval)
     double derivadas;
@@ -19,13 +25,5 @@ void prnVetorFloat(float *x, int n);
 void prnVetorDouble(double *x, int n);
 
 void prnVetorLongDouble(long double *x, int n);
-
-
-void copyDoubleVetor(double *entrada, double *destino, int n);
-
-void copyDoubleMatrix(double **entrada, double **saida, int n);
-
-void copyVoidMatrix(void ***entrada, void ***saida, int n);
-
 
 #endif

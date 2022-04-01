@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "utils.h"
 
 /*  Retorna tempo em milisegundos
@@ -11,7 +10,8 @@
     tempo = timestamp() - tempo;
 */
 
-void initTempo(Tempo_t *t){
+void initTempo(Tempo_t *t)
+{
 	t->totalSL = 0;
 	t->derivadas = 0;
 	t->totalMetodo = 0;
