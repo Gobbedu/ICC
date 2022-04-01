@@ -50,8 +50,8 @@ void substituteX(SistNl_t *snl, SnlVar_t *nt);
 void calcDelta(SistNl_t *snl, SnlVar_t *var);
 void printCol(double* pto, int i, int max);
 void snl2sl(SistNl_t *snl, SnlVar_t *nt);
-void varinfo(SnlVar_t var, SistNl_t snl);
 int Parada(SistNl_t *snl, double *delta);
+void varinfo(SnlVar_t var, SistNl_t snl);
 void snlinfo(SistNl_t *snl);
 
 void liberaSnlVar(SnlVar_t *var, int n);

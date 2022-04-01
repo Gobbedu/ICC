@@ -41,12 +41,14 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
                     
             substituteX(snl, np);                   // calcula H[X] e J[X]
             snl2sl(snl, np);                        // copia dados de snl em sl
+
+            resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, np->x0);
+            
             eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
             // varinfo(*np, *snl);
             calcDelta(snl, np);                     // X[i+1] = X[i] + delta[i]
 
             // Devolve f(X), ponto critico estimado
-            resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, np->x1);
 
             tauxP = timestamp() - tauxP;
 

@@ -48,14 +48,15 @@ int main() {
         printf("%i\n", snl->n);
         printf("%s\n", snl->funcao);
 
+        respPadrao = malloc(sizeof(double) * snl->iteracao);
+        respModifi = malloc(sizeof(double) * snl->iteracao);
+        respInexat = malloc(sizeof(double) * snl->iteracao);
         // snlinfo(snl);
 
         // snl precisa de copia, muda o He & o Je
         // calcula o He & o Je dentro de cada metodo usando np/nm/ni
 
         NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
-        for(int i = 0; i < iterPadrao; i++)
-        printf("%i: %1.14e\n",i, respPadrao[i]);
 
         printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
@@ -69,18 +70,17 @@ int main() {
             printf("\n");
 
             // se todos acabaram
-            if( (i <= iterPadrao) )
+            if( (i+1 >= iterPadrao) )
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
         printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
         printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tPadrao.totalSL,tPadrao.totalSL);
 
-        for(int i = 0; i < snl->iteracao; i++)
-            printf("%i: %1.14e \n", i, respPadrao[i]);
-
         // LIBERA respMETODO
         free(respPadrao);
+        free(respModifi);
+        free(respInexat);
 
         // liberar matheval antes de destruir sistema
         liberaMatheval(snl);
