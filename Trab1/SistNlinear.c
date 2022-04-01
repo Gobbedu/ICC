@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "SistLinear.h"
 #include "EliminacaoGauss.h"
-#include "Refinamento.h"
+#include "FatoracaoLU.h"
 #include "SistNlinear.h"
 
 double NewtonPadrao(SistNl_t *snl, SnlVar_t *np)
@@ -35,6 +35,14 @@ double NewtonModificado(SistNl_t *snl, SnlVar_t *nm, int i)
     if(i % HESS_STEP == 0) 
     {
         substituteX(snl, nm->x0);   // calcula H[X] e J[X]
+
+        // ERRO EM substituteX()
+        // for(int i = 0; i < snl->n; i++){
+        //     for(int j = 0; j < snl->n; j++){
+        //         if( isnan(snl->He[i][j]) ){printf("\nTA AKI PORRA\n"); break;}
+        //     }
+        // }
+
         snl2sl(snl, nm->sl);        // H[X]*delta = - J[X]  // A*x = -b
         FatorLU(nm->sl);            // transforma sl em LU
     }
@@ -42,7 +50,7 @@ double NewtonModificado(SistNl_t *snl, SnlVar_t *nm, int i)
     printCol(evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0), snl, nm);
 
     snl2sl(snl, nm->sl);                // H[X]*delta = - J[X]  // A*x = -b
-    EliminacaoLU(nm->sl, nm->delta);    // FATORACAO LU (TODO)
+    EliminacaoLU(nm->sl, nm->delta);    // resolve SL com LU
 
     calcDelta(snl, nm);              // X[i+1] = X[i] + delta[i]
 
@@ -142,6 +150,31 @@ SistNl_t *lerSistNL(void)
   return SnL;
 }
 
+int Parada(SistNl_t *snl, SnlVar_t *nt)
+{
+    // normal -> || J(X) || = max{ |Ji(X)|, 1 ≤ i ≤ n}
+    double maxF = -INFINITY;
+    double Ji;
+    for(int i = 0; i < snl->n; i++)
+    {
+        Ji = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, nt->x0);
+        maxF = (fabs(Ji) > maxF) ? fabs(Ji) : maxF;
+    }
+
+    // normal -> || X || = max{ |xi|, 1 ≤ i ≤ n}
+    double maxD = -INFINITY;
+
+    for(int i = 0; i < snl->n; i++){
+        maxD = (fabs(nt->delta[i]) > maxD) ? fabs(nt->delta[i]) : maxD;
+    }
+
+    // se ||delta|| < eps PARE
+    // se ||Ji(X)|| < eps PARE
+    // return (maxF < snl->eps) || (maxD < snl->eps);
+    return (maxD < snl->eps);
+
+}
+
 void calcDelta(SistNl_t *snl, SnlVar_t *var){
     if(fabs(minDelta(var->delta, snl->n)) >= snl->eps)
     for(int i = 0; i < snl->n; i++){
@@ -216,29 +249,12 @@ SistNl_t *alocaSistNl(unsigned int n){
             SnL->Hf[i] = (void **) malloc(sizeof(void *)*n);
 
 
-        SnL->He = (double **) malloc(sizeof(double*)*n);
-        for(int i = 0; i < n; i++)
-            SnL->He[i] = malloc(sizeof(double)*n);
-        if (!(SnL->He)) {
-            free(SnL->Hf);
-            free(SnL);
-            return NULL;
-        }
-
         SnL->Bf = (void **) malloc(sizeof(void *)*n);
         if(!(SnL->Bf)){
             free(SnL->Hf);
-            free(SnL->He);
             free(SnL);
         }
 
-        SnL->Be = (double *) malloc(sizeof(double)*n);
-        if (!(SnL->Be)) {
-            free(SnL->Hf);
-            free(SnL->He);
-            free(SnL);
-            return NULL;
-        }
     }
   return SnL;
 }
@@ -247,14 +263,10 @@ void liberaSistNl(SistNl_t *snl) {
     for(int i = 0; i < snl->n; i++)
     {
         free(snl->names[i]);
-        free(snl->He[i]);
     }
 
     free(snl->names);
-    free(snl->He);
     free(snl->chute);
-    free(snl->Be);
-    
     free(snl);
 }
 
@@ -273,7 +285,7 @@ void liberaMatheval(SistNl_t *snl)
     free(snl->Hf);
 }
 
-SnlVar_t *genSnlVar(double *chute, int n)
+SnlVar_t *alocaSnlVar(double *chute, int n)
 {
     SnlVar_t *var = malloc(sizeof(SnlVar_t));
 
@@ -281,6 +293,33 @@ SnlVar_t *genSnlVar(double *chute, int n)
     var->x0 = genValues(n, 0);
     var->x1 = genValues(n, 0);
     var->delta = genValues(n, 1);
+
+    // aloca He e libera var caso erro
+    var->He = (double **) malloc(sizeof(double*)*n);
+    if (!(var->He)) {
+        liberaSistLinear(var->sl);
+        free(var->x0);
+        free(var->x1);
+        free(var->delta);
+        free(var);
+        fprintf(stderr, "erro ao alocar Hessiana exata em variaveis do sist_n_linear\n");
+        return NULL;
+    }
+    for(int i = 0; i < n; i++){
+        var->He[i] = malloc(sizeof(double)*n);
+    }
+        
+    var->Je = (double *) malloc(sizeof(double)*n);
+    if (!(var->Je)) {
+        liberaSistLinear(var->sl);
+        free(var->x0);
+        free(var->x1);
+        free(var->delta);
+        free(var->He);
+        free(var);
+        fprintf(stderr, "erro ao alocar Jacobiana exata em variaveis do sist_n_linear\n");
+        return NULL;
+    }
 
     // chute inicial
     for(int i = 0; i < n; i++) 
@@ -295,31 +334,32 @@ void liberaSnlVar(SnlVar_t *var)
     free(var->x0);
     free(var->x1);
     free(var->delta);
+
+    for(int i = 0; i < var->n; i++)
+    {
+        free(var->He[i]);
+    }
+    free(var->He);
+    free(var->Je);
+
     free(var);
 }
 
 void substituteX(SistNl_t *snl, double *X){
-
+    double aux;
     // H[X]
     for(int i = 0; i < snl->n ; i++)
     {
-        for(int j = 0; j < snl->n; j++)
-            // snl->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, X);
-            snl->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, X);
+        for(int j = 0; j < snl->n; j++){
+            aux = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, X);
+            if(isnan(aux)) printf("TA AKI O ERROOOOOOOOOO\n");
+            snl->He[i][j] = aux;
+        }
 
         // J[X]
         snl->Be[i] = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, X);
     }
 
-}
-
-double minDelta(double *delta, int n){
-    double min = +INFINITY;
-
-    for(int i = 0; i < n ; i++)
-        min = (delta[i] < min) ? delta[i] : min;
-        
-    return min;
 }
 
 void snl2sl(SistNl_t *snl, SistLinear_t *sl)
@@ -330,7 +370,7 @@ void snl2sl(SistNl_t *snl, SistLinear_t *sl)
             sl->A[i][j] = snl->He[i][j];
         }
         sl->b[i] = - snl->Be[i];
-        /* dup->t[i] = SL->t[i]; // trocas ????? */
+        // sl->t[i] ; // trocas salvas no pivo, dentro de nt->t[] (nao altera)
     }
 }
 

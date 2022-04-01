@@ -9,11 +9,10 @@
 #define STR_BUFFER 1000
 
 typedef struct {
-        SistLinear_t *sl;
-        double *x0;
-        double *x1;
-        double *delta;
-} SnlVar_t;
+    double totalSL; // tempo total do sistema linear & derivadas (matheval)
+    double derivadas;
+    double totalMetodo;
+} Tempo_t;
 
 typedef struct {
     int n;
@@ -22,21 +21,26 @@ typedef struct {
     int iteracao;
     char funcao[STR_BUFFER];
 
-    char **names;
-    
     void *f;        // funcao original
-
     void ***Hf;     // Hessiana de funcoes
-    double **He;    // Hessiana exata (com valores)
-
     void **Bf;      // Jacobiana de funcoes
-    double *Be;     // Jacobiana exata (com valores)
-
+    char **names;   // nomes variaveis (para matheval)
 } SistNl_t;
+
+typedef struct {
+    double *x0;
+    double *x1;
+    double *delta;
+    
+    SistLinear_t *sl;
+
+    double **He;    // Hessiana exata (com valores)
+    double *Je;     // Jacobiana exata (com valores)
+} SnlVar_t;
 
 
 SistNl_t *alocaSistNl(unsigned int n);
-SnlVar_t *genSnlVar(double *chute, int n);
+SnlVar_t *alocaSnlVar(double *chute, int n);
 SistNl_t *lerSistNL(void);
 
 double NewtonPadrao(SistNl_t *snl, SnlVar_t *np);
@@ -52,9 +56,10 @@ void genNames(SistNl_t *snl);
 
 void printCol(double pto, SistNl_t *snl, SnlVar_t *nt);
 
+int Parada(SistNl_t *snl, SnlVar_t *nt);
+
 void calcDelta(SistNl_t *snl, SnlVar_t *var);
 void substituteX(SistNl_t *snl, double *X);
-double minDelta(double *delta, int n);
 void snlinfo(SistNl_t *snl);
 void varinfo(SnlVar_t var, SistNl_t snl);
 

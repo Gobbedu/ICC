@@ -15,7 +15,7 @@
 #include "utils.h"
 #include "SistLinear.h"
 #include "EliminacaoGauss.h"
-#include "Refinamento.h"
+#include "FatoracaoLU.h"
 #include "SistNlinear.h"
 
 // #define MAXIT_REFINAMENTO 5
@@ -59,32 +59,34 @@ int main() {
         {
             printf("%-12d \t| ", i); // imprime iteração
 
+            /*
             // ELIMINACAO GAUSS / NEWTON PADRAO //
-            if(!(fabs(minDelta(np->delta, snl->n)) < snl->eps) || i == 0){
+            if(!Parada(snl, np)){
                 TtotalEG = timestamp();
                 ptoPadrao = NewtonPadrao(snl, np);
                 TtotalEG = timestamp() - TtotalEG;
             }
+            */
 
             // FATORACAO LU / NEWTON MODIFICADO //
-            if(!(fabs(minDelta(nm->delta, snl->n)) < snl->eps) || i == 0){
+            if(!Parada(snl, nm) ){
                 TtotalLU = timestamp();
                 ptoModif = NewtonModificado(snl, nm, i);
                 TtotalLU = timestamp() - TtotalLU;
             }
 
+            /*
             // GAUSS SEIDEL / NEWTON INEXATO //
             if(!(fabs(minDelta(ni->delta, snl->n)) < snl->eps) || i == 0){
                 TtotalGS = timestamp();
                 ptoInexato = NewtonInexato(snl, ni);
                 TtotalGS = timestamp() - TtotalGS;
             }
-
+            */
 
             printf("\n");
             // se max(normal(dos 3 deltas)) for < eps, break(TODO)
-            if( (fabs(minDelta(np->delta, snl->n)) < snl->eps) &&
-                (fabs(minDelta(nm->delta, snl->n)) < snl->eps) )
+            if( Parada(snl, nm) )
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n", TtotalEG, TtotalLU, TtotalGS);

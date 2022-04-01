@@ -3,7 +3,7 @@
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
 
     PROG = testaSNL
-    OBJS = utils.o SistLinear.o EliminacaoGauss.o Refinamento.o SistNlinear.o
+    OBJS = utils.o SistLinear.o EliminacaoGauss.o FatoracaoLU.o SistNlinear.o
 
 .PHONY: clean purge all
 
