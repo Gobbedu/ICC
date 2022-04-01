@@ -11,6 +11,12 @@
     tempo = timestamp() - tempo;
 */
 
+void initTempo(Tempo_t *t){
+	t->totalSL = 0;
+	t->derivadas = 0;
+	t->totalMetodo = 0;
+}
+
 double timestamp(void)
 {
   struct timeval tp;

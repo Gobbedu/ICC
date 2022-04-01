@@ -99,7 +99,7 @@ SistLinear_t *lerSistLinear() {
   
   return SL;
 }
-
+/*
 double *residuo(SistLinear_t *SL, double *X) {
 
   double *res = (double *) malloc(sizeof(double)*SL->n);
@@ -135,4 +135,4 @@ long double *long_residuo(SistLinear_t *SL, long double *X) {
 
   return res;
 }
-
+*/

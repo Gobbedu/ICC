@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+typedef struct {
+    double totalSL; // tempo total do sistema linear & derivadas (matheval)
+    double derivadas;
+    double totalMetodo;
+} Tempo_t;
+
+void initTempo(Tempo_t *tempo);
+
 double timestamp(void);
 
 void prnVetorFloat(float *x, int n);
