@@ -10,7 +10,8 @@ void pivot(SistLinear_t *SL, int i) {
       max_i = j;
     }
   }
-  if (max_i != i) {
+  if (max_i != i) 
+  {
     double *tmp = SL->A[i];
     SL->A[i] = SL->A[max_i];
     SL->A[max_i] = tmp;

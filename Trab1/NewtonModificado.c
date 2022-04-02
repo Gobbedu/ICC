@@ -4,41 +4,47 @@
 void NewtonModificado(SistNl_t *snl, double *resposta, Tempo_t *tempo, int *numIteracoes)
 {
   SnlVar_t *nm = alocaSnlVar(snl->chute, snl->n);
-  double tauxM, tauxder, tauxSL;
+  double tauxM, tauxder, tauxSL, aux;
   int itr = 0; 
 
   // --------LOOP PRINCIPAL-------- //
   for(int i = 0; i < snl->iteracao; i++)
   {
-    if(!Parada(snl, nm->delta) ){
-      tauxM = timestamp();
+    tauxM = timestamp();
 
-      if(i % HESS_STEP == 0) 
-      {
-        substituteX(snl, nm);   // calcula H[X] e J[X]
-        snl2sl(snl, nm);        // H[X]*delta = - J[X]  // A*x = -b
-        FatorLU(nm->sl);            // transforma sl em LU
-      }
-
-      resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0); 
-
-      snl2sl(snl, nm);                // H[X]*delta = - J[X]  // A*x = -b
-      EliminacaoLU(nm->sl, nm->delta);    // resolve SL com LU
-      calcDelta(snl, nm);              // X[i+1] = X[i] + delta[i]
-
-
-      tauxM = timestamp() - tauxM;
-      tempo->totalMetodo += tauxM;
-      itr++;
+    if(i % snl->n == 0) 
+    {
+      calcHessiana(snl, nm);    // calcula H[X]
+      // substituteX(snl, nm);     // calcula H[X] e J[X]
+      snl2sl(snl, nm);          // H[X]*delta = - J[X]  // A*x = -b
+      FatorLU(nm->sl);          // transforma sl em LU
     }
-    else
-        break;
+    calcJacobiana(snl, nm);     // calcula J[X]
+
+    resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0); 
+
+    snl2sl(snl, nm);                    // H[X]*delta = - J[X]  // A*x = -b
+    // varinfo(*nm, *snl);
+    EliminacaoLU(nm->sl, nm->delta);    // resolve SL com LU
+    // varinfo(*nm, *snl);
+
+    calcDelta(snl, nm);                 // X[i+1] = X[i] + delta[i]
+
+
+
+    itr++;
+    tauxM = timestamp() - tauxM;
+    tempo->totalMetodo += tauxM;
+
+    if(Parada(snl, nm->delta) )
+      break;    
+
+  // if(i > 1 && fabs((resposta[i]-resposta[i-1])/resposta[i]) > 1 )  // se erro relativo > 1 PARE
+  //   break;
   }
   *numIteracoes = itr;
   liberaSnlVar(nm, snl->n);
-
 }
-
 
 
 // L e U presentes na msm matriz
@@ -53,16 +59,14 @@ void FatorLU(SistLinear_t *LU){
 
     for (int k = i+1; k < LU->n; ++k) 
     {
-      if(LU->A[k][i] != 0 && LU->A[i][i] != 0)
-        m = LU->A[k][i] / LU->A[i][i];
-      else m = 0;
+      m = LU->A[ k ][i] / LU->A[i][i];
       // if (isnan(m))
       //   printf("ERRO: %g ", LU->A[i][i]);
       // guarda m em L (ALTERA DEPOIS DA PRIMEIRA ITER)
-      LU->A[ k ][i] = m;     
+      LU->A[ k ][i] = m;
 
       for (int j = i+1; j < LU->n; ++j)
-        LU->A[k][j] -= LU->A[i][j] * m;
+        LU->A[ k ][j] -= LU->A[i][j] * m;
       LU->b[k] -= LU->b[i] * m;
     }
   }
@@ -88,13 +92,13 @@ void EliminacaoLU(SistLinear_t *LU, double *X){
     for (int i = 0; i < LU->n; ++i){
       LU->b[ LU->t[i] ] = LU->b[i];
     }
-    normsubs(LU, Z);
+    normsubs(LU, Z); // LOWER (aplica trocas)
 
     // Ux = Z (as trocas ja foram feitas em Z)
     for (int j = 0; j < LU->n; ++j){
-      LU->b[ LU->t[j] ] = (double) Z[j];
+      LU->b[ j ] = (double) Z[j];
     }
-    retrossubs(LU, X);
+    retrossubs(LU, X);  // UPPER
 
   free(Z);
 }

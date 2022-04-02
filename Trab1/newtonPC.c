@@ -24,9 +24,6 @@ int main() {
     initTempo(&tInexat);
 
     double *respPadrao, *respModifi, *respInexat; 
-    // // respModifi = malloc(sizeof(double) * snl->iteracao);
-    // respInexat = malloc(sizeof(double) * snl->iteracao);
-
 
     int iterPadrao = 0,    // por referencia, numerero de iteracoes (para imprimir)
         iterModifi = 0,
@@ -34,7 +31,15 @@ int main() {
 
     while(snl = lerSistNL())
     {      
-        genSistNaoLinear(snl);  // calcula Jacobiana e Hessiana
+        snl->f = evaluator_create(snl->funcao);
+        assert(snl->f);
+        genNames(snl);          // nomes das variaveis x1, x2 .. xn
+
+        // tPadrao.derivadas = timestamp();
+        genJacobiana(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
+        genHessiana(snl);       // possiveis combinacoes de segunda derivada
+        // tPadrao.derivadas = timestamp() - tPadrao.derivadas;
+
         printf("%i\n", snl->n);
         printf("%s\n", snl->funcao);
 
@@ -46,13 +51,13 @@ int main() {
         // snl precisa de copia, muda o He & o Je
         // calcula o He & o Je dentro de cada metodo usando np/nm/ni
 
-            NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+        NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
 
 
         printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
-        // --------LOOP PRINCIPAL-------- //
+        // --------LOOP PRINT-------- //
         for(int i = 0; i < snl->iteracao; i++)
         {
             printf("%-12d \t| ", i); // imprime iteração
@@ -62,11 +67,11 @@ int main() {
             printf("\n");
 
             // se todos acabaram
-            if( (i+1 >= iterPadrao) )
+            if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) )
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
-        printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
+        printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tPadrao.derivadas,tPadrao.derivadas);
         printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tModifi.totalSL);
 
         // LIBERA respMETODO

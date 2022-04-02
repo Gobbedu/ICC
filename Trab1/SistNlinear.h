@@ -37,17 +37,19 @@ SistNl_t *lerSistNL(void);
 
 double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
-double *genValues(int n, double init);
-void genSistNaoLinear(SistNl_t *snl);
 void genJacobiana(SistNl_t *snl);
 void genHessiana(SistNl_t *snl);
 void genNames(SistNl_t *snl);
 
+void calcHessiana(SistNl_t *snl, SnlVar_t *var); 
+void calcJacobiana(SistNl_t *snl, SnlVar_t *var);
+
 void substituteX(SistNl_t *snl, SnlVar_t *nt);
 void calcDelta(SistNl_t *snl, SnlVar_t *var);
-void printCol(double* pto, int i, int max);
 void snl2sl(SistNl_t *snl, SnlVar_t *nt);
 int Parada(SistNl_t *snl, double *delta);
+
+void printCol(double* pto, int i, int max);
 void varinfo(SnlVar_t var, SistNl_t snl);
 void snlinfo(SistNl_t *snl);
 

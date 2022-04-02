@@ -5,7 +5,7 @@
 #include "SistNlinear.h"
 #include "EliminacaoGauss.h"
 
-#define HESS_STEP 1
+#define HESS_STEP 1 // usa # de variaveis
 
 //////////////////// FATORACAO LU ////////////////////
 
