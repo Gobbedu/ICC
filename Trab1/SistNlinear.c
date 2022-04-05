@@ -1,129 +1,37 @@
 
 #include "SistNlinear.h"
-
-/*void gauss_seidel(SistLinear_t *SL, double *X)
-{
-      for (int i = 0; i < SL->n; i++)
-      {
-            x[i]=b[i];
-            for (int j = 0; i < SL->n; i++)
-                  if(j!=i)
-                        x[i]=x[i] - A[i][j] * x[j];
-            X[i]= X[i]/SL->A[i][i]            
-
-      }
-}*/
-
-
-
-/*void gauss_seidel(SistLinear_t *SL, double *X)
-{
-    int i,j,q,d;
-  unsigned int n = SL->n;
-  double *r =  malloc((SL->n) * sizeof (double)) ;
-  double temp,sum,erroMaximo,erroCalculado;
-  double **A = SL->A;
-  double *b = SL->b;
-  double *x = malloc((SL->n) * sizeof(double));
-
-  for(i=0;i<n;i++){
-      r[i] = 0;
-  }
-  q = 0;
-  do{
-      erroCalculado = 0;
-      q++;
-      for(i=0;i<n;i++){
-          sum = 0;
-          for(j=0;j<n;j++){
-              if(i != j){
-                  sum = sum + (A[i][j] * r[j]);
-              }
-            }
-          temp = (-1.0 / A[i][i]) * sum + b[i] / A[i][i];
-          erroMaximo = fabs(temp - r[i]);
-          r[i] = temp;
-          if(erroMaximo > erroCalculado)
-              erroCalculado = erroMaximo;
-        }
-  }while(erroCalculado >= 1e-6  && q<50);
-
-  for(i=0;i<n;i++){ //copiar dados calculados para *x
-    x[i] = r[i];
-  }
-  X= x; //copiar dados para estrutura
-  free(r);
-  free(x);
-}*/
-/*void gauss_seidel(SistLinear_t *SL, double *X)
-{
-    int i,j,q,d;
-  unsigned int n = SL->n;
-  double erroMaximo,erroCalculado=0;
-  double **A = SL->A;
-  double *b = SL->b;
-  double *x = malloc((SL->n) * sizeof(double));
-  double *temp = malloc((SL->n) * sizeof(double));
- 
-  for(i=0;i<n;i++){
-      x[i] = 0;
-  }
-  q = 0;
-  do{
-        erroCalculado = 0;
-        q++;
-        for (int i = 0; i < SL->n; i++)
-            temp[i]=x[i];       
-        for (int i = 0; i < SL->n; i++)
-        {
-            x[i]=b[i];
-            for(int j=0;j<SL->n;j++){       
-            if(j!=i)
-                x[i]=x[i] - A[i][j] * x[j];
-            }
-            x[i]= x[i]/A[i][i];
-            for (int i = 0; i < SL->n; i++)
-            {
-                erroMaximo = fabs(temp[i] - x[i]);
-                if(erroMaximo > erroCalculado)
-                    erroCalculado = erroMaximo;
-            }
-        }
-  }while(erroCalculado >= 1e-6  && q<50);
-
-  
-  X= x; //copiar dados para estrutura
-  free(x);
-  free(temp);
-}*/
-
 void gauss_seidel(SistLinear_t *SL, double *X)
 {
-    int k,i,j,ite=0;;
+    int k,i,j,ite=0;
     double s,xk,norma,diff,erro;
     erro=1e-6;
     norma=1.0+erro;
+    for (i = 0; i < SL->n; i++)
+        X[i]=0;    
     for(k=0;norma>erro;++k)
     {
-        ite++;
-        if(ite==50)
-            break;
-        norma=0.0;
-        for ( i = 0; i <SL->n; ++i)
+        if(ite<50)
         {
-            for(s=0,j=0;j<i;++j)
-                s+=SL->A[i][j]*X[j];
-            for(j=i+1;j<SL->n;++j)
-                s+=SL->A[i][j]*X[j];
-            xk=(SL->b[i]-s)/SL->A[i][i];
-            diff=fabs(xk-X[i]);
-            if(diff>norma)
-                norma=diff;
-            X[i]=xk;
+            norma=0.0;
+            for ( i = 0; i <SL->n; ++i)
+            {
+                for(s=0,j=0;j<i;++j)
+                    s+=SL->A[i][j]*X[j];
+                for(j=i+1;j<SL->n;++j)
+                    s+=SL->A[i][j]*X[j];
+                xk=(SL->b[i]-s)/SL->A[i][i];
+                diff=fabs(xk-X[i]);
+                if(diff>norma)
+                    norma=diff;
+                X[i]=xk;
+            }
+            ite++;
         }
-        
+        else
+            break;
     }
 }
+
 void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
     double tauxP, tauxder, tauxSL;
