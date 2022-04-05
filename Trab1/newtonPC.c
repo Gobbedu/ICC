@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "NewtonModificado.h"
 #include "NewtonPadrao.h"
+#include "NewtonInexato.h"
 
 // #define MAXIT_REFINAMENTO 5
 
