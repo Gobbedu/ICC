@@ -15,7 +15,7 @@ typedef struct {
 
     void *f;        // funcao original
     void ***Hf;     // Hessiana de funcoes
-    void **Bf;      // Jacobiana de funcoes
+    void **Gf;      // Jacobiana de funcoes
     char **names;   // nomes variaveis (para matheval)
 } SistNl_t;
 
@@ -27,7 +27,7 @@ typedef struct {
     SistLinear_t *sl;
 
     double **He;    // Hessiana exata (com valores)
-    double *Je;     // Jacobiana exata (com valores)
+    double *Ge;     // Jacobiana exata (com valores)
 } SnlVar_t;
 
 
@@ -35,20 +35,20 @@ SistNl_t *alocaSistNl(unsigned int n);
 SnlVar_t *alocaSnlVar(double *chute, int n);
 SistNl_t *lerSistNL(void);
 
-double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
+// double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
 void genJacobiana(SistNl_t *snl);
 void genHessiana(SistNl_t *snl);
 void genNames(SistNl_t *snl);
 
-void calcHessiana(SistNl_t *snl, SnlVar_t *var); 
-void calcJacobiana(SistNl_t *snl, SnlVar_t *var);
-
 void substituteX(SistNl_t *snl, SnlVar_t *nt);
-void calcDelta(SistNl_t *snl, SnlVar_t *var);
-void snl2sl(SistNl_t *snl, SnlVar_t *nt);
+void calcHessiana(SistNl_t *snl, SnlVar_t *var); 
+void calcGradiente(SistNl_t *snl, SnlVar_t *var);
+void calcDelta(SnlVar_t *var, int tam);
 int Parada(SistNl_t *snl, double *delta);
 
+
+void snl2sl(SistNl_t *snl, SnlVar_t *nt);
 void printCol(double* pto, int i, int max);
 void varinfo(SnlVar_t var, SistNl_t snl);
 void snlinfo(SistNl_t *snl);
@@ -56,6 +56,5 @@ void snlinfo(SistNl_t *snl);
 void liberaSnlVar(SnlVar_t *var, int n);
 void liberaMatheval(SistNl_t *snl);
 void liberaSistNl(SistNl_t *SL);
-
 
 #endif

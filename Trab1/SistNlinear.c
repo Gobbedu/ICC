@@ -1,8 +1,22 @@
 
 #include "SistNlinear.h"
 
-/*Gauss seidel do Vods, n funciona 100%*/
-void gauss_seidel(SistLinear_t *SL, double *X)
+/*void gauss_seidel(SistLinear_t *SL, double *X)
+{
+      for (int i = 0; i < SL->n; i++)
+      {
+            x[i]=b[i];
+            for (int j = 0; i < SL->n; i++)
+                  if(j!=i)
+                        x[i]=x[i] - A[i][j] * x[j];
+            X[i]= X[i]/SL->A[i][i]            
+
+      }
+}*/
+
+
+
+/*void gauss_seidel(SistLinear_t *SL, double *X)
 {
     int i,j,q,d;
   unsigned int n = SL->n;
@@ -11,15 +25,10 @@ void gauss_seidel(SistLinear_t *SL, double *X)
   double **A = SL->A;
   double *b = SL->b;
   double *x = malloc((SL->n) * sizeof(double));
-  //X = malloc((SL->n) * sizeof(double));
-
-  // A[n][n] = Matriz principal (e->f)
-  // b[n] = vetor_independente (e->termos_independentes)
 
   for(i=0;i<n;i++){
       r[i] = 0;
   }
-  
   q = 0;
   do{
       erroCalculado = 0;
@@ -37,27 +46,129 @@ void gauss_seidel(SistLinear_t *SL, double *X)
           if(erroMaximo > erroCalculado)
               erroCalculado = erroMaximo;
         }
-  }while(erroCalculado >= 1e-6  && q<=50);
+  }while(erroCalculado >= 1e-6  && q<50);
 
   for(i=0;i<n;i++){ //copiar dados calculados para *x
     x[i] = r[i];
   }
-
-  //X= x; //copiar dados para estrutura
-
+  X= x; //copiar dados para estrutura
   free(r);
   free(x);
-  //free(X);
+}*/
+/*void gauss_seidel(SistLinear_t *SL, double *X)
+{
+    int i,j,q,d;
+  unsigned int n = SL->n;
+  double erroMaximo,erroCalculado=0;
+  double **A = SL->A;
+  double *b = SL->b;
+  double *x = malloc((SL->n) * sizeof(double));
+  double *temp = malloc((SL->n) * sizeof(double));
+ 
+  for(i=0;i<n;i++){
+      x[i] = 0;
+  }
+  q = 0;
+  do{
+        erroCalculado = 0;
+        q++;
+        for (int i = 0; i < SL->n; i++)
+            temp[i]=x[i];       
+        for (int i = 0; i < SL->n; i++)
+        {
+            x[i]=b[i];
+            for(int j=0;j<SL->n;j++){       
+            if(j!=i)
+                x[i]=x[i] - A[i][j] * x[j];
+            }
+            x[i]= x[i]/A[i][i];
+            for (int i = 0; i < SL->n; i++)
+            {
+                erroMaximo = fabs(temp[i] - x[i]);
+                if(erroMaximo > erroCalculado)
+                    erroCalculado = erroMaximo;
+            }
+        }
+  }while(erroCalculado >= 1e-6  && q<50);
 
+  
+  X= x; //copiar dados para estrutura
+  free(x);
+  free(temp);
+}*/
 
+void gauss_seidel(SistLinear_t *SL, double *X)
+{
+    int k,i,j,ite=0;;
+    double s,xk,norma,diff,erro;
+    erro=1e-6;
+    norma=1.0+erro;
+    for(k=0;norma>erro;++k)
+    {
+        ite++;
+        if(ite==50)
+            break;
+        norma=0.0;
+        for ( i = 0; i <SL->n; ++i)
+        {
+            for(s=0,j=0;j<i;++j)
+                s+=SL->A[i][j]*X[j];
+            for(j=i+1;j<SL->n;++j)
+                s+=SL->A[i][j]*X[j];
+            xk=(SL->b[i]-s)/SL->A[i][i];
+            diff=fabs(xk-X[i]);
+            if(diff>norma)
+                norma=diff;
+            X[i]=xk;
+        }
+        
+    }
 }
-double NewtonInexato(SistNl_t *snl, SnlVar_t *ni)
+void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
+{    
+    double tauxP, tauxder, tauxSL;
+    int itr = 0;
+    SnlVar_t *ni = alocaSnlVar(snl->chute, snl->n);
+    // --------LOOP PRINCIPAL-------- //
+    for(int i = 0; i < snl->iteracao; i++)
+    {
+        if(!Parada(snl, ni->delta)){
+            tauxP = timestamp();
+            
+            tauxder = timestamp();
+            substituteX(snl, ni);                   // calcula H[X] e J[X]
+            tauxder = timestamp() - tauxder;
+            snl2sl(snl, ni);                        // copia dados de snl em sl
+            
+            resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, ni->x0);
+            
+            tauxSL = timestamp();
+            gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
+            tauxSL = timestamp() - tauxSL;
+            
+            calcDelta(ni, snl->n);                     // X[i+1] = X[i] + delta[i]
+            
+            tauxP = timestamp() - tauxP;
+            
+            t->totalMetodo += tauxP;
+            t->derivadas += tauxder;
+            t->totalSL += tauxSL;
+            itr++;
+        }
+        else
+            break;
+    }
+    *nIter = itr;
+    liberaSnlVar(ni, snl->n);
+}
+
+/*double NewtonInexato(SistNl_t *snl, SnlVar_t *ni)
 {
     /* NEWTON INEXATO
 
     // GAUSS SEIDEL (TODO)
 
-    */
+    
 
     //PODE DELETAR AKI
     substituteX(snl, ni);               // calcula H[X] e J[X]
@@ -67,7 +178,7 @@ double NewtonInexato(SistNl_t *snl, SnlVar_t *ni)
     calcDelta(snl, ni);                  // X[i+1] = X[i] + delta[i]
     return evaluator_evaluate(snl->f, snl->n, snl->names, ni->x1);  
 
-}
+}*/
 
 
 SistNl_t *lerSistNL(void)
@@ -101,7 +212,7 @@ int Parada(SistNl_t *snl, double *delta)
     // double Ji;
     // for(int i = 0; i < snl->n; i++)
     // {
-    //     Ji = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, nt->x0);
+    //     Ji = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, nt->x0);
     //     maxF = (fabs(Ji) > maxF) ? fabs(Ji) : maxF;
     // }
 
@@ -115,12 +226,14 @@ int Parada(SistNl_t *snl, double *delta)
     return (maxD < snl->eps);
 }
 
-void calcDelta(SistNl_t *snl, SnlVar_t *var){
-    // if(PARADA)
-    for(int i = 0; i < snl->n; i++){
+void calcDelta(SnlVar_t *var, int n){
+    // allow for loop unrolling
+    for(int i = 0; i < n; i++)
         var->x1[i] = var->x0[i] + var->delta[i];
+
+    for(int i = 0; i < n; i++)
         var->x0[i] = var->x1[i];
-    }
+
 }
 
 void genNames(SistNl_t *snl){  
@@ -131,7 +244,7 @@ void genNames(SistNl_t *snl){
 
 void genJacobiana(SistNl_t *snl){
     for(int i = 0; i < snl->n; i++){
-        snl->Bf[i] = evaluator_derivative(snl->f, snl->names[i]);
+        snl->Gf[i] = evaluator_derivative(snl->f, snl->names[i]);
     }
 }
 
@@ -140,7 +253,7 @@ void genHessiana(SistNl_t *snl){
         for(int j = 0; j < snl->n; j++)
         {
             // deriva Jacob[i] n vezes em x1..xn
-            snl->Hf[i][j] = evaluator_derivative(snl->Bf[i], snl->names[j]);
+            snl->Hf[i][j] = evaluator_derivative(snl->Gf[i], snl->names[j]);
         }
     }
 }
@@ -168,8 +281,8 @@ SistNl_t *alocaSistNl(unsigned int n){
             SnL->Hf[i] = (void **) malloc(sizeof(void *)*n);
 
 
-        SnL->Bf = (void **) malloc(sizeof(void *)*n);
-        if(!(SnL->Bf)){
+        SnL->Gf = (void **) malloc(sizeof(void *)*n);
+        if(!(SnL->Gf)){
             free(SnL->Hf);
             free(SnL);
         }
@@ -196,11 +309,11 @@ void liberaMatheval(SistNl_t *snl)
         {
             evaluator_destroy(snl->Hf[i][j]);
         }
-        evaluator_destroy(snl->Bf[i]);
+        evaluator_destroy(snl->Gf[i]);
         free(snl->Hf[i]);
     }
     evaluator_destroy(snl->f);
-    free(snl->Bf);
+    free(snl->Gf);
     free(snl->Hf);
 }
 
@@ -234,8 +347,8 @@ SnlVar_t *alocaSnlVar(double *chute, int n)
         var->He[i] = malloc(sizeof(double)*n);
     }
         
-    var->Je = (double *) malloc(sizeof(double)*n);
-    if (!(var->Je)) {
+    var->Ge = (double *) malloc(sizeof(double)*n);
+    if (!(var->Ge)) {
         liberaSistLinear(var->sl);
         free(var->x0);
         free(var->x1);
@@ -265,7 +378,7 @@ void liberaSnlVar(SnlVar_t *var, int n)
         free(var->He[i]);
     }
     free(var->He);
-    free(var->Je);
+    free(var->Ge);
 
     free(var);
 }
@@ -277,34 +390,20 @@ void calcHessiana(SistNl_t *snl, SnlVar_t *var)
             var->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, var->x0);
 }
 
-calcJacobiana(SistNl_t *snl, SnlVar_t *var)
+void calcJacobiana(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
-        var->Je[i] = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, var->x0);
+        var->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, var->x0);
 }
 
 void substituteX(SistNl_t *snl, SnlVar_t *nt)
 {
-    double aux;
-    char *func;
-    // H[X]
     for(int i = 0; i < snl->n ; i++)
     {
-        for(int j = 0; j < snl->n; j++){
-            aux = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, nt->x0);
-
-            if(isnan(aux)) {
-                // func = evaluator_get_string(snl->Hf[i][j]); // cursed
-                // printf("func[%i][%i]: %s\n", i, j, func);
-            }
-            // printf("TA AKI O ERROOOOOOOOOO\n");
-            nt->He[i][j] = aux;
-        }
-
-        // J[X]
-        nt->Je[i] = evaluator_evaluate(snl->Bf[i], snl->n, snl->names, nt->x0);
+        for(int j = 0; j < snl->n; j++)
+            nt->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, nt->x0);// H[X]
+        nt->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, nt->x0);// J[X]
     }
-
 }
 
 void snl2sl(SistNl_t *snl, SnlVar_t *nt)
@@ -314,7 +413,19 @@ void snl2sl(SistNl_t *snl, SnlVar_t *nt)
         {
             nt->sl->A[i][j] = nt->He[i][j];
         }
-        nt->sl->b[i] = - nt->Je[i];
+        nt->sl->b[i] = - nt->Ge[i];
+        // sl->t[i] ; // trocas salvas no pivo, dentro de nt->t[] (nao altera)
+    }
+}
+
+void snl2slinexato(SistNl_t *snl, SnlVar_t *nt)
+{
+    for(int i = 0; i < snl->n; ++i) {
+        for(int j = 0; j < snl->n; ++j)
+        {
+            nt->sl->A[i][j] = nt->He[i][j];
+        }
+        nt->sl->b[i] =  nt->Ge[i];
         // sl->t[i] ; // trocas salvas no pivo, dentro de nt->t[] (nao altera)
     }
 }
@@ -346,10 +457,10 @@ void snlinfo(SistNl_t *S){
     // JACOBIANA
     printf("\nJACOBIANA\n#");
     for(int i = 0; i < S->n; i++)
-        printf(" %f ", S->Je[i]);
+        printf(" %f ", S->Ge[i]);
     printf("\n");
     // for(int i = 0 ; i < snl->n; i++)
-    //     printf("jacob %i : %f\n",i , evaluator_evaluate(snl->Bf[i], snl->n, names, values));
+    //     printf("jacob %i : %f\n",i , evaluator_evaluate(snl->Gf[i], snl->n, names, values));
 
         
     // HESSIANA

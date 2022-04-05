@@ -1,17 +1,17 @@
-#ifndef __FATORACAO_LU__
-#define __FATORACAO_LU__
+#ifndef __NEWT_MODIFICADO__
+#define __NEWT_MODIFICADO__
 
 #include "utils.h"
 #include "SistNlinear.h"
-#include "EliminacaoGauss.h"
+#include "NewtonPadrao.h"
 
 #define HESS_STEP 1 // usa # de variaveis
 
 //////////////////// FATORACAO LU ////////////////////
 
 void NewtonModificado(SistNl_t *snl, double *resposta, Tempo_t *tempo, int *numIteracoes);
-void FatorLU(SistLinear_t *LU);
-void EliminacaoLU(SistLinear_t *LU, double *X);
+void FatorLU(SnlVar_t *var, int *trocas, int n);
+void EliminacaoLU(SnlVar_t *var, int *trocas, int n);
 void normsubs(SistLinear_t *SL, double *X);
 
 #endif

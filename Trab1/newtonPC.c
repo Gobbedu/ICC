@@ -48,12 +48,12 @@ int main() {
         respInexat = malloc(sizeof(double) * snl->iteracao);
         // snlinfo(snl);
 
-        // snl precisa de copia, muda o He & o Je
-        // calcula o He & o Je dentro de cada metodo usando np/nm/ni
+        // snl precisa de copia, muda o He & o Ge
+        // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
 
         NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
-
+        NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
 
         printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
@@ -63,11 +63,11 @@ int main() {
             printf("%-12d \t| ", i); // imprime iteração
             printCol(respPadrao, i, iterPadrao);
             printCol(respModifi, i, iterModifi);
-            // printCol(respInexat, i, iterInexat);
+            printCol(respInexat, i, iterInexat);
             printf("\n");
 
             // se todos acabaram
-            if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) )
+            if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) && (i+1>=iterInexat) )
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);

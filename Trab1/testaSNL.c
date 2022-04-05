@@ -46,8 +46,8 @@ int main() {
         // snlinfo(snl);
 
 
-        // snl precisa de copia, muda o He & o Je
-        // calcula o He & o Je dentro de cada metodo usando np/nm/ni
+        // snl precisa de copia, muda o He & o Ge
+        // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
         SnlVar_t *np = genSnlVar(snl->chute, snl->n); // x0, x1, delta e SL para NEWTON PADRAO
         SnlVar_t *nm = genSnlVar(snl->chute, snl->n); // x0, x1, delta e SL para NEWTON MODIFICADO
         SnlVar_t *ni = genSnlVar(snl->chute, snl->n); // x0, x1, delta e SL para NEWTON INEXATO
@@ -124,7 +124,7 @@ int omain()
     // genHessiana(snl);
 
     printf("evaluator %f\n", evaluator_evaluate(snl->f, snl->n, snl->names, snl->chute));
-    // printf("jacobiana %f\n", evaluator_evaluate(snl->Bf[0], 1, snl->names, snl->chute));
+    // printf("jacobiana %f\n", evaluator_evaluate(snl->Gf[0], 1, snl->names, snl->chute));
     // printf("hessiana  %f\n", evaluator_evaluate(snl->Hf[0][0], snl->n, snl->names, snl->chute));
 
     // funcao 1:
