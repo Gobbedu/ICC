@@ -279,15 +279,27 @@ void varinfo(SnlVar_t nt, SistNl_t snl)
     printf("-------------------------------------------------------------------------------\n");
 }
 
-void printCol(double* pto, int i, int max)
+void printCol(double* pto, int i, int max, int argc, FILE *saida)
 {
-    if(i < max){
-        if (isnan(pto[i]) || isinf(pto[i]))
-            printf("%1.14e\t\t\t| ", pto[i]);
+    if(argc == 3){
+        if(i < max){
+            if (isnan(pto[i]) || isinf(pto[i]))
+                fprintf(saida, "%1.14e\t\t\t| ", pto[i]);
+            else
+                fprintf(saida, "%1.14e\t| ", pto[i]);
+        }
         else
-            printf("%1.14e\t| ", pto[i]);
+            fprintf(saida, "\t\t\t| ");
     }
-    else
-        printf("\t\t\t| ");
+    else{
+        if(i < max){
+            if (isnan(pto[i]) || isinf(pto[i]))
+                printf("%1.14e\t\t\t| ", pto[i]);
+            else
+                printf("%1.14e\t| ", pto[i]);
+        }
+        else
+            printf("\t\t\t| ");
+    }
 
 }

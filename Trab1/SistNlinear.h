@@ -56,7 +56,7 @@ int Parada(SistNl_t *snl, double *delta);
 
 
 void snl2sl(SistNl_t *snl, SnlVar_t *nt);
-void printCol(double* pto, int i, int max);
+void printCol(double* pto, int i, int max, int argc, FILE *saida);
 void varinfo(SnlVar_t var, SistNl_t snl);
 void snlinfo(SistNl_t *snl);
 
