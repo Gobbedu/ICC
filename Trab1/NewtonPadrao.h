@@ -3,7 +3,7 @@
 *    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
 *    CI1164 - Introducao a Computacao Cientifica
 *
-*    ./testaSNL < sistemas.dat
+*    ./newtonPC < funcoes.dat
 ********************************************************/
 
 #ifndef __NEWTON_PADRAO__

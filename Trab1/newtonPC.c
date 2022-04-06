@@ -3,7 +3,7 @@
 *    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
 *    CI1164 - Introducao a Computacao Cientifica
 *
-*    ./testaSNL < sistemas.dat
+*    ./newtonPC < funcoes.dat
 ********************************************************/
 
 #include "utils.h"
@@ -16,9 +16,14 @@
 // #define DEBUG_FLAG
 
 
-int main() {
+int main(int argc, char **argv) {
     SistNl_t *snl;
     Tempo_t tPadrao, tModifi, tInexat;              // tempo de cada metodo
+
+    // se tem -o <arquivo saida>
+    if(argc == 4)
+        printf("%s\n", argv[3]);
+
 
     initTempo(&tPadrao);
     initTempo(&tModifi);
