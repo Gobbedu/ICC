@@ -39,7 +39,7 @@ int main() {
 
     while(snl = lerSistNL())
     {      
-        genSistNaoLinear(snl);  // calcula Jacobiana e Hessiana
+        genSistNaoLinear(snl);  // calcula Gradiente e Hessiana
         printf("%i\n", snl->n);
         printf("%s\n", snl->funcao);
 
@@ -120,16 +120,16 @@ int omain()
     // void *f = evaluator_create(snl->funcao);
     // assert(f);
 
-    // genJacobiana(snl);
+    // genGradiente(snl);
     // genHessiana(snl);
 
     printf("evaluator %f\n", evaluator_evaluate(snl->f, snl->n, snl->names, snl->chute));
-    // printf("jacobiana %f\n", evaluator_evaluate(snl->Gf[0], 1, snl->names, snl->chute));
+    // printf("Gradiente %f\n", evaluator_evaluate(snl->Gf[0], 1, snl->names, snl->chute));
     // printf("hessiana  %f\n", evaluator_evaluate(snl->Hf[0][0], snl->n, snl->names, snl->chute));
 
     // funcao 1:
     // evaluator: 7.000
-    // jacobiana: 6.000
+    // Gradiente: 6.000
     // hessiana:  1.000
 }
 

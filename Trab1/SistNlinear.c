@@ -55,7 +55,7 @@ void genNames(SistNl_t *snl){
     }
 }
 
-void genJacobiana(SistNl_t *snl){
+void genGradiente(SistNl_t *snl){
     for(int i = 0; i < snl->n; i++){
         snl->Gf[i] = evaluator_derivative(snl->f, snl->names[i]);
     }
@@ -168,7 +168,7 @@ SnlVar_t *alocaSnlVar(double *chute, int n)
         free(var->delta);
         free(var->He);
         free(var);
-        fprintf(stderr, "erro ao alocar Jacobiana exata em variaveis do sist_n_linear\n");
+        fprintf(stderr, "erro ao alocar Gradiente exata em variaveis do sist_n_linear\n");
         return NULL;
     }
 
@@ -203,7 +203,7 @@ void calcHessiana(SistNl_t *snl, SnlVar_t *var)
             var->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, var->x0);
 }
 
-void calcJacobiana(SistNl_t *snl, SnlVar_t *var)
+void calcGradiente(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
         var->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, var->x0);

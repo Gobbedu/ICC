@@ -37,7 +37,7 @@ int main() {
         genNames(snl);          // nomes das variaveis x1, x2 .. xn
 
         // tPadrao.derivadas = timestamp();
-        genJacobiana(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
+        genGradiente(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
         genHessiana(snl);       // possiveis combinacoes de segunda derivada
         // tPadrao.derivadas = timestamp() - tPadrao.derivadas;
 

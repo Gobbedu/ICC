@@ -21,14 +21,14 @@ void NewtonModificado(SistNl_t *snl, double *resposta, Tempo_t *tempo, int *numI
       tauxder = timestamp() - tauxder;
       FatorLU(nm, trocas, snl->n);      // transforma nm. em LU
     }
-    calcJacobiana(snl, nm);             // calcula J[X]
+    calcGradiente(snl, nm);             // calcula J[X]
 
     resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0); 
 
     tauxSL = timestamp();
     EliminacaoLU(nm, trocas, snl->n);     // resolve SL com LU
     tauxSL = timestamp() - tauxSL;
-    calcDelta(nm, snl->n);                   // X[i+1] = X[i] + delta[i]
+    calcDelta(nm, snl->n);                // X[i+1] = X[i] + delta[i]
 
     itr++;
     tauxM = timestamp() - tauxM;

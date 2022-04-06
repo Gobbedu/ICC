@@ -15,7 +15,7 @@ typedef struct {
 
     void *f;        // funcao original
     void ***Hf;     // Hessiana de funcoes
-    void **Gf;      // Jacobiana de funcoes
+    void **Gf;      // Gradiente de funcoes
     char **names;   // nomes variaveis (para matheval)
 } SistNl_t;
 
@@ -27,7 +27,7 @@ typedef struct {
     SistLinear_t *sl;
 
     double **He;    // Hessiana exata (com valores)
-    double *Ge;     // Jacobiana exata (com valores)
+    double *Ge;     // Gradiente exata (com valores)
 } SnlVar_t;
 
 
@@ -37,7 +37,7 @@ SistNl_t *lerSistNL(void);
 
 // double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
-void genJacobiana(SistNl_t *snl);
+void genGradiente(SistNl_t *snl);
 void genHessiana(SistNl_t *snl);
 void genNames(SistNl_t *snl);
 
