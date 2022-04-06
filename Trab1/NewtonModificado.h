@@ -1,3 +1,11 @@
+/********************************************************
+*    Resolução de Sistemas Nao Lineares
+*    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
+*    CI1164 - Introducao a Computacao Cientifica
+*
+*    ./testaSNL < sistemas.dat
+********************************************************/
+
 #ifndef __NEWT_MODIFICADO__
 #define __NEWT_MODIFICADO__
 
