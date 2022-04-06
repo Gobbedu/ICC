@@ -28,14 +28,6 @@ SistNl_t *lerSistNL(void)
 
 int Parada(SistNl_t *snl, double *delta)
 {
-    // normal -> || J(X) || = max{ |Ji(X)|, 1 ≤ i ≤ n}
-    // double maxF = -INFINITY;
-    // double Ji;
-    // for(int i = 0; i < snl->n; i++)
-    // {
-    //     Ji = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, nt->x0);
-    //     maxF = (fabs(Ji) > maxF) ? fabs(Ji) : maxF;
-    // }
 
     // normal -> || X || = max{ |xi|, 1 ≤ i ≤ n}
     double maxD = -INFINITY;
@@ -235,21 +227,9 @@ void snl2sl(SistNl_t *snl, SnlVar_t *nt)
             nt->sl->A[i][j] = nt->He[i][j];
         }
         nt->sl->b[i] = - nt->Ge[i];
-        // sl->t[i] ; // trocas salvas no pivo, dentro de nt->t[] (nao altera)
     }
 }
 
-void snl2slinexato(SistNl_t *snl, SnlVar_t *nt)
-{
-    for(int i = 0; i < snl->n; ++i) {
-        for(int j = 0; j < snl->n; ++j)
-        {
-            nt->sl->A[i][j] = nt->He[i][j];
-        }
-        nt->sl->b[i] =  nt->Ge[i];
-        // sl->t[i] ; // trocas salvas no pivo, dentro de nt->t[] (nao altera)
-    }
-}
 
 void snlinfo(SistNl_t *S){
     printf("\n------------------------------------SNL INFO------------------------------------\n");
@@ -274,29 +254,6 @@ void snlinfo(SistNl_t *S){
         printf("  %f, ", S->chute[i]);
     printf("\nEVALUATOR\n#  f(CHUTE) = %g\n",evaluator_evaluate(S->f, S->n, S->names, S->chute));
 
-    /*
-    // JACOBIANA
-    printf("\nJACOBIANA\n#");
-    for(int i = 0; i < S->n; i++)
-        printf(" %f ", S->Ge[i]);
-    printf("\n");
-    // for(int i = 0 ; i < snl->n; i++)
-    //     printf("jacob %i : %f\n",i , evaluator_evaluate(snl->Gf[i], snl->n, names, values));
-
-        
-    // HESSIANA
-    printf("\nHESSIANA\n#");
-    for(int i = 0; i < S->n; i++){
-        for(int j = 0; j < S->n; j++){
-            printf("  %f  ", S->He[i][j]);
-        }
-        printf("\n");
-    }
-    // for(int i = 0 ; i < snl->n; i++){
-    //     for(int j = 0; j < snl->n; j++)
-    //         printf("%3f  ", evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, old_values));
-    //     printf("\n");}
-    */
 
     printf("--------------------------------------END SNL INFO-----------------------------------------\n");
 }
@@ -309,9 +266,7 @@ void varinfo(SnlVar_t nt, SistNl_t snl)
     printf("x1: "); for(int i = 0; i < snl.n; i++) printf("%1.3e ", nt.x1[i]); printf("\n");
     printf("delta: "); for(int i = 0; i < snl.n; i++) printf("%1.3e ", nt.delta[i]); printf("\n");
     printf("evaluator[x0] = %1.14e\n", evaluator_evaluate(snl.f, snl.n, snl.names, nt.x0));
-    // func = evaluator_get_string(snl.Hf[0][0]); // cursed
-    // printf("func[%i][%i]: %s\n", 0, 0, func);
-    // for(int i = 0; i < snl.n; i++) printf("%s ", snl.names[i]); printf("\n");
+    
         
 
     printf("-------------------------------------------------------------------------------\n");
