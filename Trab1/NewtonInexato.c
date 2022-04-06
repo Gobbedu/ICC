@@ -1,6 +1,6 @@
 /********************************************************
 *    Resolução de Sistemas Nao Lineares
-*    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
+*    Eduardo Gobbo Willi GRR20203892 V.G. & Dante Eleuterio dos Santos GRR20206686
 *    CI1164 - Introducao a Computacao Cientifica
 *
 *    ./newtonPC < funcoes.dat > saida_nossa.dat 

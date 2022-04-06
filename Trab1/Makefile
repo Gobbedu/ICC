@@ -1,3 +1,4 @@
+
     CC     = gcc -g
     CFLAGS = -g -std=c11
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
@@ -17,9 +18,6 @@ clear:
 	@rm $(OBJS)
 
 clean:
-	@rm -f *~ *.bak
-
-purge:   clean
 	@rm -rf bin obj *.layout *.depend
 	@rm -f *.o core a.out
 	@rm -f $(PROG)
