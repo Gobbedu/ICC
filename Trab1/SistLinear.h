@@ -30,10 +30,4 @@ SistLinear_t *alocaSistLinear(unsigned int n);
 
 void liberaSistLinear(SistLinear_t *SL);
 
-// devolve um outro Sistema Linear que é uma cópia do SL
-SistLinear_t *dupSL(SistLinear_t *SL);
-
-// ordem de leitura: n A b
-SistLinear_t *lerSistLinear();
-
 #endif
