@@ -43,7 +43,6 @@ SistNl_t *alocaSistNl(unsigned int n);
 SnlVar_t *alocaSnlVar(double *chute, int n);
 SistNl_t *lerSistNL(void);
 
-// double NewtonInexato(SistNl_t *snl, SnlVar_t *ni);
 
 void genGradiente(SistNl_t *snl);
 void genHessiana(SistNl_t *snl);
