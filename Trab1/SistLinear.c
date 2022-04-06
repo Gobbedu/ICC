@@ -3,7 +3,7 @@
 *    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
 *    CI1164 - Introducao a Computacao Cientifica
 *
-*    ./newtonPC < funcoes.dat
+*    ./newtonPC < funcoes.dat > saida_nossa.dat
 ********************************************************/
 
 #include "SistLinear.h"

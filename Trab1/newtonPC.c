@@ -3,7 +3,7 @@
 *    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
 *    CI1164 - Introducao a Computacao Cientifica
 *
-*    ./newtonPC < funcoes.dat
+*    ./newtonPC < funcoes.dat > saida_nossa.dat
 ********************************************************/
 
 #include "utils.h"
@@ -47,11 +47,8 @@ int main(int argc, char **argv) {
         respPadrao = malloc(sizeof(double) * snl->iteracao);
         respModifi = malloc(sizeof(double) * snl->iteracao);
         respInexat = malloc(sizeof(double) * snl->iteracao);
-        // snlinfo(snl);
 
-        // snl precisa de copia, muda o He & o Ge
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
-
         NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
         NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
