@@ -20,11 +20,6 @@ int main(int argc, char **argv) {
     SistNl_t *snl;
     Tempo_t tPadrao, tModifi, tInexat;              // tempo de cada metodo
 
-    // se tem -o <arquivo saida>
-    if(argc == 4)
-        printf("%s\n", argv[3]);
-
-
     initTempo(&tPadrao);
     initTempo(&tModifi);
     initTempo(&tInexat);
