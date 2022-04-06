@@ -12,7 +12,8 @@ void gauss_seidel(SistLinear_t *SL, double *X)
     for ( i = 0; i< SL->n; i++)
         X[i]=0;    
     
-    /*Recalcula todos os Xs do sistema utilizando o metodo de gauss saidel até a iteração maxima ou a norma ser menor que o erro*/
+    /*Recalcula todos os Xs do sistema utilizando o metodo de gauss saidel 
+    até a iteração maxima ou a norma ser menor que o erro*/
     for( k=0;norma>erro;++k)
     {
         if(ite<50)/*Iterações maximas do metodo*/
@@ -45,30 +46,29 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
     // --------LOOP PRINCIPAL-------- //
     for(int i = 0; i < snl->iteracao; i++)
     {
-        if(!Parada(snl, ni->delta)){
-            tauxP = timestamp();
-            
-            tauxder = timestamp();
-            substituteX(snl, ni);                   // calcula H[X] e J[X]
-            tauxder = timestamp() - tauxder;
-            snl2sl(snl, ni);                        // copia dados de snl em sl
-            
-            resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, ni->x0);
-            
-            tauxSL = timestamp();
-            gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
-            tauxSL = timestamp() - tauxSL;
-            
-            calcDelta(ni, snl->n);                     // X[i+1] = X[i] + delta[i]
-            
-            tauxP = timestamp() - tauxP;
-            
-            t->totalMetodo += tauxP;
-            t->derivadas += tauxder;
-            t->totalSL += tauxSL;
-            itr++;
-        }
-        else
+        tauxP = timestamp();
+        
+        tauxder = timestamp();
+        substituteX(snl, ni);                   // calcula H[X] e J[X]
+        tauxder = timestamp() - tauxder;
+        snl2sl(snl, ni);                        // copia dados de snl em sl
+        
+        resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, ni->x0);
+        
+        tauxSL = timestamp();
+        gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
+        tauxSL = timestamp() - tauxSL;
+        
+        calcDelta(ni, snl->n);                  // X[i+1] = X[i] + delta[i]
+        
+        tauxP = timestamp() - tauxP;
+        
+        t->totalMetodo += tauxP;
+        t->derivadas += tauxder;
+        t->totalSL += tauxSL;
+        itr++;
+
+        if(Parada(snl, ni->delta))
             break;
     }
     *nIter = itr;
