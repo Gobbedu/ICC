@@ -32,7 +32,7 @@ void gauss_seidel(SistLinear_t *SL, double *X)
             }
             ite++;
         }
-        else
+        if(ite>50)
             break;
     }
 }
