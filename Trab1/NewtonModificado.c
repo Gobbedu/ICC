@@ -16,19 +16,26 @@ void NewtonModificado(SistNl_t *snl, double *resposta, Tempo_t *tempo, int *numI
 
     if(i % snl->n == 0) 
     {
+      tauxder = timestamp();
       calcHessiana(snl, nm);            // nm.He = snl.Hf[nm.X0]
+      tauxder = timestamp() - tauxder;
       FatorLU(nm, trocas, snl->n);      // transforma nm. em LU
     }
     calcJacobiana(snl, nm);             // calcula J[X]
 
     resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0); 
 
+    tauxSL = timestamp();
     EliminacaoLU(nm, trocas, snl->n);     // resolve SL com LU
+    tauxSL = timestamp() - tauxSL;
     calcDelta(nm, snl->n);                   // X[i+1] = X[i] + delta[i]
 
     itr++;
     tauxM = timestamp() - tauxM;
+
     tempo->totalMetodo += tauxM;
+    tempo->derivadas += tauxder;
+    tempo->totalSL += tauxSL;
 
     if(Parada(snl, nm->delta) )
       break;    

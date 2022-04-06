@@ -72,7 +72,7 @@ int main() {
                 break;
         }
         printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
-        printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tPadrao.derivadas,tPadrao.derivadas);
+        joao
         printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tModifi.totalSL);
 
         // LIBERA respMETODO
