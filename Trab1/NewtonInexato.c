@@ -1,3 +1,11 @@
+/********************************************************
+*    Resolução de Sistemas Nao Lineares
+*    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
+*    CI1164 - Introducao a Computacao Cientifica
+*
+*    ./testaSNL < sistemas.dat
+********************************************************/
+
 #include "NewtonInexato.h"
 
 /*Codigo para efetuar o metodo de gauss seidel*/
@@ -16,23 +24,20 @@ void gauss_seidel(SistLinear_t *SL, double *X)
     até a iteração maxima ou a norma ser menor que o erro*/
     for( k=0;norma>erro;++k)
     {
-        if(ite<50)/*Iterações maximas do metodo*/
+        norma=0.0;
+        for (i = 0; i <SL->n; ++i)
         {
-            norma=0.0;
-            for (i = 0; i <SL->n; ++i)
-            {
-                for(soma=0,j=0;j<i;++j)
-                    soma+=SL->A[i][j]*X[j];
-                for(j=i+1;j<SL->n;++j)
-                    soma+=SL->A[i][j]*X[j];
-                xk=(SL->b[i]-soma)/SL->A[i][i];
-                diff=fabs(xk-X[i]);
-                if(diff>norma)
-                    norma=diff;
-                X[i]=xk;
-            }
-            ite++;
+            for(soma=0,j=0;j<i;++j)
+                soma+=SL->A[i][j]*X[j];
+            for(j=i+1;j<SL->n;++j)
+                soma+=SL->A[i][j]*X[j];
+            xk=(SL->b[i]-soma)/SL->A[i][i];
+            diff=fabs(xk-X[i]);
+            if(diff>norma)
+                norma=diff;
+            X[i]=xk;
         }
+        ite++;
         if(ite>50)
             break;
     }

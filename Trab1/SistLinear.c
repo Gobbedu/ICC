@@ -1,3 +1,11 @@
+/********************************************************
+*    Resolução de Sistemas Nao Lineares
+*    Eduardo Gobbo Willi V.G. & Dante Eleuterio dos Santos
+*    CI1164 - Introducao a Computacao Cientifica
+*
+*    ./testaSNL < sistemas.dat
+********************************************************/
+
 #include "SistLinear.h"
 
 SistLinear_t *alocaSistLinear(unsigned int n) {
