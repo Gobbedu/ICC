@@ -58,7 +58,7 @@ void calcDelta(SnlVar_t *var, int n){
 
 void genNames(SistNl_t *snl){  
     for(int i = 0; i < snl->n; i++){
-        sprintf(snl->names[i], "x%i\0", i+1);
+        sprintf(snl->names[i], "x%i", i+1);
     }
 }
 
