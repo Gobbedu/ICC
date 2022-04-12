@@ -6,6 +6,14 @@
 *    ./newtonPC < funcoes.dat > saida_nossa.dat
 ********************************************************/
 
+/*
+    - SISTEMA LINEAR EH PONTEIRO PARA He   A = He
+    - A[i][j] = algm coisa (eh pra funfar)
+    -> referencia, muda He 
+    - NAO USA **NAMES
+*/
+
+
 #include "utils.h"
 #include "NewtonModificado.h"
 #include "NewtonPadrao.h"

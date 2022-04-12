@@ -12,7 +12,7 @@
 #include "utils.h"
 #include "SistLinear.h"
 
-#define STR_BUFFER 1000
+#define STR_BUFFER 1000 //10.000
 
 typedef struct {
     int n;

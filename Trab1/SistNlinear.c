@@ -87,7 +87,7 @@ SistNl_t *alocaSistNl(unsigned int n){
         // vetor de chutes
         SnL->chute = malloc(sizeof(double)*n);
 
-        // snl->names[i] = malloc(4 * sizeof(char)); // maximo 999 variaveis
+        // snl->names[i] = malloc(4 * sizeof(char)); // maximo 9999 variaveis
         SnL->names = malloc(SnL->n * sizeof(char *));
         for(int i = 0; i < SnL->n; i++)
             SnL->names[i] = malloc(5 * sizeof(char));
@@ -139,19 +139,21 @@ void liberaMatheval(SistNl_t *snl)
 
 SnlVar_t *alocaSnlVar(double *chute, int n)
 {
+    // CALLOC 
     SnlVar_t *var = malloc(sizeof(SnlVar_t));
     var->delta = malloc(n * sizeof(double));
     var->x0 = malloc(n * sizeof(double));
     var->x1 = malloc(n * sizeof(double));
     var->sl = alocaSistLinear(n);
 
+    // VETOR UNICO DENTRO DO FOR
     for(int i = 0; i < n; i++)
     {
         var->x0[i] =    0;
         var->x1[i] =    0;
         var->delta[i] = 1;
     }
-
+    // TRAB2: VETORZAO ->
     // aloca He e libera var caso erro
     var->He = (double **) malloc(sizeof(double*)*n);
     if (!(var->He)) {
@@ -203,6 +205,7 @@ void liberaSnlVar(SnlVar_t *var, int n)
     free(var);
 }
 
+// unico for p/ calc hessiana
 void calcHessiana(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
@@ -216,6 +219,7 @@ void calcGradiente(SistNl_t *snl, SnlVar_t *var)
         var->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, var->x0);
 }
 
+// ruim, nn usar
 void substituteX(SistNl_t *snl, SnlVar_t *nt)
 {
     for(int i = 0; i < snl->n ; i++)
