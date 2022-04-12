@@ -59,6 +59,7 @@ void NewtonModificado(SistNl_t *snl, double *resposta, Tempo_t *tempo, int *numI
 void EliminacaoLU(SnlVar_t *var, int *trocas, int n){
   
   // salva parametros em sistema linear temporario
+  // usar He como matriz triangulada, elimina copia
   SistLinear_t *LU = alocaSistLinear(n);
   for(int i = 0; i < n; i++) for(int j = 0; j < n; j++)
     LU->A[i][j] = var->He[i][j];
