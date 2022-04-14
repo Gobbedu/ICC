@@ -18,6 +18,8 @@
 #include <matheval.h>
 #include <assert.h>
 
+#include "Rosenbrock.h"
+
 typedef struct {
     double totalSL; // tempo total do sistema linear & derivadas (matheval)
     double derivadas;

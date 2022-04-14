@@ -13,6 +13,7 @@
 #include "SistLinear.h"
 #include "SistNlinear.h"
 
+
 void NewtonPadrao(SistNl_t *snl, double *resposta, Tempo_t *time, int *nIter);
 
 //////////////////// ELIMINACAO DE GAUSS ////////////////////

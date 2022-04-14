@@ -7,6 +7,8 @@
 ********************************************************/
 
 #include "NewtonInexato.h"
+#define ROSENBROCK
+
 
 /*Codigo para efetuar o metodo de gauss seidel*/
 void gauss_seidel(SistLinear_t *SL, double *X)
@@ -54,12 +56,19 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
         tauxP = timestamp();
         
         tauxder = timestamp();
-        substituteX(snl, ni);                   // calcula H[X] e J[X]
+        // substituteX(snl, ni);                   // calcula H[X] e J[X]
+        calcGradiente(snl, ni);
+        calcHessiana(snl, ni);
+
         tauxder = timestamp() - tauxder;
         snl2sl(snl, ni);                        // copia dados de snl em sl
         
-        resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, ni->x0);
-        
+        #ifndef ROSENBROCK
+            resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, ni->x0);
+        #else
+            resposta[i] = rosenbrock(ni->x0, snl->n);
+        #endif
+
         tauxSL = timestamp();
         gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
         tauxSL = timestamp() - tauxSL;

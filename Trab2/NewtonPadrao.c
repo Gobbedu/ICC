@@ -7,6 +7,7 @@
 ********************************************************/
 
 #include "NewtonPadrao.h"
+#define ROSENBROCK
 
 // ELIMINACAO GAUSS ou NEWTON PADRAO
 void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
@@ -28,11 +29,18 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
             tauxP = timestamp();
                     
             tauxder = timestamp();
-            substituteX(snl, np);                   // calcula H[X] e J[X]
+            // substituteX(snl, np);                   // calcula H[X] e J[X]
+            calcGradiente(snl, np);
+            calcHessiana(snl, np);
+
             tauxder = timestamp() - tauxder;
             snl2sl(snl, np);                        // copia dados de snl em sl
 
-            resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, np->x0);
+            #ifndef ROSENBROCK
+              resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, np->x0);
+            #else
+              resposta[i] = rosenbrock(np->x0, snl->n);
+            #endif
             
             tauxSL = timestamp();
             eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b

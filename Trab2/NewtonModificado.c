@@ -31,7 +31,11 @@ void NewtonModificado(SistNl_t *snl, double *resposta, Tempo_t *tempo, int *numI
     }
     calcGradiente(snl, nm);             // calcula J[X]
 
-    resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0); 
+    #ifndef ROSENBROCK
+      resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, nm->x0); 
+    #else
+      resposta[i] = 0;
+    #endif
 
     tauxSL = timestamp();
     EliminacaoLU(nm, trocas, snl->n);     // resolve SL com LU

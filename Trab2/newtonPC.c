@@ -5,16 +5,13 @@
 *
 *    ./newtonPC < funcoes.dat > saida_nossa.dat
 ********************************************************/
-
 #include "utils.h"
-#include "NewtonModificado.h"
+// #include "NewtonModificado.h"
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
 
-// #define MAXIT_REFINAMENTO 5
-
-// #define DEBUG_FLAG
-
+// mudar em todos os arquivos tambem
+#define ROSENBROCK
 
 int main(int argc, char **argv) {
     SistNl_t *snl;
@@ -32,87 +29,75 @@ int main(int argc, char **argv) {
         iterInexat = 0;
 
     FILE *saida;
-    if(argc == 3)   saida = fopen(argv[2], "w");
+    if(argc == 3)    
+        saida = fopen(argv[2], "w");
+    else    
+        saida = stdout;
 
     while(snl = lerSistNL())
-    {      
-        snl->f = evaluator_create(snl->funcao);
-        assert(snl->f);
-        genNames(snl);          // nomes das variaveis x1, x2 .. xn
+    {   
+        #ifndef ROSENBROCK   
+            snl->f = evaluator_create(snl->funcao);
+            assert(snl->f);
+            genNames(snl);          // nomes das variaveis x1, x2 .. xn
 
-        // tPadrao.derivadas = timestamp();
-        genGradiente(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
-        genHessiana(snl);       // possiveis combinacoes de segunda derivada
-        // tPadrao.derivadas = timestamp() - tPadrao.derivadas;
+            genGradiente(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
+            genHessiana(snl);       // possiveis combinacoes de segunda derivada
+        #endif
 
-        if(argc == 3){
-            fprintf(saida, "%i\n", snl->n);
-            fprintf(saida, "%s\n", snl->funcao);
-        }
-        else{
-            printf("%i\n", snl->n);
-            printf("%s\n", snl->funcao);
-	    }
+        fprintf(saida, "%i\n", snl->n);
+        fprintf(saida, "%s\n", snl->funcao);
 
         respPadrao = malloc(sizeof(double) * snl->iteracao);
-        respModifi = malloc(sizeof(double) * snl->iteracao);
+        // respModifi = malloc(sizeof(double) * snl->iteracao);
         respInexat = malloc(sizeof(double) * snl->iteracao);
 
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
         NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
-        NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
+        // NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
         NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
 
-    	if(argc == 3)
-            fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
-	    else
-	        printf("#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+        // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+        fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
 
         // --------LOOP PRINT-------- //
         for(int i = 0; i < snl->iteracao; i++)
         {
-            // imprime em -o <saida>
-            if(argc == 3)
-                fprintf(saida, "%-12d \t| ", i); // imprime iteração
-            else
-                printf("%-12d \t| ", i); // imprime iteração
+	    // imprime em -o <saida>
+            fprintf(saida, "%-12d \t| ", i); // imprime iteração
 
-            printCol(respPadrao, i, iterPadrao, argc, saida);
-            printCol(respModifi, i, iterModifi, argc, saida);
-            printCol(respInexat, i, iterInexat, argc, saida);
+            printCol(respPadrao, i, iterPadrao, saida);
+            // printCol(respModifi, i, iterModifi, argc, saida);
+            printCol(respInexat, i, iterInexat, saida);
 
-            if(argc == 3)
-                fprintf(saida, "\n");
-            else
-                printf("\n");
+  	        fprintf(saida, "\n");
 
             // se todos acabaram
             if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) && (i+1>=iterInexat) )
                 break;
         }
 
-        if( argc == 3){
-            fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
-            fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
-            fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tInexat.totalSL);
-        }
-        else{
-            printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
-            printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
-            printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tInexat.totalSL);
-        }
+        // fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
+        // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
+        // fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tInexat.totalSL);
+        fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| \n",tPadrao.totalMetodo,  tInexat.totalMetodo);
+        fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| \n",tPadrao.derivadas, tInexat.derivadas);
+        fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| \n#\n\n",tPadrao.totalSL, tInexat.totalSL);
+
         // LIBERA respMETODO
         free(respPadrao);
-        free(respModifi);
+        // free(respModifi);
         free(respInexat);
 
         // liberar matheval antes de destruir sistema
-        liberaMatheval(snl);
+        #ifndef ROSENBROCK
+            liberaMatheval(snl);
+        #endif
+
         liberaSistNl(snl);
     }    
-    
-    if(argc == 3)   
-        fclose(saida);
 
+    if(argc == 3)
+	    fclose(saida);
     return 0;
 }

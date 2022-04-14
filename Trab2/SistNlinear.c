@@ -7,6 +7,7 @@
 ********************************************************/
 
 #include "SistNlinear.h"
+#define ROSENBROCK
 
 
 SistNl_t *lerSistNL(void)
@@ -92,6 +93,7 @@ SistNl_t *alocaSistNl(unsigned int n){
         for(int i = 0; i < SnL->n; i++)
             SnL->names[i] = malloc(5 * sizeof(char));
 
+        #ifndef ROSENBROCK
         SnL->Hf = (void ***) malloc(sizeof(void **)*n);
         if (!(SnL->Hf)) {
             free(SnL);
@@ -106,6 +108,7 @@ SistNl_t *alocaSistNl(unsigned int n){
             free(SnL->Hf);
             free(SnL);
         }
+        #endif
 
     }
   return SnL;
@@ -207,15 +210,27 @@ void calcHessiana(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
         for(int j = 0; j < snl->n; j++)
+        {
+            #ifndef ROSENBROCK
             var->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, var->x0);
+            #else
+            var->He[i][j] = rosenbrock_dxdy(i, j, var->x0, snl->n);
+            #endif 
+        }
 }
 
 void calcGradiente(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
-        var->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, var->x0);
+    {
+        #ifndef ROSENBROCK
+            var->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, var->x0);
+        #else
+            var->Ge[i] = rosenbrock_dx(i, var->x0, snl->n);
+        #endif 
+    }
 }
-
+/*
 void substituteX(SistNl_t *snl, SnlVar_t *nt)
 {
     for(int i = 0; i < snl->n ; i++)
@@ -225,6 +240,7 @@ void substituteX(SistNl_t *snl, SnlVar_t *nt)
         nt->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, nt->x0);// J[X]
     }
 }
+*/
 
 void snl2sl(SistNl_t *snl, SnlVar_t *nt)
 {
@@ -236,8 +252,15 @@ void snl2sl(SistNl_t *snl, SnlVar_t *nt)
         nt->sl->b[i] = - nt->Ge[i];
     }
 }
+/*
+void snl2sl(SistNl_t *snl, SnlVar_t *nt)
+{
+    nt->sl->A = nt->He;
+    nt->sl->b = nt->Ge;
+}
+*/
 
-
+#ifndef ROSENBROCK
 void snlinfo(SistNl_t *S){
     printf("\n------------------------------------SNL INFO------------------------------------\n");
     printf("#  n: %i\n", S->n);
@@ -278,28 +301,15 @@ void varinfo(SnlVar_t nt, SistNl_t snl)
 
     printf("-------------------------------------------------------------------------------\n");
 }
-
-void printCol(double* pto, int i, int max, int argc, FILE *saida)
+#endif
+void printCol(double* pto, int i, int max, FILE *saida)
 {
-    if(argc == 3){
-        if(i < max){
-            if (isnan(pto[i]) || isinf(pto[i]))
-                fprintf(saida, "%1.14e\t\t\t| ", pto[i]);
-            else
-                fprintf(saida, "%1.14e\t| ", pto[i]);
-        }
+    if(i < max){
+        if (isnan(pto[i]) || isinf(pto[i]))
+            fprintf(saida, "%1.14e\t\t\t| ", pto[i]);
         else
-            fprintf(saida, "\t\t\t| ");
+            fprintf(saida, "%1.14e\t| ", pto[i]);
     }
-    else{
-        if(i < max){
-            if (isnan(pto[i]) || isinf(pto[i]))
-                printf("%1.14e\t\t\t| ", pto[i]);
-            else
-                printf("%1.14e\t| ", pto[i]);
-        }
-        else
-            printf("\t\t\t| ");
-    }
-
+    else
+        fprintf(saida, "\t\t\t| ");
 }

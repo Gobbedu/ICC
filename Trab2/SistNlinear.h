@@ -12,7 +12,8 @@
 #include "utils.h"
 #include "SistLinear.h"
 
-#define STR_BUFFER 1000
+
+#define STR_BUFFER 150000
 
 typedef struct {
     int n;
@@ -56,7 +57,7 @@ int Parada(SistNl_t *snl, double *delta);
 
 
 void snl2sl(SistNl_t *snl, SnlVar_t *nt);
-void printCol(double* pto, int i, int max, int argc, FILE *saida);
+void printCol(double* pto, int i, int max, FILE *saida);
 void varinfo(SnlVar_t var, SistNl_t snl);
 void snlinfo(SistNl_t *snl);
 
