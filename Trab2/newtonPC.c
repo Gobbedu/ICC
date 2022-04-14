@@ -11,6 +11,7 @@
 #include "NewtonInexato.h"
 
 // #define ROSENBROCK -> mudar em utils.h
+// #define FULLPRINT_ON
 
 
 int main(int argc, char **argv) {
@@ -46,7 +47,9 @@ int main(int argc, char **argv) {
         #endif
 
         fprintf(saida, "%i\n", snl->n);
+        #ifdef FULLPRINT_ON
         fprintf(saida, "%s\n", snl->funcao);
+        #endif
 
         respPadrao = malloc(sizeof(double) * snl->iteracao);
         respInexat = malloc(sizeof(double) * snl->iteracao);
@@ -57,9 +60,11 @@ int main(int argc, char **argv) {
         NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
 
+        
         // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
         fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
 
+        #ifdef FULLPRINT_ON
         // --------LOOP PRINT-------- //
         for(int i = 0; i < snl->iteracao; i++)
         {
@@ -76,6 +81,7 @@ int main(int argc, char **argv) {
             if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) && (i+1>=iterInexat) )
                 break;
         }
+        #endif
 
         // fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
         // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
