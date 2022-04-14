@@ -20,6 +20,8 @@
 
 #include "Rosenbrock.h"
 
+#define ROSENBROCK
+
 typedef struct {
     double totalSL; // tempo total do sistema linear & derivadas (matheval)
     double derivadas;

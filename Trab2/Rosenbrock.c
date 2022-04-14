@@ -7,13 +7,14 @@
  * Devolve f(X)
  */
 double rosenbrock(double *X, int n) {
-  double sum = 0;
-  for (int i = 0; i < n-1; ++i) {
-    double p1 = X[i+1]-X[i]*X[i];
-    double p2 = 1-X[i];
-    sum += 100*p1*p1 + p2*p2;
-  }
-  return sum;
+    double sum = 0;
+    for (int i = 0; i < n-1; ++i) 
+    {
+        double p1 = X[i+1]-X[i]*X[i];
+        double p2 = 1-X[i];
+        sum += 100*p1*p1 + p2*p2;
+    }
+    return sum;
 }
 
 /* Derivada parcial de primeira ordem da função Rosenbrock de dimensão n

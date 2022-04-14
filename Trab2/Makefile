@@ -1,6 +1,6 @@
 
     CC     = gcc -g
-    CFLAGS = -g -std=c11
+    CFLAGS = -g -std=c11 -O3
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
 
     PROG = newtonPC

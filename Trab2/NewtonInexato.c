@@ -7,8 +7,6 @@
 ********************************************************/
 
 #include "NewtonInexato.h"
-#define ROSENBROCK
-
 
 /*Codigo para efetuar o metodo de gauss seidel*/
 void gauss_seidel(SistLinear_t *SL, double *X)

@@ -10,8 +10,8 @@
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
 
-// mudar em todos os arquivos tambem
-#define ROSENBROCK
+// #define ROSENBROCK -> mudar em utils.h
+
 
 int main(int argc, char **argv) {
     SistNl_t *snl;
@@ -49,12 +49,12 @@ int main(int argc, char **argv) {
         fprintf(saida, "%s\n", snl->funcao);
 
         respPadrao = malloc(sizeof(double) * snl->iteracao);
-        // respModifi = malloc(sizeof(double) * snl->iteracao);
         respInexat = malloc(sizeof(double) * snl->iteracao);
+        // respModifi = malloc(sizeof(double) * snl->iteracao);
 
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
-        NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         // NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
+        NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
 
         // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
@@ -67,8 +67,8 @@ int main(int argc, char **argv) {
             fprintf(saida, "%-12d \t| ", i); // imprime iteração
 
             printCol(respPadrao, i, iterPadrao, saida);
-            // printCol(respModifi, i, iterModifi, argc, saida);
             printCol(respInexat, i, iterInexat, saida);
+            // printCol(respModifi, i, iterModifi, argc, saida);
 
   	        fprintf(saida, "\n");
 

@@ -7,8 +7,6 @@
 ********************************************************/
 
 #include "SistNlinear.h"
-#define ROSENBROCK
-
 
 SistNl_t *lerSistNL(void)
 {
