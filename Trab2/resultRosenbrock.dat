@@ -1,0 +1,133 @@
+10
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 1.47949218750000e-01	| 6.80175781250000e-01	| 
+Tempo derivadas | 5.24902343750000e-02	| 4.93164062500000e-02	| 
+Tempo SL 	| 7.98339843750000e-02	| 6.14013671875000e-01	| 
+#
+
+32
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 1.72167968750000e+00	| 4.81518554687500e+00	| 
+Tempo derivadas | 4.88037109375000e-01	| 4.84863281250000e-01	| 
+Tempo SL 	| 1.14355468750000e+00	| 4.23803710937500e+00	| 
+#
+
+50
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 5.46728515625000e+00	| 1.11723632812500e+01	| 
+Tempo derivadas | 1.37207031250000e+00	| 1.22924804687500e+00	| 
+Tempo SL 	| 3.87036132812500e+00	| 9.74023437500000e+00	| 
+#
+
+64
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 1.11174316406250e+01	| 2.05202636718750e+01	| 
+Tempo derivadas | 2.58251953125000e+00	| 2.39038085937500e+00	| 
+Tempo SL 	| 8.12548828125000e+00	| 1.77629394531250e+01	| 
+#
+
+100
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 2.89868164062500e+01	| 4.33857421875000e+01	| 
+Tempo derivadas | 5.43676757812500e+00	| 5.21435546875000e+00	| 
+Tempo SL 	| 2.27585449218750e+01	| 3.74406738281250e+01	| 
+#
+
+128
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 6.38378906250000e+01	| 7.96545410156250e+01	| 
+Tempo derivadas | 1.00598144531250e+01	| 9.82373046875000e+00	| 
+Tempo SL 	| 5.23771972656250e+01	| 6.84477539062500e+01	| 
+#
+
+200
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 1.93774414062500e+02	| 1.69005371093750e+02	| 
+Tempo derivadas | 2.12509765625000e+01	| 2.09145507812500e+01	| 
+Tempo SL 	| 1.69038818359375e+02	| 1.44787841796875e+02	| 
+#
+
+250
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 4.53485351562500e+02	| 3.08729492187500e+02	| 
+Tempo derivadas | 3.85585937500000e+01	| 3.81694335937500e+01	| 
+Tempo SL 	| 4.08294433593750e+02	| 2.64316162109375e+02	| 
+#
+
+256
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 7.39610107421875e+02	| 4.56264404296875e+02	| 
+Tempo derivadas | 5.66760253906250e+01	| 5.62673339843750e+01	| 
+Tempo SL 	| 6.73040039062500e+02	| 3.90685546875000e+02	| 
+#
+
+300
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 1.18881689453125e+03	| 6.58324218750000e+02	| 
+Tempo derivadas | 8.14477539062500e+01	| 8.10830078125000e+01	| 
+Tempo SL 	| 1.09302416992188e+03	| 5.63796630859375e+02	| 
+#
+
+400
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 2.15938598632812e+03	| 9.83267578125000e+02	| 
+Tempo derivadas | 1.21763427734375e+02	| 1.20607666015625e+02	| 
+Tempo SL 	| 2.01596093750000e+03	| 8.42550292968750e+02	| 
+#
+
+512
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 4.16069580078125e+03	| 1.52473632812500e+03	| 
+Tempo derivadas | 1.86248779296875e+02	| 1.85302978515625e+02	| 
+Tempo SL 	| 3.94121093750000e+03	| 1.30855615234375e+03	| 
+#
+
+600
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 7.33336499023438e+03	| 2.26759350585938e+03	| 
+Tempo derivadas | 2.75582275390625e+02	| 2.74445800781250e+02	| 
+Tempo SL 	| 7.00839941406250e+03	| 1.94744775390625e+03	| 
+#
+
+1000
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 2.19970285644531e+04	| 4.58050854492188e+03	| 
+Tempo derivadas | 5.38532714843750e+02	| 5.23670166015625e+02	| 
+Tempo SL 	| 2.13310104980469e+04	| 3.93727783203125e+03	| 
+#
+
+1024
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 3.76577446289062e+04	| 7.06686352539062e+03	| 
+Tempo derivadas | 8.01828369140625e+02	| 7.86887939453125e+02	| 
+Tempo SL 	| 3.66398308105469e+04	| 6.07339306640625e+03	| 
+#
+
+2000
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 2.09024470703125e+05	| 1.71830773925781e+04	| 
+Tempo derivadas | 1.80953295898438e+03	| 1.79503369140625e+03	| 
+Tempo SL 	| 2.06566611572266e+05	| 1.47573642578125e+04	| 
+#
+
+2048
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 4.05703596679688e+05	| 2.79667116699219e+04	| 
+Tempo derivadas | 2.88012158203125e+03	| 2.87194873046875e+03	| 
+Tempo SL 	| 4.01720978759766e+05	| 2.40170441894531e+04	| 
+#
+
+3000
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 1.04036873120117e+06	| 5.02451958007812e+04	| 
+Tempo derivadas | 5.15415136718750e+03	| 5.13728295898438e+03	| 
+Tempo SL 	| 1.03315656274414e+06	| 4.30735974121094e+04	| 
+#
+
+4096
+#Iteração 	| Newton Padrão 	| Newton Inexato
+Tempo total 	| 2.66145240600586e+06	| 9.15979765625000e+04	| 
+Tempo derivadas | 9.39443505859375e+03	| 9.38992260742188e+03	| 
+Tempo SL 	| 2.64823518383789e+06	| 7.84136215820312e+04	| 
+#
+
