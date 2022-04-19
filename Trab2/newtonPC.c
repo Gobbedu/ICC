@@ -54,14 +54,14 @@ int main(int argc, char **argv) {
             fprintf(saida, "%s\n", snl->funcao);    // a funcao
         #endif
 
-        respPadrao = malloc(sizeof(double) * snl->iteracao);
-        // respInexat = malloc(sizeof(double) * snl->iteracao);
+        // respPadrao = malloc(sizeof(double) * snl->iteracao);
+        respInexat = malloc(sizeof(double) * snl->iteracao);
         // respModifi = malloc(sizeof(double) * snl->iteracao);
 
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
         // NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
-        NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
-        // NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
+        // NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+        NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
 
         
         // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
@@ -75,8 +75,8 @@ int main(int argc, char **argv) {
 	    // imprime em -o <saida>
             fprintf(saida, "%-12d \t| ", i); // imprime iteração
 
-            printCol(respPadrao, i, iterPadrao, saida);
-            printCol(respInexat, i, iterInexat, saida);
+            // printCol(respPadrao, i, iterPadrao, saida);
+            // printCol(respInexat, i, iterInexat, saida);
             // printCol(respModifi, i, iterModifi, argc, saida);
 
   	        fprintf(saida, "\n");
@@ -95,9 +95,10 @@ int main(int argc, char **argv) {
         // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| \n",tPadrao.derivadas, tInexat.derivadas);
         // fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| \n#\n\n",tPadrao.totalSL, tInexat.totalSL);
 
-        // saida para csv com 1 metodo
         fprintf(saida, "%f; %f; %f; %f\n", 
-        tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
+        // saida para csv com metodo Padrao
+        // tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
+        tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
 
         // LIBERA respMETODO
         free(respPadrao);

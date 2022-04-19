@@ -45,20 +45,24 @@ void gauss_seidel(SistLinear_t *SL, double *X)
 
 void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
-    double tauxP, tauxder, tauxSL;
+    double tTotal, tGrad, tHess, tauxder, tauxSL;
     int itr = 0;
     SnlVar_t *ni = alocaSnlVar(snl->chute, snl->n);
     // --------LOOP PRINCIPAL-------- //
     for(int i = 0; i < snl->iteracao; i++)
     {
-        tauxP = timestamp();
+        tTotal = timestamp();
         
-        tauxder = timestamp();
-        // substituteX(snl, ni);                   // calcula H[X] e J[X]
-        calcGradiente(snl, ni);
-        calcHessiana(snl, ni);
+        // tauxder = timestamp();
+		tGrad = timestamp();
+		calcGradiente(snl, ni);					// calcula J[X]
+		tGrad = timestamp() - tGrad;
 
-        tauxder = timestamp() - tauxder;
+		tHess = timestamp();
+		calcHessiana(snl, ni);					// calcula H[X]
+		tHess = timestamp() - tHess;
+		// tauxder = timestamp() - tauxder;
+
         snl2sl(snl, ni);                        // copia dados de snl em sl
         
         #ifndef ROSENBROCK
@@ -73,11 +77,13 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
         
         calcDelta(ni, snl->n);                  // X[i+1] = X[i] + delta[i]
         
-        tauxP = timestamp() - tauxP;
+        tTotal = timestamp() - tTotal;
         
-        t->totalMetodo += tauxP;
-        t->derivadas += tauxder;
-        t->totalSL += tauxSL;
+        t->totalMetodo += tTotal;
+		t->Gradiente += tGrad;
+		t->Hessiana += tHess;
+		t->totalSL += tauxSL;
+		// t->derivadas += tauxder;
         itr++;
 
         if(Parada(snl, ni->delta))
