@@ -1,6 +1,6 @@
 
     CC     = gcc -g
-    CFLAGS = -g -std=c11 -O3
+    CFLAGS = -g -std=c11 -O3 -DLIKWID_PERFMON -I/home/soft/likwid
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
 
     PROG = newtonPC
