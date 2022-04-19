@@ -35,7 +35,7 @@ pyplot[0]: https://matplotlib.org/3.1.1/tutorials/introductory/pyplot.html#sphx-
 csv_file = 'data/testeInexat.csv'
 metodo = 'Inexato' # inexato ou padrao
 saida_grafico = 'data/testeTempoInexat'
-quero_ver = True    # se true mostra, se falso baixa em saida grafico
+quero_ver = False    # se true mostra, se falso baixa em saida grafico
 
 col1 = "Aplicacao_metodo_Newton"
 col2 = "Calculo_Gradiente"
