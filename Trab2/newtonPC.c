@@ -35,6 +35,9 @@ int main(int argc, char **argv) {
     else    
         saida = stdout;
 
+    // saida csv para 1 metodo separador ;
+    fprintf(saida, "Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear\n");
+
     while(snl = lerSistNL())
     {   
         #ifndef ROSENBROCK   
@@ -46,9 +49,9 @@ int main(int argc, char **argv) {
             genHessiana(snl);       // possiveis combinacoes de segunda derivada
         #endif
 
-        fprintf(saida, "%i\n", snl->n);
         #ifdef FULLPRINT_ON
-        fprintf(saida, "%s\n", snl->funcao);
+            fprintf(saida, "%i\n", snl->n);         // grau da funcao
+            fprintf(saida, "%s\n", snl->funcao);    // a funcao
         #endif
 
         respPadrao = malloc(sizeof(double) * snl->iteracao);
@@ -58,11 +61,12 @@ int main(int argc, char **argv) {
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
         // NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
         NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
-        NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
+        // NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
 
         
         // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
-        fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
+        // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
+
 
         #ifdef FULLPRINT_ON
         // --------LOOP PRINT-------- //
@@ -82,18 +86,23 @@ int main(int argc, char **argv) {
                 break;
         }
         #endif
-
+        // saida com os 3 metodos
         // fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
         // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
         // fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tInexat.totalSL);
-        fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| \n",tPadrao.totalMetodo,  tInexat.totalMetodo);
-        fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| \n",tPadrao.derivadas, tInexat.derivadas);
-        fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| \n#\n\n",tPadrao.totalSL, tInexat.totalSL);
+        // saida com os 2 metodos
+        // fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| \n",tPadrao.totalMetodo,  tInexat.totalMetodo);
+        // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| \n",tPadrao.derivadas, tInexat.derivadas);
+        // fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| \n#\n\n",tPadrao.totalSL, tInexat.totalSL);
+
+        // saida para csv com 1 metodo
+        fprintf(saida, "%f; %f; %f; %f\n", 
+        tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
 
         // LIBERA respMETODO
         free(respPadrao);
         // free(respModifi);
-        free(respInexat);
+        // free(respInexat);
 
         // liberar matheval antes de destruir sistema
         #ifndef ROSENBROCK

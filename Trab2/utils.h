@@ -25,6 +25,8 @@
 typedef struct {
     double totalSL; // tempo total do sistema linear & derivadas (matheval)
     double derivadas;
+    double Gradiente;
+    double Hessiana;
     double totalMetodo;
 } Tempo_t;
 

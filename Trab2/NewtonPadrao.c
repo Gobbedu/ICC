@@ -12,7 +12,7 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
 	// inicializa tudo que precisa
 	// double *resposta = malloc(sizeof(double) * snl->iteracao);
-	double tauxP, tauxder, tauxSL;
+	double tTotal, tauxder, tGrad, tHess, tauxSL;
 
 	int itr = 0;
 
@@ -22,14 +22,18 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 	// --------LOOP PRINCIPAL-------- //
 	for(int i = 0; i < snl->iteracao; i++)
 	{
-		tauxP = timestamp();
+		tTotal = timestamp();
 						
-		tauxder = timestamp();
-		// substituteX(snl, np);                   // calcula H[X] e J[X]
-		calcGradiente(snl, np);
-		calcHessiana(snl, np);
+		// tauxder = timestamp();
+		tGrad = timestamp();
+		calcGradiente(snl, np);					// calcula J[X]
+		tGrad = timestamp() - tGrad;
 
-		tauxder = timestamp() - tauxder;
+		tHess = timestamp();
+		calcHessiana(snl, np);					// calcula H[X]
+		tHess = timestamp() - tHess;
+		// tauxder = timestamp() - tauxder;
+
 		snl2sl(snl, np);                        // copia dados de snl em sl
 
 		#ifndef ROSENBROCK
@@ -47,11 +51,13 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 		// Devolve f(X), ponto critico estimado
 
-		tauxP = timestamp() - tauxP;
+		tTotal = timestamp() - tTotal;
 
-		t->totalMetodo += tauxP;
-		t->derivadas += tauxder;
+		t->totalMetodo += tTotal;
+		t->Gradiente += tGrad;
+		t->Hessiana += tHess;
 		t->totalSL += tauxSL;
+		// t->derivadas += tauxder;
 		itr++;
 		
 			if(Parada(snl, np->delta))

@@ -22,6 +22,8 @@ void initTempo(Tempo_t *t)
 {
 	t->totalSL = 0;
 	t->derivadas = 0;
+	t->Gradiente = 0;
+	t->Hessiana = 0;
 	t->totalMetodo = 0;
 }
 
