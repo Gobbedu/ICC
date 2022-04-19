@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
         #endif
 
         respPadrao = malloc(sizeof(double) * snl->iteracao);
-        respInexat = malloc(sizeof(double) * snl->iteracao);
+        // respInexat = malloc(sizeof(double) * snl->iteracao);
         // respModifi = malloc(sizeof(double) * snl->iteracao);
 
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
