@@ -1,22 +1,19 @@
+# # gcc -DLIKWID_PERFMON -I${LIKWID_INCLUDE} -c <prog.c>
+# # gcc -o <prog> <prog.o> -L${LIKWID_LIB} -llikwid
 
     CC     = gcc -g -O3 -mavx -march=native
-	LIKWIDF= -DLIKWID_PERFMON -I${LIKWID_INCLUDE} -L${LIKWID_LIB} -llikwid
-    LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
+    LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval -L${LIKWID_LIB} -llikwid
 
     PROG = newtonPC
-    # OBJS = NewtonPadrao.o NewtonModificado.o NewtonInexato.o SistNlinear.o SistLinear.o utils.o
-    OBJS = NewtonPadrao.o Rosenbrock.o NewtonInexato.o SistNlinear.o SistLinear.o utils.o
+    OBJS = NewtonPadrao.o NewtonInexato.o Rosenbrock.o SistNlinear.o SistLinear.o utils.o
 
 .PHONY: clean purge all
-
-# gcc -DLIKWID_PERFMON -I${LIKWID_INCLUDE} -c <prog.c>
-# gcc -o <prog> <prog.o> -L${LIKWID_LIB} -llikwid
 
 %.o: %.c
 	$(CC) -DLIKWID_PERFMON -I${LIKWID_INCLUDE} -c $<
 
 $(PROG):  $(OBJS) newtonPC.o
-	$(CC) -o $@ $^ -L${LIKWID_LIB} -llikwid $(LFLAGS)
+	$(CC) -o $@ $^ $(LFLAGS)
 
 clear: 
 	@rm $(OBJS)

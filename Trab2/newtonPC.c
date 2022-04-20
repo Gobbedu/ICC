@@ -54,56 +54,49 @@ int main(int argc, char **argv) {
             fprintf(saida, "%s\n", snl->funcao);    // a funcao
         #endif
 
-        // respPadrao = malloc(sizeof(double) * snl->iteracao);
-        respInexat = malloc(sizeof(double) * snl->iteracao);
-        // respModifi = malloc(sizeof(double) * snl->iteracao);
+        char _method = 'p';
 
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
-        // NewtonModificado(snl, respModifi, &tModifi, &iterModifi);
-        // NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
-        NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
-
+        if(_method == 'p'){
+            respPadrao = malloc(sizeof(double) * snl->iteracao);
+            NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+        }
+        else{
+            respInexat = malloc(sizeof(double) * snl->iteracao);
+            NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
+        }
         
-        // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
-        // fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
-
-
         #ifdef FULLPRINT_ON
+        fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
         // --------LOOP PRINT-------- //
         for(int i = 0; i < snl->iteracao; i++)
         {
-	    // imprime em -o <saida>
             fprintf(saida, "%-12d \t| ", i); // imprime iteração
-
-            // printCol(respPadrao, i, iterPadrao, saida);
-            // printCol(respInexat, i, iterInexat, saida);
-            // printCol(respModifi, i, iterModifi, argc, saida);
-
+            printCol(respPadrao, i, iterPadrao, saida);
+            printCol(respInexat, i, iterInexat, saida);
   	        fprintf(saida, "\n");
-
             // se todos acabaram
             if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) && (i+1>=iterInexat) )
                 break;
         }
-        #endif
-        // saida com os 3 metodos
-        // fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.totalMetodo, tModifi.totalMetodo, tInexat.totalMetodo);
-        // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e  |\n",tPadrao.derivadas,tModifi.derivadas,tInexat.derivadas);
-        // fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e  |\n#\n\n",tPadrao.totalSL,tModifi.totalSL,tInexat.totalSL);
         // saida com os 2 metodos
-        // fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| \n",tPadrao.totalMetodo,  tInexat.totalMetodo);
-        // fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| \n",tPadrao.derivadas, tInexat.derivadas);
-        // fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| \n#\n\n",tPadrao.totalSL, tInexat.totalSL);
+        fprintf(saida, "Tempo total \t| %1.14e\t| %1.14e\t| \n",tPadrao.totalMetodo,  tInexat.totalMetodo);
+        fprintf(saida, "Tempo derivadas | %1.14e\t| %1.14e\t| \n",tPadrao.derivadas, tInexat.derivadas);
+        fprintf(saida, "Tempo SL \t| %1.14e\t| %1.14e\t| \n#\n\n",tPadrao.totalSL, tInexat.totalSL);
+        #endif
 
-        fprintf(saida, "%f; %f; %f; %f\n", 
         // saida para csv com metodo Padrao
-        // tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
-        tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
-
         // LIBERA respMETODO
-        free(respPadrao);
-        // free(respModifi);
-        // free(respInexat);
+        if(_method = 'p'){
+            fprintf(saida, "%f; %f; %f; %f\n", 
+            tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
+            free(respPadrao);
+        }
+        else{
+            fprintf(saida, "%f; %f; %f; %f\n", 
+            tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
+            free(respInexat);
+        }
 
         // liberar matheval antes de destruir sistema
         #ifndef ROSENBROCK
