@@ -9,7 +9,7 @@
 // #include "NewtonModificado.h"
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
-
+#include <likwid.h>
 // #define ROSENBROCK -> mudar em utils.h
 // #define FULLPRINT_ON
 
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
     // saida csv para 1 metodo separador ;
     fprintf(saida, "Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear\n");
-
+    LIKWID_MARKER_INIT;
     while(snl = lerSistNL())
     {   
         #ifndef ROSENBROCK   
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
 
         liberaSistNl(snl);
     }    
-
+    LIKWID_MARKER_CLOSE;
     if(argc == 3)
 	    fclose(saida);
     return 0;
