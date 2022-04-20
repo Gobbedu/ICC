@@ -16,7 +16,7 @@
 
 int main(int argc, char **argv) {
     // LIKWID_MARKER_INIT;
-    likwid_markerInit();
+    // likwid_markerInit();
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
@@ -61,9 +61,11 @@ int main(int argc, char **argv) {
 
         char _method = 'p';
 
+        LIKWID_MARKER_INIT;
+        
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
-        // LIKWID_MARKER_START("METODO");
-        likwid_markerStart("METODO");
+        LIKWID_MARKER_START("METODO");
+        // likwid_markerStart("METODO");
         if(_method == 'p'){
             respPadrao = malloc(sizeof(double) * snl->iteracao);
             NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
@@ -72,8 +74,10 @@ int main(int argc, char **argv) {
             respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
-        // LIKWID_MARKER_STOP("METODO");
-        likwid_markerStop("METODO");
+        LIKWID_MARKER_STOP("METODO");
+        // likwid_markerStop("METODO");
+
+        LIKWID_MARKER_CLOSE;
 
         
         #ifdef FULLPRINT_ON
@@ -118,6 +122,6 @@ int main(int argc, char **argv) {
     if(argc == 3)
 	    fclose(saida);
     // LIKWID_MARKER_CLOSE;
-    likwid_markerClose();
+    // likwid_markerClose();
     return 0;
 }
