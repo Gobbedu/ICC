@@ -61,10 +61,10 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 		tTotal = timestamp() - tTotal;
 
-		t->totalMetodo += tTotal;
-		t->Gradiente += tGrad;
-		t->Hessiana += tHess;
-		t->totalSL += tauxSL;
+		// t->totalMetodo += tTotal;
+		// t->Gradiente += tGrad;
+		// t->Hessiana += tHess;
+		// t->totalSL += tauxSL;
 		// t->derivadas += tauxder;
 		itr++;
 		
