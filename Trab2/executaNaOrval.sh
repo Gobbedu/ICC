@@ -1,5 +1,4 @@
-make
-make purge
+touch newtonPC.c
 make
 make clear
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
