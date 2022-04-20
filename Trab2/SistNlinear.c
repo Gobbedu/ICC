@@ -34,7 +34,6 @@ SistNl_t *lerSistNL(void)
 
 int Parada(SistNl_t *snl, double *delta)
 {
-
     // normal -> || X || = max{ |xi|, 1 ≤ i ≤ n}
     double maxD = -INFINITY;
     for(int i = 0; i < snl->n; i++){
@@ -48,10 +47,10 @@ int Parada(SistNl_t *snl, double *delta)
 void calcDelta(SnlVar_t *var, int n){
     // allow for loop unrolling
     for(int i = 0; i < n; i++)
+    {
         var->x1[i] = var->x0[i] + var->delta[i];
-
-    for(int i = 0; i < n; i++)
         var->x0[i] = var->x1[i];
+    }
 
 }
 
@@ -191,48 +190,6 @@ void snl2sl(SistNl_t *snl, SnlVar_t *nt)
 }
 */
 
-#ifndef ROSENBROCK
-void snlinfo(SistNl_t *S){
-    printf("\n------------------------------------SNL INFO------------------------------------\n");
-    printf("#  n: %i\n", S->n);
-    printf("#  funcao: %s\n", S->funcao);
-
-    printf("#  chute:");
-    for(int i = 0; i < S->n; i++)
-        printf(" %g ", S->chute[i]);
-    printf("\n");
-
-    printf("#  eps: %g\n", S->eps);
-    printf("#  iteracao: %i\n", S->iteracao);
-
-    printf("#  names: ");
-    for(int i = 0; i < S->n ; i++)
-        printf(" %s ", S->names[i]);
-    printf("\n");
-
-    printf("\nVETOR CHUTE's:\n#");
-    for(int i = 0; i < S->n; i++)
-        printf("  %f, ", S->chute[i]);
-    printf("\nEVALUATOR\n#  f(CHUTE) = %g\n",evaluator_evaluate(S->f, S->n, S->names, S->chute));
-
-
-    printf("--------------------------------------END SNL INFO-----------------------------------------\n");
-}
-
-void varinfo(SnlVar_t nt, SistNl_t snl)
-{
-    char *func;
-    printf("\n------------------------------------INFO VARIAVEIS------------------------------------\n");
-    printf("x0: "); for(int i = 0; i < snl.n; i++) printf("%1.3e ", nt.x0[i]); printf("\n");
-    printf("x1: "); for(int i = 0; i < snl.n; i++) printf("%1.3e ", nt.x1[i]); printf("\n");
-    printf("delta: "); for(int i = 0; i < snl.n; i++) printf("%1.3e ", nt.delta[i]); printf("\n");
-    printf("evaluator[x0] = %1.14e\n", evaluator_evaluate(snl.f, snl.n, snl.names, nt.x0));
-    
-        
-
-    printf("-------------------------------------------------------------------------------\n");
-}
-#endif
 void printCol(double* pto, int i, int max, FILE *saida)
 {
     if(i < max){
