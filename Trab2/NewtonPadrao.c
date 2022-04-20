@@ -7,7 +7,7 @@
 ********************************************************/
 
 #include "NewtonPadrao.h"
-#include <likwid.h>
+// #include <likwid.h>
 // // ELIMINACAO GAUSS ou NEWTON PADRAO
 void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
@@ -20,24 +20,24 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 	SnlVar_t *np = alocaSnlVar(snl->chute, snl->n);
 
-	LIKWID_MARKER_START("marker-METODO");
+	// LIKWID_MARKER_START("METODO");
 	// --------LOOP PRINCIPAL-------- //
 	for(int i = 0; i < snl->iteracao; i++)
 	{
 		tTotal = timestamp();
 
 		// tauxder = timestamp();
-		LIKWID_MARKER_START("marker-GRADIENTE");
+		// LIKWID_MARKER_START("GRADIENTE");
 		tGrad = timestamp();
 		calcGradiente(snl, np);					// calcula J[X]
 		tGrad = timestamp() - tGrad;
-		LIKWID_MARKER_STOP("marker-GRADIENTE");			
+		// LIKWID_MARKER_STOP("GRADIENTE");			
 
-		LIKWID_MARKER_START("marker-HESSIANA");
+		// LIKWID_MARKER_START("HESSIANA");
 		tHess = timestamp();
 		calcHessiana(snl, np);					// calcula H[X]
 		tHess = timestamp() - tHess;
-		LIKWID_MARKER_STOP("marker-HESSIANA");			
+		// LIKWID_MARKER_STOP("HESSIANA");			
 		// tauxder = timestamp() - tauxder;
 
 		snl2sl(snl, np);                        // copia dados de snl em sl
@@ -48,11 +48,11 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 			resposta[i] = rosenbrock(np->x0, snl->n);
 		#endif
 		
-		LIKWID_MARKER_START("marker-SIST-LINEAR");
+		// LIKWID_MARKER_START("SLINEAR");
 		tauxSL = timestamp();
 		eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
 		tauxSL = timestamp() - tauxSL;
-		LIKWID_MARKER_STOP("marker-SIST-LINEAR");			
+		// LIKWID_MARKER_STOP("SLINEAR");			
 
 		// varinfo(*np, *snl);
 		calcDelta(np, snl->n);                     // X[i+1] = X[i] + delta[i]
@@ -71,7 +71,7 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 			if(Parada(snl, np->delta))
 			break;
 	}
-	LIKWID_MARKER_STOP("marker-METODO");			
+	// LIKWID_MARKER_STOP("METODO");			
 
 	*nIter = itr;
 
