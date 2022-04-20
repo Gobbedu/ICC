@@ -1,7 +1,7 @@
 
     CC     = gcc -g -O3 -mavx -march=native
     CFLAGS = -g -std=c11 
-	LIKWIDF= -DLIKWID_PERFMON -I/home/soft/likwid/include -L/home/soft/likwid/lib -llikwid
+	LIKWIDF= -DLIKWID_PERFMON -I /home/soft/likwid/include -L /home/soft/likwid/lib -llikwid
     LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval
 
     PROG = newtonPC
@@ -11,10 +11,10 @@
 .PHONY: clean purge all
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(LIKWIDF) $<
+	$(CC) $(LIKWIDF) -c $(CFLAGS)  $<
 
 $(PROG):  $(OBJS) newtonPC.o
-	$(CC) -o $@ $^ $(LFLAGS)
+	$(CC) $(LIKWIDF) -o $@ $^ $(LFLAGS)
 
 clear: 
 	@rm $(OBJS)
