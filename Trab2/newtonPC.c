@@ -16,12 +16,13 @@
 
 int main(int argc, char **argv) {
     SistNl_t *snl;
-    Tempo_t tPadrao, tModifi, tInexat;              // tempo de cada metodo
+    Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
-    initTempo(&tPadrao);
-    initTempo(&tModifi);
-    initTempo(&tInexat);
-
+    tPadrao.derivadas = tInexat.derivadas = 0;
+    tPadrao.Gradiente = tInexat.Gradiente = 0;
+    tPadrao.Hessiana = tInexat.Hessiana = 0;
+    tPadrao.totalMetodo = tInexat.totalMetodo = 0;
+    tPadrao.totalSL = tInexat.totalSL = 0;
 
     double *respPadrao, *respModifi, *respInexat; 
 
