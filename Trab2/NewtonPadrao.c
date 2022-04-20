@@ -17,8 +17,22 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 	int itr = 0;
 
+	char *mMetodo, *mGrad, *mHess, *mSL;
+	mMetodo = malloc(sizeof(char)*20);
+	mGrad  = malloc(sizeof(char)*20);
+	mHess   = malloc(sizeof(char)*20);
+	mSL     = malloc(sizeof(char)*20);
+
+	sprintf(mMetodo, "P_METODO_%i", snl->n);
+	sprintf(mGrad, "P_GRAD_%i", snl->n);
+	sprintf(mHess, "P_HESS_%i", snl->n);
+	sprintf(mSL, "P_SISTLIN_%i", snl->n);
 
 	SnlVar_t *np = alocaSnlVar(snl->chute, snl->n);
+
+	#ifdef LIKWID_PERFMONI
+	LIKWID_MARKER_START(mMetodo);
+	#endif
 
 	// --------LOOP PRINCIPAL-------- //
 	for(int i = 0; i < snl->iteracao; i++)
@@ -27,23 +41,23 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 		// tauxder = timestamp();
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_START("GRADIENTE");
+		LIKWID_MARKER_START(mGrad);
 		#endif
 		tGrad = timestamp();
 		calcGradiente(snl, np);					// calcula J[X]
 		tGrad = timestamp() - tGrad;
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_STOP("GRADIENTE");			
+		LIKWID_MARKER_STOP(mGrad);			
 		#endif
 
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_START("HESSIANA");
+		LIKWID_MARKER_START(mHess);
 		#endif
 		tHess = timestamp();
 		calcHessiana(snl, np);					// calcula H[X]
 		tHess = timestamp() - tHess;
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_STOP("HESSIANA");			
+		LIKWID_MARKER_STOP(mHess);			
 		#endif
 		// tauxder = timestamp() - tauxder;
 
@@ -52,13 +66,13 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 		resposta[i] = rosenbrock(np->x0, snl->n);
 		
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_START("SISTLINEAR");
+		LIKWID_MARKER_START(mSL);
 		#endif
 		tauxSL = timestamp();
 		eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
 		tauxSL = timestamp() - tauxSL;
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_STOP("SISTLINEAR");			
+		LIKWID_MARKER_STOP(mSL);			
 		#endif
 
 		// varinfo(*np, *snl);
@@ -78,6 +92,14 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 			if(Parada(snl, np->delta))
 			break;
 	}
+	#ifdef LIKWID_PERFMONI
+	LIKWID_MARKER_STOP(mMetodo);
+	#endif
+
+	free(mMetodo);
+	free(mGrad);
+	free(mHess);
+	free(mSL);
 
 	*nIter = itr;
 

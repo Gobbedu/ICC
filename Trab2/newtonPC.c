@@ -52,10 +52,6 @@ int main(int argc, char **argv) {
             fprintf(saida, "%s\n", snl->funcao);    // a funcao
         #endif
 
-        #ifdef LIKWID_PERFMONI
-        LIKWID_MARKER_START("METODO");
-        #endif
-
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
         if(_method == 'p'){
             respPadrao = malloc(sizeof(double) * snl->iteracao);
@@ -65,10 +61,6 @@ int main(int argc, char **argv) {
             respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
-        #ifdef LIKWID_PERFMONI
-        LIKWID_MARKER_STOP("METODO");
-        #endif
-
         
         #ifdef FULLPRINT_ON
         fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
