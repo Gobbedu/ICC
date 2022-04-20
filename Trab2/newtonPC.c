@@ -18,11 +18,14 @@ int main(int argc, char **argv) {
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
-    tPadrao.derivadas = tInexat.derivadas = 0;
-    tPadrao.Gradiente = tInexat.Gradiente = 0;
-    tPadrao.Hessiana = tInexat.Hessiana = 0;
-    tPadrao.totalMetodo = tInexat.totalMetodo = 0;
-    tPadrao.totalSL = tInexat.totalSL = 0;
+    initTempo(&tPadrao);
+    initTempo(&tInexat);
+
+    // tPadrao.derivadas = tInexat.derivadas = 0;
+    // tPadrao.Gradiente = tInexat.Gradiente = 0;
+    // tPadrao.Hessiana = tInexat.Hessiana = 0;
+    // tPadrao.totalMetodo = tInexat.totalMetodo = 0;
+    // tPadrao.totalSL = tInexat.totalSL = 0;
 
     double *respPadrao, *respModifi, *respInexat; 
 
@@ -62,7 +65,7 @@ int main(int argc, char **argv) {
             respPadrao = malloc(sizeof(double) * snl->iteracao);
             NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         }
-        else{
+        else if(_method == 'i'{
             respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
@@ -88,12 +91,12 @@ int main(int argc, char **argv) {
 
         // saida para csv com metodo Padrao
         // LIBERA respMETODO
-        if(_method = 'p'){
+        if(_method =='p'){
             fprintf(saida, "%f; %f; %f; %f\n", 
             tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
             free(respPadrao);
         }
-        else{
+        else if(_method == 'i'{
             fprintf(saida, "%f; %f; %f; %f\n", 
             tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
             free(respInexat);
