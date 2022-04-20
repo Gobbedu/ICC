@@ -1,3 +1,5 @@
+#!/bin/python3
+
 from email.utils import collapse_rfc2231_value
 from cv2 import rotate
 import matplotlib.pyplot as plt
@@ -33,9 +35,9 @@ pyplot[0]: https://matplotlib.org/3.1.1/tutorials/introductory/pyplot.html#sphx-
 """
 
 
-csv_file = 'data/timestampInexat.csv'
+csv_file = 'data/csvs/timestampInexat.csv'
 metodo = 'Inexato' # inexato ou padrao
-saida_grafico = 'data/timestampInexat.png'
+saida_grafico = 'data/plots/TempoInexato.png'
 quero_ver = False    # se true mostra, se falso baixa em saida grafico
 
 col1 = "Aplicacao_metodo_Newton"
@@ -53,7 +55,7 @@ tempo_execucao = pd.read_csv(sep=';', filepath_or_buffer=csv_file)
 x = [10, 32, 50, 64, 100, 128, 200, 250, 256, 300, 400, 512, 600, 1000, 1024, 2000, 2048, 3000, 4096]
 # fazer um grafico por vez
 
-tempo_execucao.plot()
+tempo_execucao.plot(style='.-')
 
 # o que vai ser medido
 plt.ylabel("Tempo de execução")
