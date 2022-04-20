@@ -11,7 +11,7 @@
 #include "NewtonInexato.h"
 // #define LIKWID_PERFMONI -> Inclui likwid na compilacao, mudar em utils.h
 // #define FULLPRINT_ON
-#define _method 'i'// QUAL METODO EXECUTAR: p -> newtonPadrao \ i -> newtonInexato
+#define _method 'o'// QUAL METODO EXECUTAR: p -> newtonPadrao \ i -> newtonInexato
 
 
 int main(int argc, char **argv) {
@@ -61,6 +61,12 @@ int main(int argc, char **argv) {
             respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
+        else{
+            respPadrao = malloc(sizeof(double) * snl->iteracao);
+            NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+            respInexat = malloc(sizeof(double) * snl->iteracao);
+            NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
+        }
         
         #ifdef FULLPRINT_ON
         fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
@@ -91,6 +97,10 @@ int main(int argc, char **argv) {
         else if(_method == 'i'){
             fprintf(saida, "%f; %f; %f; %f\n", 
             tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
+            free(respInexat);
+        }
+        else{
+            free(respPadrao);
             free(respInexat);
         }
 

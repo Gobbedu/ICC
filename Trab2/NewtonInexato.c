@@ -47,6 +47,21 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
     double tTotal, tGrad, tHess, tauxder, tauxSL;
     int itr = 0;
+
+    char *mMetodo, *mGrad, *mHess, *mSL;
+	mMetodo = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
+	mGrad   = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
+	mHess   = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
+	mSL     = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
+
+	sprintf(mMetodo, "InexatoMETODO_%u", snl->n);
+	sprintf(mGrad, "InexatoGRAD_%u", snl->n);
+	sprintf(mHess, "InexatoHESS_%u", snl->n);
+	sprintf(mSL, "InexatoSISTLIN_%u", snl->n);
+
+    #ifdef LIKWID_PERFMONI
+    LIKWID_MARKER_START(mMetodo);
+    #endif
     SnlVar_t *ni = alocaSnlVar(snl->chute, snl->n);
     // --------LOOP PRINCIPAL-------- //
     for(int i = 0; i < snl->iteracao; i++)
@@ -55,23 +70,23 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
         
         // tauxder = timestamp();
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_START("GRADIENTE");
+		LIKWID_MARKER_START(mHess);
 		#endif
 		tGrad = timestamp();
 		calcGradiente(snl, ni);					// calcula J[X]
 		tGrad = timestamp() - tGrad;
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_STOP("GRADIENTE");			
+		LIKWID_MARKER_STOP(mHess);			
 		#endif
         
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_START("HESSIANA");
+		LIKWID_MARKER_START(mGrad);
 		#endif
 		tHess = timestamp();
 		calcHessiana(snl, ni);					// calcula H[X]
 		tHess = timestamp() - tHess;
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_STOP("HESSIANA");			
+		LIKWID_MARKER_STOP(mGrad);			
 		#endif
 		// tauxder = timestamp() - tauxder;
 
@@ -80,13 +95,13 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
         resposta[i] = rosenbrock(ni->x0, snl->n);
 
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_START("SISTLINEAR");
+		LIKWID_MARKER_START(mSL);
 		#endif
         tauxSL = timestamp();
         gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
         tauxSL = timestamp() - tauxSL;
 		#ifdef LIKWID_PERFMONI
-		LIKWID_MARKER_STOP("SISTLINEAR");			
+		LIKWID_MARKER_STOP(mSL);			
 		#endif
         
         calcDelta(ni, snl->n);                  // X[i+1] = X[i] + delta[i]
@@ -103,6 +118,11 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
         if(Parada(snl, ni->delta))
             break;
     }
+
+    #ifdef LIKWID
+    LIKWID_MARKER_STOP(mMetodo);
+    #endif
+
     *nIter = itr;
     liberaSnlVar(ni, snl->n);
 }

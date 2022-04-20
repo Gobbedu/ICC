@@ -23,10 +23,10 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 	mHess   = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
 	mSL     = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
 
-	sprintf(mMetodo, "Pad_METODO_%u", snl->n);
-	sprintf(mGrad, "Pad_GRAD_%u", snl->n);
-	sprintf(mHess, "Pad_HESS_%u", snl->n);
-	sprintf(mSL, "Pad_SISTLIN_%u", snl->n);
+	sprintf(mMetodo, "PadraoMETODO_%u", snl->n);
+	sprintf(mGrad, "PadraoGRAD_%u", snl->n);
+	sprintf(mHess, "PadraoHESS_%u", snl->n);
+	sprintf(mSL, "PadraoSISTLIN_%u", snl->n);
 
 	SnlVar_t *np = alocaSnlVar(snl->chute, snl->n);
 
