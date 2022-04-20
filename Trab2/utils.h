@@ -21,6 +21,10 @@
 #include "Rosenbrock.h"
 
 #define ROSENBROCK
+#define DINF
+#ifdef DINF
+#include <likwid.h>
+#endif
 
 typedef struct {
     double totalSL; // tempo total do sistema linear & derivadas (matheval)

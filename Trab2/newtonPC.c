@@ -9,14 +9,17 @@
 // #include "NewtonModificado.h"
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
-// #include <likwid.h>
 // #define ROSENBROCK -> mudar em utils.h
+// #define DINF -> Inclui likwid na compilacao, mudar em utils.h
 // #define FULLPRINT_ON
+#define _method 'i'// QUAL METODO EXECUTAR: p -> newtonPadrao \ i -> newtonInexato
 
 
 int main(int argc, char **argv) {
-    // LIKWID_MARKER_INIT;
-    // likwid_markerInit();
+    #ifdef DINF
+    LIKWID_MARKER_INIT;
+    #endif
+
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
@@ -29,10 +32,9 @@ int main(int argc, char **argv) {
     // tPadrao.totalMetodo = tInexat.totalMetodo = 0;
     // tPadrao.totalSL = tInexat.totalSL = 0;
 
-    double *respPadrao, *respModifi, *respInexat; 
+    double *respPadrao, *respInexat; 
 
     int iterPadrao = 0,    // por referencia, numerero de iteracoes (para imprimir)
-        iterModifi = 0,
         iterInexat = 0;
 
     FILE *saida;
@@ -59,13 +61,11 @@ int main(int argc, char **argv) {
             fprintf(saida, "%s\n", snl->funcao);    // a funcao
         #endif
 
-        char _method = 'p';
-
-        LIKWID_MARKER_INIT;
-        
-        // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
+        #ifdef DINF
         LIKWID_MARKER_START("METODO");
-        // likwid_markerStart("METODO");
+        #endif
+
+        // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
         if(_method == 'p'){
             respPadrao = malloc(sizeof(double) * snl->iteracao);
             NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
@@ -74,10 +74,9 @@ int main(int argc, char **argv) {
             respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
+        #ifdef DINF
         LIKWID_MARKER_STOP("METODO");
-        // likwid_markerStop("METODO");
-
-        LIKWID_MARKER_CLOSE;
+        #endif
 
         
         #ifdef FULLPRINT_ON
@@ -102,8 +101,8 @@ int main(int argc, char **argv) {
         // saida para csv com metodo Padrao
         // LIBERA respMETODO
         if(_method =='p'){
-            // fprintf(saida, "%f; %f; %f; %f\n", 
-            // tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
+            fprintf(saida, "%f; %f; %f; %f\n", 
+            tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
             free(respPadrao);
         }
         else if(_method == 'i'){
@@ -121,7 +120,10 @@ int main(int argc, char **argv) {
     }    
     if(argc == 3)
 	    fclose(saida);
-    // LIKWID_MARKER_CLOSE;
-    // likwid_markerClose();
+
+    #ifdef DINF
+    LIKWID_MARKER_CLOSE;
+    #endif
+
     return 0;
 }

@@ -54,13 +54,25 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
         tTotal = timestamp();
         
         // tauxder = timestamp();
+		#ifdef DINF
+		LIKWID_MARKER_START("GRADIENTE");
+		#endif
 		tGrad = timestamp();
 		calcGradiente(snl, ni);					// calcula J[X]
 		tGrad = timestamp() - tGrad;
-
+		#ifdef DINF
+		LIKWID_MARKER_STOP("GRADIENTE");			
+		#endif
+        
+		#ifdef DINF
+		LIKWID_MARKER_START("HESSIANA");
+		#endif
 		tHess = timestamp();
 		calcHessiana(snl, ni);					// calcula H[X]
 		tHess = timestamp() - tHess;
+		#ifdef DINF
+		LIKWID_MARKER_STOP("HESSIANA");			
+		#endif
 		// tauxder = timestamp() - tauxder;
 
         snl2sl(snl, ni);                        // copia dados de snl em sl
@@ -71,9 +83,15 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
             resposta[i] = rosenbrock(ni->x0, snl->n);
         #endif
 
+		#ifdef DINF
+		LIKWID_MARKER_START("SISTLINEAR");
+		#endif
         tauxSL = timestamp();
         gauss_seidel(ni->sl,ni->delta);         // calcula H[X]*delta = - J[X]  // A*x = -b
         tauxSL = timestamp() - tauxSL;
+		#ifdef DINF
+		LIKWID_MARKER_STOP("SISTLINEAR");			
+		#endif
         
         calcDelta(ni, snl->n);                  // X[i+1] = X[i] + delta[i]
         
