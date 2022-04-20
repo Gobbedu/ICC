@@ -13,10 +13,10 @@
 # gcc -o <prog> <prog.o> -L${LIKWID_LIB} -llikwid
 
 %.o: %.c
-	$(CC) $(LIKWIDF) -c $<
+	$(CC) -DLIKWID_PERFMON -I${LIKWID_INCLUDE} -c $<
 
 $(PROG):  $(OBJS) newtonPC.o
-	$(CC) $(LIKWIDF) -o $@ $^ $(LFLAGS)
+	$(CC) -o $@ $^ -L${LIKWID_LIB} -llikwid $(LFLAGS)
 
 clear: 
 	@rm $(OBJS)
