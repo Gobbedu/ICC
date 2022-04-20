@@ -20,9 +20,8 @@
 
 #include "Rosenbrock.h"
 
-#define ROSENBROCK
-#define DINF
-#ifdef DINF
+// #define LIKWID_PERFMONI
+#ifdef LIKWID_PERFMONI
 #include <likwid.h>
 #endif
 

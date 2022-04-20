@@ -26,42 +26,38 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 		tTotal = timestamp();
 
 		// tauxder = timestamp();
-		#ifdef DINF
+		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_START("GRADIENTE");
 		#endif
 		tGrad = timestamp();
 		calcGradiente(snl, np);					// calcula J[X]
 		tGrad = timestamp() - tGrad;
-		#ifdef DINF
+		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_STOP("GRADIENTE");			
 		#endif
 
-		#ifdef DINF
+		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_START("HESSIANA");
 		#endif
 		tHess = timestamp();
 		calcHessiana(snl, np);					// calcula H[X]
 		tHess = timestamp() - tHess;
-		#ifdef DINF
+		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_STOP("HESSIANA");			
 		#endif
 		// tauxder = timestamp() - tauxder;
 
 		snl2sl(snl, np);                        // copia dados de snl em sl
 
-		#ifndef ROSENBROCK
-			resposta[i] = evaluator_evaluate(snl->f, snl->n, snl->names, np->x0);
-		#else
-			resposta[i] = rosenbrock(np->x0, snl->n);
-		#endif
+		resposta[i] = rosenbrock(np->x0, snl->n);
 		
-		#ifdef DINF
+		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_START("SISTLINEAR");
 		#endif
 		tauxSL = timestamp();
 		eliminacaoGauss(np->sl, np->delta);     // calcula H[X]*delta = - J[X]  // A*x = -b
 		tauxSL = timestamp() - tauxSL;
-		#ifdef DINF
+		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_STOP("SISTLINEAR");			
 		#endif
 

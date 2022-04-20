@@ -55,28 +55,6 @@ void calcDelta(SnlVar_t *var, int n){
 
 }
 
-void genNames(SistNl_t *snl){  
-    for(int i = 0; i < snl->n; i++){
-        sprintf(snl->names[i], "x%i", i+1);
-    }
-}
-
-void genGradiente(SistNl_t *snl){
-    for(int i = 0; i < snl->n; i++){
-        snl->Gf[i] = evaluator_derivative(snl->f, snl->names[i]);
-    }
-}
-
-void genHessiana(SistNl_t *snl){
-    for(int i = 0; i < snl->n; i++){
-        for(int j = 0; j < snl->n; j++)
-        {
-            // deriva Jacob[i] n vezes em x1..xn
-            snl->Hf[i][j] = evaluator_derivative(snl->Gf[i], snl->names[j]);
-        }
-    }
-}
-
 SistNl_t *alocaSistNl(unsigned int n){
     SistNl_t *SnL = (SistNl_t *) malloc(sizeof(SistNl_t));
 
@@ -90,24 +68,6 @@ SistNl_t *alocaSistNl(unsigned int n){
         SnL->names = malloc(SnL->n * sizeof(char *));
         for(int i = 0; i < SnL->n; i++)
             SnL->names[i] = malloc(5 * sizeof(char));
-
-        #ifndef ROSENBROCK
-        SnL->Hf = (void ***) malloc(sizeof(void **)*n);
-        if (!(SnL->Hf)) {
-            free(SnL);
-            return NULL;
-        }
-        for (int i=0; i < n; ++i)
-            SnL->Hf[i] = (void **) malloc(sizeof(void *)*n);
-
-
-        SnL->Gf = (void **) malloc(sizeof(void *)*n);
-        if(!(SnL->Gf)){
-            free(SnL->Hf);
-            free(SnL);
-        }
-        #endif
-
     }
   return SnL;
 }
@@ -121,21 +81,6 @@ void liberaSistNl(SistNl_t *snl) {
     free(snl->names);
     free(snl->chute);
     free(snl);
-}
-
-void liberaMatheval(SistNl_t *snl)
-{
-    for(int i = 0; i < snl->n; i++){
-        for(int j = 0; j < snl->n; j++)
-        {
-            evaluator_destroy(snl->Hf[i][j]);
-        }
-        evaluator_destroy(snl->Gf[i]);
-        free(snl->Hf[i]);
-    }
-    evaluator_destroy(snl->f);
-    free(snl->Gf);
-    free(snl->Hf);
 }
 
 SnlVar_t *alocaSnlVar(double *chute, int n)
@@ -208,25 +153,13 @@ void calcHessiana(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
         for(int j = 0; j < snl->n; j++)
-        {
-            #ifndef ROSENBROCK
-            var->He[i][j] = evaluator_evaluate(snl->Hf[i][j], snl->n, snl->names, var->x0);
-            #else
             var->He[i][j] = rosenbrock_dxdy(i, j, var->x0, snl->n);
-            #endif 
-        }
 }
 
 void calcGradiente(SistNl_t *snl, SnlVar_t *var)
 {
     for(int i = 0; i < snl->n ; i++)
-    {
-        #ifndef ROSENBROCK
-            var->Ge[i] = evaluator_evaluate(snl->Gf[i], snl->n, snl->names, var->x0);
-        #else
-            var->Ge[i] = rosenbrock_dx(i, var->x0, snl->n);
-        #endif 
-    }
+        var->Ge[i] = rosenbrock_dx(i, var->x0, snl->n);
 }
 /*
 void substituteX(SistNl_t *snl, SnlVar_t *nt)

@@ -9,14 +9,13 @@
 // #include "NewtonModificado.h"
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
-// #define ROSENBROCK -> mudar em utils.h
-// #define DINF -> Inclui likwid na compilacao, mudar em utils.h
+// #define LIKWID_PERFMONI -> Inclui likwid na compilacao, mudar em utils.h
 // #define FULLPRINT_ON
 #define _method 'i'// QUAL METODO EXECUTAR: p -> newtonPadrao \ i -> newtonInexato
 
 
 int main(int argc, char **argv) {
-    #ifdef DINF
+    #ifdef LIKWID_PERFMONI
     LIKWID_MARKER_INIT;
     #endif
 
@@ -47,21 +46,13 @@ int main(int argc, char **argv) {
     fprintf(saida, "Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear\n");
     while(snl = lerSistNL())
     {   
-        #ifndef ROSENBROCK   
-            snl->f = evaluator_create(snl->funcao);
-            assert(snl->f);
-            genNames(snl);          // nomes das variaveis x1, x2 .. xn
-
-            genGradiente(snl);   // derivadas de f c/ respeito a x1, x2 .. xn
-            genHessiana(snl);       // possiveis combinacoes de segunda derivada
-        #endif
 
         #ifdef FULLPRINT_ON
             fprintf(saida, "%i\n", snl->n);         // grau da funcao
             fprintf(saida, "%s\n", snl->funcao);    // a funcao
         #endif
 
-        #ifdef DINF
+        #ifdef LIKWID_PERFMONI
         LIKWID_MARKER_START("METODO");
         #endif
 
@@ -74,7 +65,7 @@ int main(int argc, char **argv) {
             respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
-        #ifdef DINF
+        #ifdef LIKWID_PERFMONI
         LIKWID_MARKER_STOP("METODO");
         #endif
 
@@ -111,17 +102,12 @@ int main(int argc, char **argv) {
             free(respInexat);
         }
 
-        // liberar matheval antes de destruir sistema
-        #ifndef ROSENBROCK
-            liberaMatheval(snl);
-        #endif
-
         liberaSistNl(snl);
     }    
     if(argc == 3)
 	    fclose(saida);
 
-    #ifdef DINF
+    #ifdef LIKWID_PERFMONI
     LIKWID_MARKER_CLOSE;
     #endif
 

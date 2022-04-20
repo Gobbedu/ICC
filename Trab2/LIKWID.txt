@@ -1,4 +1,4 @@
-===== GUIA DE CONFIGURAÇÃO DO LINUX PARA USO DO LIKWID NO DINF ===============
+===== GUIA DE CONFIGURAÇÃO DO LINUX PARA USO DO LIKWID NO LIKWID_PERFMONI ===============
 
 1. Acrescentar linhas abaixo em '${HOME}/.bashrc':
 
@@ -37,9 +37,9 @@
 
 
 
-===== GUIA DE ACESSO REMOTO ÀS MÁQUINAS DOS LABORATÓRIOS DINF ===============
+===== GUIA DE ACESSO REMOTO ÀS MÁQUINAS DOS LABORATÓRIOS LIKWID_PERFMONI ===============
 
-Nos acessos abaixo, sempre use seu login/senha nas máquinas do DINF
+Nos acessos abaixo, sempre use seu login/senha nas máquinas do LIKWID_PERFMONI
 
 1. Copiar seus arquivos locais para a máquina 'macalan':
 
