@@ -1,10 +1,7 @@
 #!/bin/python3
 
-from email.utils import collapse_rfc2231_value
-from cv2 import rotate
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 
 """
     script para gerar plots em python
@@ -26,24 +23,25 @@ import numpy as np
     plt.savefig("nome_do_plot.png") salva o grafico em file
     
     rodar: $> python3 plotter.py
+    rodar(todo): $> python3 plotter.py nomeMetodo nomeMedicao entrada.csv saida.csv
 
 links pra ver como faz as parada:
 pandas[1]: https://pandas.pydata.org/docs/getting_started/intro_tutorials/04_plotting.html
-
-no final acho q nn vai precisar do pyplot
 pyplot[0]: https://matplotlib.org/3.1.1/tutorials/introductory/pyplot.html#sphx-glr-tutorials-introductory-pyplot-py
 """
 
 
-csv_file = 'data/csvs/timestampInexat.csv'
 metodo = 'Inexato' # inexato ou padrao
-saida_grafico = 'data/plots/TempoInexato.png'
-quero_ver = False    # se true mostra, se falso baixa em saida grafico
+csv_file = 'data/csvs/timestampInexato.csv'
+# saida_grafico = 'data/plots/TempoInexato.png'
+saida_grafico = 'aux.png'
+quero_ver = False    # se true mostra grafico, se falso baixa img em saida grafico
 
-col1 = "Aplicacao_metodo_Newton"
-col2 = "Calculo_Gradiente"
-col3 = "Calculo_Hessiana"
-col4 = "Resolucao_Sistema_Linear"
+# remove?
+# col1 = "Aplicacao_metodo_Newton"
+# col2 = "Calculo_Gradiente"
+# col3 = "Calculo_Hessiana"
+# col4 = "Resolucao_Sistema_Linear"
 
 # diferentes dataframes
 tempo_execucao = pd.read_csv(sep=';', filepath_or_buffer=csv_file)
