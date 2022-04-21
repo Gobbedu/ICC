@@ -18,10 +18,10 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 	int itr = 0;
 
 	char *mMetodo, *mGrad, *mHess, *mSL;
-	mMetodo = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
-	mGrad   = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
-	mHess   = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
-	mSL     = malloc(sizeof(char)*(20 + (log10(snl->n)+1)));
+	mMetodo = malloc(sizeof(char)*50);
+	mGrad   = malloc(sizeof(char)*50);
+	mHess   = malloc(sizeof(char)*50);
+	mSL     = malloc(sizeof(char)*50);
 
 	sprintf(mMetodo, "PadraoMETODO_%u", snl->n);
 	sprintf(mGrad, "PadraoGRAD_%u", snl->n);
