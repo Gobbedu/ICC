@@ -1,0 +1,703 @@
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz
+CPU type:	Intel Coffeelake processor
+CPU clock:	3.41 GHz
+--------------------------------------------------------------------------------
+Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear
+--------------------------------------------------------------------------------
+Region PadraoMETODO_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.025777 |
+|     call count    |        1 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 1540725 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 2390666 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 2146046 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |    6400 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0258 |
+| Runtime unhalted [s] |    0.0007 |
+|      Clock [MHz]     | 3796.4805 |
+|          CPI         |    1.5517 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |    0.9931 |
++----------------------+-----------+
+
+Region PadraoGRAD_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000009 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 207371 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 423847 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 380276 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 9.447719e-06 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3798.4944 |
+|          CPI         |       2.0439 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region PadraoHESS_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000022 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 335939 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 463732 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 418048 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 2.203509e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3780.4387 |
+|          CPI         |       1.3804 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region PadraoSISTLIN_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000034 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 433301 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 485904 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 435230 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   5600 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 3.442763e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3804.8097 |
+|          CPI         |       1.1214 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |     650.6402 |
++----------------------+--------------+
+
+Region InexatoMETODO_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.026644 |
+|     call count    |        1 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 2740802 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 3211439 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 2893392 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   25792 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0266 |
+| Runtime unhalted [s] |    0.0009 |
+|      Clock [MHz]     | 3782.6285 |
+|          CPI         |    1.1717 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |    3.8720 |
++----------------------+-----------+
+
+Region InexatoHESS_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000009 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 250017 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 466803 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 421030 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 9.259340e-06 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3778.5214 |
+|          CPI         |       1.8671 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region InexatoGRAD_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000022 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 377220 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 504675 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 454968 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 2.155857e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3780.3519 |
+|          CPI         |       1.3379 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region InexatoSISTLIN_10, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000209 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 1542938 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 1180665 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1065426 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   24992 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0002 |
+| Runtime unhalted [s] |    0.0003 |
+|      Clock [MHz]     | 3776.6322 |
+|          CPI         |    0.7652 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |  478.4406 |
++----------------------+-----------+
+
+Region PadraoMETODO_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.027699 |
+|     call count    |        1 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 5744407 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 3824342 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 3429442 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |  243650 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0277 |
+| Runtime unhalted [s] |    0.0011 |
+|      Clock [MHz]     | 3800.4459 |
+|          CPI         |    0.6658 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |   35.1856 |
++----------------------+-----------+
+
+Region PadraoGRAD_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000012 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 241480 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 432839 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 384110 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 1.241308e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3840.3611 |
+|          CPI         |       1.7924 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region PadraoHESS_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000130 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 1633254 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  888591 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  797046 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |       0 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0001 |
+| Runtime unhalted [s] |    0.0003 |
+|      Clock [MHz]     | 3799.4420 |
+|          CPI         |    0.5441 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |         0 |
++----------------------+-----------+
+
+Region PadraoSISTLIN_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000261 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 3215350 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 1393751 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1253008 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |  240800 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0003 |
+| Runtime unhalted [s] |    0.0004 |
+|      Clock [MHz]     | 3790.8154 |
+|          CPI         |    0.4335 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  | 3685.0139 |
++----------------------+-----------+
+
+Region InexatoMETODO_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.028600 |
+|     call count    |        1 |
++-------------------+----------+
+
++------------------------------------------+---------+----------+
+|                   Event                  | Counter |  Core 3  |
++------------------------------------------+---------+----------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 10772270 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  7941006 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  7139760 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |        0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   352738 |
++------------------------------------------+---------+----------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0286 |
+| Runtime unhalted [s] |    0.0023 |
+|      Clock [MHz]     | 3790.4712 |
+|          CPI         |    0.7372 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |   49.3337 |
++----------------------+-----------+
+
+Region InexatoHESS_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000012 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 272851 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 464530 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 418190 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 1.188843e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3785.6583 |
+|          CPI         |       1.7025 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region InexatoGRAD_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000130 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 1665663 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  920114 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  827860 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |       0 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0001 |
+| Runtime unhalted [s] |    0.0003 |
+|      Clock [MHz]     | 3787.7912 |
+|          CPI         |    0.5524 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |         0 |
++----------------------+-----------+
+
+Region InexatoSISTLIN_32, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.001342 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 8169955 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 5428223 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 4879262 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |  349888 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0013 |
+| Runtime unhalted [s] |    0.0016 |
+|      Clock [MHz]     | 3791.4456 |
+|          CPI         |    0.6644 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  | 1042.6048 |
++----------------------+-----------+
+
+Region PadraoMETODO_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.028109 |
+|     call count    |        1 |
++-------------------+----------+
+
++------------------------------------------+---------+----------+
+|                   Event                  | Counter |  Core 3  |
++------------------------------------------+---------+----------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 13407200 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  6280232 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  5645494 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |        0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   970400 |
++------------------------------------------+---------+----------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0281 |
+| Runtime unhalted [s] |    0.0018 |
+|      Clock [MHz]     | 3791.1854 |
+|          CPI         |    0.4684 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |  138.0916 |
++----------------------+-----------+
+
+Region PadraoGRAD_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000015 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 269978 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 446403 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 405836 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 1.457211e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3748.6753 |
+|          CPI         |       1.6535 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region PadraoHESS_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000279 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 3705281 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 1471002 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1323014 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |       0 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0003 |
+| Runtime unhalted [s] |    0.0004 |
+|      Clock [MHz]     | 3789.2226 |
+|          CPI         |    0.3970 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |         0 |
++----------------------+-----------+
+
+Region PadraoSISTLIN_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000713 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 8638200 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 3131672 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 2815008 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |  965600 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0007 |
+| Runtime unhalted [s] |    0.0009 |
+|      Clock [MHz]     | 3791.3853 |
+|          CPI         |    0.3625 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  | 5415.1923 |
++----------------------+-----------+
+
+Region InexatoMETODO_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.030819 |
+|     call count    |        1 |
++-------------------+----------+
+
++------------------------------------------+---------+----------+
+|                   Event                  | Counter |  Core 3  |
++------------------------------------------+---------+----------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 21777320 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 15632100 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 14052460 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |        0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   904512 |
++------------------------------------------+---------+----------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0308 |
+| Runtime unhalted [s] |    0.0046 |
+|      Clock [MHz]     | 3791.1089 |
+|          CPI         |    0.7178 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |  117.3954 |
++----------------------+-----------+
+
+Region InexatoHESS_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000014 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+--------+
+|                   Event                  | Counter | Core 3 |
++------------------------------------------+---------+--------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 293735 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 470481 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 422024 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |      0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |      0 |
++------------------------------------------+---------+--------+
+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 1.405978e-05 |
+| Runtime unhalted [s] |       0.0001 |
+|      Clock [MHz]     |    3799.3231 |
+|          CPI         |       1.6017 |
+|   Packed SP MFLOP/s  |            0 |
+|   Packed DP MFLOP/s  |            0 |
++----------------------+--------------+
+
+Region InexatoGRAD_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.000277 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+---------+
+|                   Event                  | Counter |  Core 3 |
++------------------------------------------+---------+---------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 3729003 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 1483085 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1333096 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |       0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |       0 |
++------------------------------------------+---------+---------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0003 |
+| Runtime unhalted [s] |    0.0004 |
+|      Clock [MHz]     | 3791.4550 |
+|          CPI         |    0.3977 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  |         0 |
++----------------------+-----------+
+
+Region InexatoSISTLIN_50, Group 1: FLOPS_AVX
++-------------------+----------+
+|    Region Info    |  Core 3  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.003218 |
+|     call count    |       50 |
++-------------------+----------+
+
++------------------------------------------+---------+----------+
+|                   Event                  | Counter |  Core 3  |
++------------------------------------------+---------+----------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 16947040 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 12442070 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 11187610 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC0  |        0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC1  |   899712 |
++------------------------------------------+---------+----------+
+
++----------------------+-----------+
+|        Metric        |   Core 3  |
++----------------------+-----------+
+|  Runtime (RDTSC) [s] |    0.0032 |
+| Runtime unhalted [s] |    0.0037 |
+|      Clock [MHz]     | 3790.1519 |
+|          CPI         |    0.7342 |
+|   Packed SP MFLOP/s  |         0 |
+|   Packed DP MFLOP/s  | 1118.4848 |
++----------------------+-----------+
+

@@ -7,7 +7,7 @@ FUNCAO="data/funcoesrosenbrock.dat"
 PREP="data/teste.dat"
 RODAR=${PREP}
 
-METRICA="L3 L2CACHE FLOPS_DS FLOPS_AVX"
+METRICA="L3 L2CACHE FLOPS_DP FLOPS_AVX"
 
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 for m in ${METRICA}
