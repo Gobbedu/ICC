@@ -13,8 +13,8 @@ METRICA="L3 L2CACHE FLOPS_DP FLOPS_AVX"
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 for m in ${METRICA}
 do
-    likwid-perfctr -O -C 3 -g ${m} -m ./newtonPC < ${RODAR} > data/logs${m}.log
-    likwid-perfctr    -C 3 -g ${m} -m ./newtonPC < ${RODAR} > data/dats${m}.dat
+    likwid-perfctr -O -C 3 -g ${m} -m ./newtonPC < ${RODAR} > data/logs/OPT_${m}_.log
+    likwid-perfctr    -C 3 -g ${m} -m ./newtonPC < ${RODAR} > data/dats/OPT_${m}_.dat
 done
 echo "powersave" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 

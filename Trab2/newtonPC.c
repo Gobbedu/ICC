@@ -1,23 +1,25 @@
 /********************************************************
-*    Resolução de Sistemas Nao Lineares
-*    Eduardo Gobbo Willi GRR20203892 V.G. & Dante Eleuterio dos Santos GRR20206686
-*    CI1164 - Introducao a Computacao Cientifica
+*   Resolução de Sistemas Nao Lineares
+*   Eduardo Gobbo Willi GRR20203892 V.G. & Dante Eleuterio dos Santos GRR20206686
+*   CI1164 - Introducao a Computacao Cientifica
 *
-*    ./newtonPC < funcoes.dat > saida_nossa.dat
+*   ./newtonPC < funcoes.dat > saida_nossa.dat ou
+*   ./newtonPC {_method(char) (i=inexato/ p=padrao)} {saida}
 ********************************************************/
 #include "utils.h"
-// #include "NewtonModificado.h"
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
-// #define LIKWID_PERFMONI -> Inclui likwid na compilacao, mudar em utils.h
-// #define FULLPRINT_ON
-#define _method 'o'// QUAL METODO EXECUTAR: p -> newtonPadrao \ i -> newtonInexato
+// #define LIKWID_PERFMONI  -> Inclui likwid na compilacao, mudar em utils.h
+// #define FULLPRINT_ON   //-> Imprime resultado de cara iteração
+// #define _method 'o'// QUAL METODO EXECUTAR: p=newtonPadrao \ i=newtonInexato
 
 
 int main(int argc, char **argv) {
     #ifdef LIKWID_PERFMONI
     LIKWID_MARKER_INIT;
     #endif
+
+    char _method;
 
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
@@ -37,8 +39,11 @@ int main(int argc, char **argv) {
         iterInexat = 0;
 
     FILE *saida;
-    if(argc == 3)    
+    if(argc == 3)
+    {
         saida = fopen(argv[2], "w");
+        _method = argv[1][0];
+    }    
     else    
         saida = stdout;
 
