@@ -119,7 +119,7 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
             break;
     }
 
-    #ifdef LIKWID
+    #ifdef LIKWID_PERFMONI
     LIKWID_MARKER_STOP(mMetodo);
     #endif
 
