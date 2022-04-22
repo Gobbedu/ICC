@@ -1,4 +1,5 @@
 #!/bin/python3
+from re import T
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -29,12 +30,11 @@ pandas[1]: https://pandas.pydata.org/docs/getting_started/intro_tutorials/04_plo
 pyplot[0]: https://matplotlib.org/3.1.1/tutorials/introductory/pyplot.html#sphx-glr-tutorials-introductory-pyplot-py
 """
 
-def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot, legenda=None):
+def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot):
     # saida_grafico = open(out_plot, 'w')
     input_csv = open(input_file, 'r')
 
-    if not legenda:
-        legenda = ["Total Metodo", "Gradiente", "Hessiana", "Sist. Linear"]
+    legenda=["Total Metodo", "Gradiente", "Hessiana", "Sist. Linear"]
 
     # diferentes dataframes
     df = pd.read_csv(sep=';', filepath_or_buffer=input_csv)
@@ -50,10 +50,10 @@ def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot, legenda=N
     # o que vai ser medido
     plt.ylabel(metrica)
     # titulo do grafico
-    plt.title(f'{nameMetodo}')    # nome do grafico gerado, aparece na img dpois
+    plt.title(nameMetodo)    # nome do grafico gerado, aparece na img dpois
 
     # NAO MUDA DAKI PRA BAIXO
-    plt.subplots_adjust(bottom=0.14)
+    plt.subplots_adjust(bottom=0.15, left=0.14, right=0.96)
     plt.xticks(df.index, x[:len(df.index)], rotation=50) # magica em python  
     plt.legend(legenda)
     plt.xlabel("dimensão N da Função de Rosenbrock")
@@ -99,6 +99,7 @@ if __name__ == "__main__":
     FAVXoi= 'data/csvs/OPT_FLOPS_AVX_Inexato.csv'
     
     salve = True
+
     log = True
     metric = 'Tempo de Execução'
     plotter(TnoOptP, 'data/plots/noOpt_tempoPadrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
@@ -106,20 +107,20 @@ if __name__ == "__main__":
     plotter(TOptP, 'data/plots/Opt_tempoPadrao.png.png', 'Newton Padrao Otimizado', metric, log, salve)
     plotter(TOptI, 'data/plots/Opt_tempoInexato.png.png', 'Newton Inexato Otimizado', metric, log, salve)
 
+    log = False
     metric = 'Memory bandwidth [MBytes/s]'
     plotter(L3noOptP, 'data/plots/noOpt_L3Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
     plotter(L3noOptI, 'data/plots/noOpt_L3Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
     plotter(L3OptP, 'data/plots/Opt_L3Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
     plotter(L3OptI, 'data/plots/Opt_L3Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
 
-    log = False
     metric = 'data cache miss ratio'
     plotter(L2P, 'data/plots/noOpt_L2Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
     plotter(L2I, 'data/plots/noOpt_L2Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
     plotter(L2oP, 'data/plots/Opt_L2Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
     plotter(L2oI, 'data/plots/Opt_L2Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
 
-    log = True
+    # log = True
     metric = 'FLOPS DP'
     plotter(FDPp, 'data/plots/noOpt_DP_Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
     plotter(FDPi, 'data/plots/noOpt_DP_Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
@@ -128,7 +129,7 @@ if __name__ == "__main__":
 
     metric = 'FLOPS AVX'
     leg = ["Total Metodo", "Sist Linear"]
-    plotter(FAVXp, 'data/plots/noOpt_AVX_Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve, leg)
-    plotter(FAVXi, 'data/plots/noOpt_AVX_Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve, leg)
-    plotter(FAVXop, 'data/plots/Opt_AVX_Padrao.png', 'Newton Padrao Otimizado', metric, log, salve, leg)
-    plotter(FAVXoi, 'data/plots/Opt_AVX_Inexato.png', 'Newton Inexato Otimizado', metric, log, salve, leg)
+    plotter(FAVXp, 'data/plots/noOpt_AVX_Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
+    plotter(FAVXi, 'data/plots/noOpt_AVX_Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
+    plotter(FAVXop, 'data/plots/Opt_AVX_Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
+    plotter(FAVXoi, 'data/plots/Opt_AVX_Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
