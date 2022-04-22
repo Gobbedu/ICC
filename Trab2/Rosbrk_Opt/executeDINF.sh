@@ -1,6 +1,6 @@
 #!/bin/bash
 touch newtonPC.c
-make local
+make 
 make clear
 
 METRICA="L3 L2CACHE FLOPS_DP FLOPS_AVX"
