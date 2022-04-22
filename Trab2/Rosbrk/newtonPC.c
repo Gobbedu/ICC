@@ -24,9 +24,6 @@ int main(int argc, char **argv) {
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
-    initTempo(&tPadrao);
-    initTempo(&tInexat);
-
     // tPadrao.derivadas = tInexat.derivadas = 0;
     // tPadrao.Gradiente = tInexat.Gradiente = 0;
     // tPadrao.Hessiana = tInexat.Hessiana = 0;
@@ -53,6 +50,8 @@ int main(int argc, char **argv) {
     fprintf(saida, "Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear\n");
     while(snl = lerSistNL())
     {   
+    	initTempo(&tPadrao);
+	initTempo(&tInexat);
 
         #ifdef FULLPRINT_ON
             fprintf(saida, "%i\n", snl->n);         // grau da funcao
