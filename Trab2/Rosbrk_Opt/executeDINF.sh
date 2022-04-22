@@ -7,7 +7,7 @@ METRICA="L3 L2CACHE FLOPS_DP FLOPS_AVX"
 FUNCAO="../data/funcoesrosenbrock.dat"
 TESTE="teste.dat"
 
-RODAR=${TESTE}
+RODAR=${FUNCAO}
 
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 # TEMPO DE EXECUCAO
