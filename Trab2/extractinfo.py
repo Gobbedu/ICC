@@ -69,7 +69,7 @@ def parse_LOG(csv_file, padrao_file, inexat_file, line_of_interest):
 # """
 
 def parse_L3(csv_in, padrao_out, inexat_out):
-    parse_LOG(csv_in, padrao_out, inexat_out, 6)
+    parse_LOG(csv_in, padrao_out, inexat_out, 10)
                     
 def parse_L2(csv_in, padrao_out, inexat_out):
     parse_LOG(csv_in, padrao_out, inexat_out, 8)
