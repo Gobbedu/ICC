@@ -1,7 +1,8 @@
 #!/bin/python3
-
+from itertools import cycle, islice
 import matplotlib.pyplot as plt
 import pandas as pd
+from sqlalchemy import false
 
 """
     script para gerar plots em python
@@ -30,46 +31,81 @@ pandas[1]: https://pandas.pydata.org/docs/getting_started/intro_tutorials/04_plo
 pyplot[0]: https://matplotlib.org/3.1.1/tutorials/introductory/pyplot.html#sphx-glr-tutorials-introductory-pyplot-py
 """
 
+def plotter(input_csv, legenda, out_plot, nameMetodo, metrica, log, save_plot):
+    saida_grafico = out_plot
 
-metodo = 'Inexato' # inexato ou padrao
-csv_file = 'data/csvs/timestampInexato.csv'
-# saida_grafico = 'data/plots/TempoInexato.png'
-saida_grafico = 'aux.png'
-quero_ver = False    # se true mostra grafico, se falso baixa img em saida grafico
+    # diferentes dataframes
+    df = pd.read_csv(sep=';', filepath_or_buffer=input_csv)
 
-# remove?
-# col1 = "Aplicacao_metodo_Newton"
-# col2 = "Calculo_Gradiente"
-# col3 = "Calculo_Hessiana"
-# col4 = "Resolucao_Sistema_Linear"
+    # No eixo das abcissas os gráficos representam a dimensão N da Função de Rosenbrock
+    x = [10, 32, 50, 64, 100, 128, 200, 250, 256, 300, 400, 512, 600, 1000, 1024, 2000, 2048, 3000, 4096]
+    # fazer um grafico por vez
 
-# diferentes dataframes
-tempo_execucao = pd.read_csv(sep=';', filepath_or_buffer=csv_file)
-# banda_memoria         = pd.read_csv('data/auxiliar.csv')
-# cache_miss            = pd.read_csv('data/auxiliar.csv')
-# operacoes_aritmeticas = pd.read_csv('data/auxiliar.csv')
+    # cores = list(islice(cycle(['b', 'g', 'orange', 'r']), None, len(df)))
+    # df.plot(style='.-', color=cores)
+    df.plot(style='.-')
 
-# No eixo das abcissas os gráficos representam a dimensão N da Função de Rosenbrock
-x = [10, 32, 50, 64, 100, 128, 200, 250, 256, 300, 400, 512, 600, 1000, 1024, 2000, 2048, 3000, 4096]
-# fazer um grafico por vez
+    # o que vai ser medido
+    plt.ylabel(metrica)
+    # titulo do grafico
+    plt.title(f'{nameMetodo}')    # nome do grafico gerado, aparece na img dpois
 
-tempo_execucao.plot(style='.-')
+    # NAO MUDA DAKI PRA BAIXO
+    plt.subplots_adjust(bottom=0.14)
+    plt.xticks(df.index, x[:len(df.index)], rotation=50) # magica em python  
+    plt.legend(legenda)
+    plt.xlabel("dimensão N da Função de Rosenbrock")
+    if log:
+        plt.yscale('log')                                               # especificado no Inexatotrabalho
 
-# o que vai ser medido
-plt.ylabel("Tempo de execução")
-# titulo do grafico
-plt.title(f'Tempo Execucao Newton {metodo}')                       # nome do grafico gerado, aparece na img dpois
+    if (save_plot):
+        plt.savefig(saida_grafico)  # salvar grafico em:
+    else:
+        plt.show()  # mostra grafico
+        
+        
+    
+if __name__ == "__main__":
+    # metrica eh tempo
+    TnoOptP = open('data/csvs/noOPT_tempoPadrao.csv', 'r')
+    TnoOptI = open('data/csvs/noOPT_tempoInexato.csv', 'r')
+    TOptP   = open('data/csvs/OPT_tempoPadrao.csv', 'r')
+    TOptI   = open('data/csvs/OPT_tempoInexato.csv', 'r')
+    
+    # metrica eh L3
+    L3noOptP = open('data/csvs/noOPT_L3Padrao.csv', 'r')
+    L3noOptI = open('data/csvs/noOPT_L3Inexato.csv', 'r')
+    L3OptP   = open('data/csvs/OPT_L3Inexato.csv', 'r')
+    L3OptI   = open('data/csvs/OPT_L3Inexato.csv', 'r')
+    
+    # metrica eh L2
+    L2P  = open('data/csvs/noOPT_L2Padrao.csv', 'r')
+    L2I  = open('data/csvs/noOPT_L2Inexato.csv', 'r')
+    L2oP = open('data/csvs/OPT_L2Inexato.csv', 'r')
+    L2oI = open('data/csvs/OPT_L2Inexato.csv', 'r')
+    
+    
+    
+    legenda = ["Total Metodo", "Gradiente", "Hessiana", "Sist. Linear"]
 
-# NAO MUDA DAKI PRA BAIXO
-plt.subplots_adjust(bottom=0.14)
-plt.xticks(tempo_execucao.index, x[:len(tempo_execucao.index)], rotation=50) # magica em python  
-plt.legend(["Total Metodo", "Gradiente", "Hessiana", "Sist. Linear"])
-plt.xlabel("dimensão N da Função de Rosenbrock")
-plt.yscale('log')                                               # especificado no Inexatotrabalho
+    salve = True
+    log = True
+    metric = 'Tempo de Execução'
+    plotter(TnoOptP, legenda, 'data/plots/noOpt_tempoPadrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
+    plotter(TnoOptI, legenda, 'data/plots/noOpt_tempoInexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
+    plotter(TOptP, legenda, 'data/plots/Opt_tempoPadrao.png.png', 'Newton Padrao Otimizado', metric, log, salve)
+    plotter(TOptI, legenda, 'data/plots/Opt_tempoInexato.png.png', 'Newton Inexato Otimizado', metric, log, salve)
 
-# mostra grafico
-if(quero_ver):
-    plt.show()
-else:
-    # salvar grafico em:
-    plt.savefig(saida_grafico)
+    metric = 'Memory bandwidth [MBytes/s]'
+    plotter(L3noOptP, legenda, 'data/plots/noOpt_L3Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
+    plotter(L3noOptI, legenda, 'data/plots/noOpt_L3Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
+    plotter(L3OptP, legenda, 'data/plots/Opt_L3Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
+    plotter(L3OptI, legenda, 'data/plots/Opt_L3Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
+
+    log = False
+    metric = 'data cache miss ratio'
+    plotter(L2P, legenda, 'data/plots/noOpt_L2Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
+    plotter(L2I, legenda, 'data/plots/noOpt_L2Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
+    plotter(L2oP, legenda, 'data/plots/Opt_L2Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
+    plotter(L2oI, legenda, 'data/plots/Opt_L2Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
+
