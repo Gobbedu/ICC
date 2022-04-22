@@ -123,6 +123,11 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
     LIKWID_MARKER_STOP(mMetodo);
     #endif
 
+    free(mMetodo);
+	free(mGrad);
+	free(mHess);
+	free(mSL);
+
     *nIter = itr;
     liberaSnlVar(ni, snl->n);
 }

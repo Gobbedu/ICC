@@ -3,8 +3,8 @@ touch newtonPC.c
 make
 make clear
 
-FUNCAO="data/funcoesrosenbrock.dat"
-PREP="data/teste.dat"
+FUNCAO="../data/funcoesrosenbrock.dat"
+PREP="../data/teste.dat"
 
 RODAR=${FUNCAO}
 

@@ -12,9 +12,10 @@
 void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 {    
 	// inicializa tudo que precisa
-	// double *resposta = malloc(sizeof(double) * snl->iteracao);
+	// double *resposta = malloc(sizeof(double) * iteracao);
 	double tTotal, tauxder, tGrad, tHess, tauxSL;
 
+	int n = snl->n;
 	int itr = 0;
 
 	char *mMetodo, *mGrad, *mHess, *mSL;
@@ -23,12 +24,12 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 	mHess   = malloc(sizeof(char)*50);
 	mSL     = malloc(sizeof(char)*50);
 
-	sprintf(mMetodo, "PadraoMETODO_%u", snl->n);
-	sprintf(mGrad, "PadraoGRAD_%u", snl->n);
-	sprintf(mHess, "PadraoHESS_%u", snl->n);
-	sprintf(mSL, "PadraoSISTLIN_%u", snl->n);
+	sprintf(mMetodo, "PadraoMETODO_%u", n);
+	sprintf(mGrad, "PadraoGRAD_%u", n);
+	sprintf(mHess, "PadraoHESS_%u", n);
+	sprintf(mSL, "PadraoSISTLIN_%u", n);
 
-	SnlVar_t *np = alocaSnlVar(snl->chute, snl->n);
+	SnlVar_t *np = alocaSnlVar(snl->chute, n);
 
 	#ifdef LIKWID_PERFMONI
 	LIKWID_MARKER_START(mMetodo);
@@ -63,7 +64,7 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 		snl2sl(snl, np);                        // copia dados de snl em sl
 
-		resposta[i] = rosenbrock(np->x0, snl->n);
+		resposta[i] = rosenbrock(np->x0, n);
 		
 		#ifdef LIKWID_PERFMONI
 		LIKWID_MARKER_START(mSL);
@@ -76,7 +77,7 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 		#endif
 
 		// varinfo(*np, *snl);
-		calcDelta(np, snl->n);                     // X[i+1] = X[i] + delta[i]
+		calcDelta(np, n);                     // X[i+1] = X[i] + delta[i]
 
 		// Devolve f(X), ponto critico estimado
 
@@ -103,7 +104,7 @@ void NewtonPadrao(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 
 	*nIter = itr;
 
-	liberaSnlVar(np, snl->n);
+	liberaSnlVar(np, n);
 	// return resposta;
 }
 

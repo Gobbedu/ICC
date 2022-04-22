@@ -4,10 +4,10 @@ touch newtonPC.C
 make local
 make clear
 
-TESTE="data/teste.dat"
-ROSEN="data/funcoesrosenbrock.dat"
+TESTE="../data/teste.dat"
+ROSEN="../data/funcoesrosenbrock.dat"
 
-ENTRADA=${ROSEN}
+ENTRADA=${TESTE}
 
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 ./newtonPC p data/csvs/noOPT_tempoPadrao.csv  < ${ENTRADA}

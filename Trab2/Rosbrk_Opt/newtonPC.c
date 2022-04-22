@@ -24,33 +24,27 @@ int main(int argc, char **argv) {
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
-    initTempo(&tPadrao);
-    initTempo(&tInexat);
-
-    // tPadrao.derivadas = tInexat.derivadas = 0;
-    // tPadrao.Gradiente = tInexat.Gradiente = 0;
-    // tPadrao.Hessiana = tInexat.Hessiana = 0;
-    // tPadrao.totalMetodo = tInexat.totalMetodo = 0;
-    // tPadrao.totalSL = tInexat.totalSL = 0;
-
     double *respPadrao, *respInexat; 
 
     int iterPadrao = 0,    // por referencia, numerero de iteracoes (para imprimir)
         iterInexat = 0;
 
     FILE *saida;
-    if(argc == 3)
-    {
+    if(argc == 3){
         saida = fopen(argv[2], "w");
         _method = argv[1][0];
     }    
-    else    
+    else{
         saida = stdout;
+        _method = 'o';
+    }  
 
     // saida csv para 1 metodo separador ;
     fprintf(saida, "Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear\n");
     while(snl = lerSistNL())
     {   
+        initTempo(&tPadrao);
+        initTempo(&tInexat);
 
         #ifdef FULLPRINT_ON
             fprintf(saida, "%i\n", snl->n);         // grau da funcao
@@ -83,7 +77,7 @@ int main(int argc, char **argv) {
             printCol(respInexat, i, iterInexat, saida);
   	        fprintf(saida, "\n");
             // se todos acabaram
-            if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) && (i+1>=iterInexat) )
+            if( (i+1 >= iterPadrao) && (i+1>=iterInexat) )
                 break;
         }
         // saida com os 2 metodos
