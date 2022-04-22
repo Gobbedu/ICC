@@ -1,9 +1,5 @@
 #!/bin/python3
 
-import matplotlib.pyplot as plt
-from numpy import pad
-import pandas as pd
-
 """
     script para extrair metricas do .log
     
@@ -22,7 +18,11 @@ import pandas as pd
     
 """ 
 
-def parse_LOG(csv_in, padrao_out, inexat_out, line_of_interest):
+def parse_LOG(csv_file, padrao_file, inexat_file, line_of_interest):
+    padrao_out = open(padrao_file, "w")
+    inexat_out = open(inexat_file, "w")
+    csv_in     = open(csv_file, "r")
+    
     padrao_out.write("METODO; GRAD; HESS; SISTLIN\n")
     inexat_out.write("METODO; GRAD; HESS; SISTLIN\n")
     lines = csv_in.readlines()
@@ -75,46 +75,44 @@ def parse_L2(csv_in, padrao_out, inexat_out):
     parse_LOG(csv_in, padrao_out, inexat_out, 8)
 
 def parse_FLOPS(csv_file, padraoDP_out, inexatDP_out, padraoAVX_out=None, inexatAVX_out=None):
-    # csv_in = open(csv_file, "r")
     parse_LOG(csv_file, padraoDP_out, inexatDP_out, 6)
-    # csv_in = open(csv_file, "r")
-    # parse_LOG(csv_in, padraoAVX_out, inexatAVX_out, 7)
+    parse_LOG(csv_file, padraoAVX_out, inexatAVX_out, 7)
     
 
 
 if __name__ == "__main__":
     # data de nao otimizado
-    raw_L3 = open("data/logs/noOPT_L3.log", "r")
-    raw_L2 = open("data/logs/noOPT_L2CACHE.log", "r")
-    raw_DP = open("data/logs/noOPT_FLOPS_DP.log")
-    L3padrao_csv = open("data/csvs/noOPT_L3Padrao.csv", "w")
-    L3inexato_csv= open("data/csvs/noOPT_L3Inexato.csv", "w")
-    L2padrao_csv = open("data/csvs/noOPT_L2Padrao.csv", "w")
-    L2inexato_csv= open("data/csvs/noOPT_L2Inexato.csv", "w")
-    DPpadrao_csv = open("data/csvs/noOPT_FLOPS_DPPadrao.csv", "w")
-    DPinexato_csv= open("data/csvs/noOPT_FLOPS_DPInexato.csv", "w")
-    # AVXpadrao_csv= open("data/csvs/noOPTPadrao_FLOPS_AVX.csv", "w")
-    # AVXinexat_csv= open("data/csvs/noOPTInexat_FLOPS_AVX.csv", "w")
+    raw_DP       = 'data/logs/noOPT_FLOPS_DP.log'
+    raw_L3       = 'data/logs/noOPT_L3.log'
+    raw_L2       = 'data/logs/noOPT_L2CACHE.log'
+    L3padrao_csv = 'data/csvs/noOPT_L3Padrao.csv'
+    L3inexato_csv= 'data/csvs/noOPT_L3Inexato.csv'
+    L2padrao_csv = 'data/csvs/noOPT_L2Padrao.csv'
+    L2inexato_csv= 'data/csvs/noOPT_L2Inexato.csv'
+    DPP          = 'data/csvs/noOPT_FLOPS_DPPadrao.csv'
+    DPI          = 'data/csvs/noOPT_FLOPS_DPInexato.csv'
+    AVXP         = 'data/csvs/noOPT_FLOPS_AVX_Padrao.csv'
+    AVXI         = 'data/csvs/noOPT_FLOPS_AVX_Inexato.csv'
 
     # data de otimizado
-    raw_L3O = open('data/logs/OPT_L3.log')
-    raw_L2O = open('data/logs/OPT_L2CACHE.log')
-    raw_DPO = open('data/logs/OPT_FLOPS_DP.log')
-    L3P = open("data/csvs/OPT_L3Padrao.csv", "w")
-    L3I = open("data/csvs/OPT_L3Inexato.csv", "w")
-    L2P = open("data/csvs/OPT_L2Padrao.csv", "w")
-    L2I = open("data/csvs/OPT_L2Inexato.csv", "w")
-    DPoP= open("data/csvs/OPT_FLOPS_DPPadrao.csv", "w")
-    DPoI= open("data/csvs/OPT_FLOPS_DPInexato.csv", "w")
-    # AVXpadrao_csv= open("data/csvs/noOPTPadrao_FLOPS_AVX.csv", "w")
-    # AVXinexat_csv= open("data/csvs/noOPTInexat_FLOPS_AVX.csv", "w")
+    raw_DPO = 'data/logs/OPT_FLOPS_DP.log'
+    raw_L3O = 'data/logs/OPT_L3.log'
+    raw_L2O = 'data/logs/OPT_L2CACHE.log'
+    L3P     = 'data/csvs/OPT_L3Padrao.csv'
+    L3I     = 'data/csvs/OPT_L3Inexato.csv'
+    L2P     = 'data/csvs/OPT_L2Padrao.csv'
+    L2I     = 'data/csvs/OPT_L2Inexato.csv'
+    DPoP    = 'data/csvs/OPT_FLOPS_DPPadrao.csv'
+    DPoI    = 'data/csvs/OPT_FLOPS_DPInexato.csv'
+    AVXoP   = 'data/csvs/OPT_FLOPS_AVX_Padrao.csv'
+    AVXoI   = 'data/csvs/OPT_FLOPS_AVX_Inexato.csv'
     
     # gera csv para plotter
     parse_L3(raw_L3, L3padrao_csv, L3inexato_csv)
     parse_L2(raw_L2, L2padrao_csv, L2inexato_csv)
-    parse_FLOPS(raw_DP, DPpadrao_csv, DPinexato_csv)
+    parse_FLOPS(raw_DP, DPP, DPI, AVXP, AVXI)
 
     parse_L3(raw_L3O, L3P, L3I)
     parse_L2(raw_L2O, L2P, L2I)
-    parse_FLOPS(raw_DPO, DPoP, DPoI)
+    parse_FLOPS(raw_DPO, DPoP, DPoI, AVXoP, AVXoI)
 
