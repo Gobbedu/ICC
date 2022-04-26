@@ -1,7 +1,7 @@
 #!/bin/python3
-from re import T
 import matplotlib.pyplot as plt
 import pandas as pd
+import csv
 
 """
     script para gerar plots em python
@@ -46,7 +46,7 @@ def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot):
     # cores = list(islice(cycle(['b', 'g', 'orange', 'r']), None, len(df)))
     # df.plot(style='.-', color=cores)
     df.plot(style='.-')
-
+    
     # o que vai ser medido
     plt.ylabel(metrica)
     # titulo do grafico
@@ -55,7 +55,7 @@ def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot):
     # NAO MUDA DAKI PRA BAIXO
     plt.subplots_adjust(bottom=0.15, left=0.14, right=0.96)
     plt.xticks(df.index, x[:len(df.index)], rotation=50) # magica em python  
-    plt.legend(legenda)
+    # plt.legend(legenda)
     plt.xlabel("dimensão N da Função de Rosenbrock")
     if log:
         plt.yscale('log')                                               # especificado no Inexatotrabalho
@@ -65,71 +65,136 @@ def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot):
     else:
         plt.show()  # mostra grafico
         
+    plt.close()
         
     
+def MABIKI(metr_NoOpt_I, metr_Opt_I, metr_NoOpt_P, metr_Opt_P, MP, MI, GP, GI, HP, HI, SLP, SLI):
+    aux1 = open(metr_NoOpt_I )
+    NoOptI = csv.reader(aux1, delimiter=';')
+    l_NoOptI = list(NoOptI)
+    
+    aux2 = open(metr_NoOpt_P )
+    NoOptP = csv.reader(aux2, delimiter=';')
+    l_NoOptP = list(NoOptP)
+    
+    aux3 = open(metr_Opt_I )
+    OptI   = csv.reader(aux3, delimiter=';')
+    l_OptI = list(OptI)
+    
+    aux4 = open(metr_Opt_P )
+    OptP   = csv.reader(aux4, delimiter=';')
+    l_OptP = list(OptP)
+
+    d = 'data/csvs/'
+    fim = '.csv'
+    
+    auxMP_out = open(d+MP+fim, "w")
+    auxGP_out = open(d+GP+fim, "w")
+    auxHP_out = open(d+HP+fim, "w")
+    auxSLP_out= open(d+SLP+fim, "w")
+    
+    auxMI_out = open(d+MI+fim, "w")
+    auxGI_out = open(d+GI+fim, "w")
+    auxHI_out = open(d+HI+fim, "w")
+    auxSLI_out= open(d+SLI+fim, "w") 
+    
+    MP_out = csv.writer(auxMP_out,  delimiter=';')
+    GP_out = csv.writer(auxGP_out,  delimiter=';')
+    HP_out = csv.writer(auxHP_out,  delimiter=';')
+    SLP_out = csv.writer(auxSLP_out, delimiter=';')
+
+    MI_out = csv.writer(auxMI_out,  delimiter=';')
+    GI_out = csv.writer(auxGI_out,  delimiter=';')
+    HI_out = csv.writer(auxHI_out,  delimiter=';')
+    SLI_out = csv.writer(auxSLI_out, delimiter=';')
+
+    headerr = "Otimizado; Não Otimizado\n"
+
+    auxMP_out.write(headerr)
+    auxGP_out.write(headerr)
+    auxHP_out.write(headerr)
+    auxSLP_out.write(headerr)
+
+    auxMI_out.write(headerr)
+    auxGI_out.write(headerr)
+    auxHI_out.write(headerr)
+    auxSLI_out.write(headerr)
+
+    
+    for i in range(1, 20):
+        MP_out  .writerow([l_OptP[i][0], l_NoOptP[i][0]])
+        GP_out  .writerow([l_OptP[i][1], l_NoOptP[i][1]])
+        HP_out  .writerow([l_OptP[i][2], l_NoOptP[i][2]])
+        SLP_out .writerow([l_OptP[i][3], l_NoOptP[i][3]])
+        
+        MI_out  .writerow([l_OptI[i][0], l_NoOptI[i][0]])
+        GI_out  .writerow([l_OptI[i][1], l_NoOptI[i][1]])
+        HI_out  .writerow([l_OptI[i][2], l_NoOptI[i][2]])
+        SLI_out .writerow([l_OptI[i][3], l_NoOptI[i][3]])
+        
+def moero_shinso_yo(t,n,s,d,metrica):
+# (metr_NoOpt_I, metr_Opt_I,
+# metr_NoOpt_P, metr_Opt_P,
+# MP, MI, GP, GI, HP, HI, SLP, SLI):
+    for m in metrica:
+        print(m)
+        MABIKI( d+t[0]+m+n[0]+'.csv', d+t[1]+m+n[0]+'.csv', 
+                d+t[0]+m+n[1]+'.csv', d+t[1]+m+n[1]+'.csv', 
+                m+s[0]+n[1], m+s[0]+n[0],
+                m+s[1]+n[1], m+s[1]+n[0],
+                m+s[2]+n[1], m+s[2]+n[0],
+                m+s[3]+n[1], m+s[3]+n[0]
+        )
+    
+
+def showoffy(metrica):
+    swicther = {
+        'tempo': 'tempo em ms',
+        'L3': 'L3 Memory bandwidth [MBytes/s]',
+        'L2': 'L2 data cache miss ratio',
+        'FLOPS_DP': 'FLOPS DP [MFLOP/s]',
+        'FLOPS_AVX': 'FLOPS AVX [MFLOP/s]'
+    }
+    
+    return swicther.get(metrica)
+
+
+def showoffx(marker):
+    swicther = {
+        'METODO': 'Metodo',
+        'GRAD': 'Gradiente',
+        'HESS': 'Hessiana',
+        'SISTLIN': 'Sistema Linear',
+    }
+    
+    return 'Avalicação '+swicther.get(marker)+': '
+
+
+
 if __name__ == "__main__":
-    # metrica eh tempo
-    TnoOptP = 'data/csvs/noOPT_tempoPadrao.csv'
-    TnoOptI = 'data/csvs/noOPT_tempoInexato.csv'
-    TOptP   = 'data/csvs/OPT_tempoPadrao.csv'
-    TOptI   = 'data/csvs/OPT_tempoInexato.csv'
     
-    # metrica eh L3
-    L3noOptP = 'data/csvs/noOPT_L3Padrao.csv'
-    L3noOptI = 'data/csvs/noOPT_L3Inexato.csv'
-    L3OptP   = 'data/csvs/OPT_L3Inexato.csv'
-    L3OptI   = 'data/csvs/OPT_L3Inexato.csv'
+    t = ['noOPT_', 'OPT_']
+    n = ['Inexato', 'Padrao']
+    s = ['METODO', 'GRAD', 'HESS', 'SISTLIN']
+    metrica = ['tempo', 'L3', 'L2', 'FLOPS_DP', 'FLOPS_AVX']
     
-    # metrica eh L2
-    L2P  = 'data/csvs/noOPT_L2Padrao.csv'
-    L2I  = 'data/csvs/noOPT_L2Inexato.csv'
-    L2oP = 'data/csvs/OPT_L2Inexato.csv'
-    L2oI = 'data/csvs/OPT_L2Inexato.csv'
+    d = 'data/csvs/raw_csv/'
+    src = 'data/csvs/curated_csv/'
+    out = 'data/plots/curated_plots/'
+    # parse raw csv to compare opt to noopt
+    # moero_shinso_yo(t,n,s,d,metrica)
     
-    # metrica eh FLOPS DP
-    FDPp  = 'data/csvs/noOPT_FLOPS_DPPadrao.csv'
-    FDPi  = 'data/csvs/noOPT_FLOPS_DPInexato.csv'
-    FDPop = 'data/csvs/OPT_FLOPS_DPPadrao.csv'
-    FDPoi = 'data/csvs/OPT_FLOPS_DPInexato.csv'
+    # estrutura files [metrica][marker][metodo]
+    for m in metrica:
+        for marker in s:
+            for metodo in n:
+                plotter(src+m+marker+metodo+'.csv',
+                        out+m+marker+metodo+'.png',
+                        showoffx(marker)+' Newton ' +metodo,
+                        showoffy(m), 
+                        m == 'tempo',
+                        True
+                        )
     
-    # FLOPS AVX
-    FAVXp = 'data/csvs/noOPT_FLOPS_AVX_Padrao.csv'
-    FAVXi = 'data/csvs/noOPT_FLOPS_AVX_Inexato.csv'
-    FAVXop= 'data/csvs/OPT_FLOPS_AVX_Padrao.csv'
-    FAVXoi= 'data/csvs/OPT_FLOPS_AVX_Inexato.csv'
-    
-    salve = True
 
-    log = True
-    metric = 'Tempo de Execução'
-    plotter(TnoOptP, 'data/plots/noOpt_tempoPadrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
-    plotter(TnoOptI, 'data/plots/noOpt_tempoInexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
-    plotter(TOptP, 'data/plots/Opt_tempoPadrao.png.png', 'Newton Padrao Otimizado', metric, log, salve)
-    plotter(TOptI, 'data/plots/Opt_tempoInexato.png.png', 'Newton Inexato Otimizado', metric, log, salve)
-
-    log = False
-    metric = 'Memory bandwidth [MBytes/s]'
-    plotter(L3noOptP, 'data/plots/noOpt_L3Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
-    plotter(L3noOptI, 'data/plots/noOpt_L3Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
-    plotter(L3OptP, 'data/plots/Opt_L3Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
-    plotter(L3OptI, 'data/plots/Opt_L3Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
-
-    metric = 'data cache miss ratio'
-    plotter(L2P, 'data/plots/noOpt_L2Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
-    plotter(L2I, 'data/plots/noOpt_L2Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
-    plotter(L2oP, 'data/plots/Opt_L2Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
-    plotter(L2oI, 'data/plots/Opt_L2Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
-
-    # log = True
-    metric = 'FLOPS DP'
-    plotter(FDPp, 'data/plots/noOpt_DP_Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
-    plotter(FDPi, 'data/plots/noOpt_DP_Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
-    plotter(FDPop, 'data/plots/Opt_DP_Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
-    plotter(FDPoi, 'data/plots/Opt_DP_Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
-
-    metric = 'FLOPS AVX'
-    leg = ["Total Metodo", "Sist Linear"]
-    plotter(FAVXp, 'data/plots/noOpt_AVX_Padrao.png', 'Newton Padrao não Otimizado', metric, log, salve)
-    plotter(FAVXi, 'data/plots/noOpt_AVX_Inexato.png', 'Newton Inexato não Otimizado', metric, log, salve)
-    plotter(FAVXop, 'data/plots/Opt_AVX_Padrao.png', 'Newton Padrao Otimizado', metric, log, salve)
-    plotter(FAVXoi, 'data/plots/Opt_AVX_Inexato.png', 'Newton Inexato Otimizado', metric, log, salve)
+  

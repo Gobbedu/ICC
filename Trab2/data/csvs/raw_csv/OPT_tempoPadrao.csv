@@ -1,4 +1,4 @@
-Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear
+METODO; GRAD; HESS; SISTLIN
 0.043945; 0.001221; 0.012695; 0.020020
 0.386963; 0.005127; 0.133301; 0.235352
 0.978027; 0.008789; 0.307129; 0.654297

@@ -31,7 +31,7 @@ def parse_LOG(csv_file, padrao_file, inexat_file, line_of_interest):
     metricsI = {"METODO":0,"GRAD":0, "HESS":0, "SISTLIN":0}
     keys = ["METODO","GRAD","HESS","SISTLIN"]
     for pos, line in enumerate(lines):
-        if "Group 1 Metric" in line and "Raw" not in line:
+        if "Group 1 Metric" in line:
             # for metric in metrics:
             # print(line, lines[pos+line_of_interest])
 # """
@@ -66,7 +66,7 @@ def parse_LOG(csv_file, padrao_file, inexat_file, line_of_interest):
                 inexat_out.write(f"{m}; {g}; {h}; {s}\n".format(m, g, h, s))
                 metricsI = dict.fromkeys(keys, 0)
                 # print("inexato:", metricsI, end='\n')
-# """
+
 
 def parse_L3(csv_in, padrao_out, inexat_out):
     parse_LOG(csv_in, padrao_out, inexat_out, 10)
@@ -91,8 +91,8 @@ if __name__ == "__main__":
     L2inexato_csv= 'data/csvs/noOPT_L2Inexato.csv'
     DPP          = 'data/csvs/noOPT_FLOPS_DPPadrao.csv'
     DPI          = 'data/csvs/noOPT_FLOPS_DPInexato.csv'
-    AVXP         = 'data/csvs/noOPT_FLOPS_AVX_Padrao.csv'
-    AVXI         = 'data/csvs/noOPT_FLOPS_AVX_Inexato.csv'
+    AVXP         = 'data/csvs/noOPT_FLOPS_AVXPadrao.csv'
+    AVXI         = 'data/csvs/noOPT_FLOPS_AVXInexato.csv'
 
     # data de otimizado
     raw_DPO = 'data/logs/OPT_FLOPS_DP.log'
@@ -104,8 +104,8 @@ if __name__ == "__main__":
     L2I     = 'data/csvs/OPT_L2Inexato.csv'
     DPoP    = 'data/csvs/OPT_FLOPS_DPPadrao.csv'
     DPoI    = 'data/csvs/OPT_FLOPS_DPInexato.csv'
-    AVXoP   = 'data/csvs/OPT_FLOPS_AVX_Padrao.csv'
-    AVXoI   = 'data/csvs/OPT_FLOPS_AVX_Inexato.csv'
+    AVXoP   = 'data/csvs/OPT_FLOPS_AVXPadrao.csv'
+    AVXoI   = 'data/csvs/OPT_FLOPS_AVXInexato.csv'
     
     # gera csv para plotter
     parse_L3(raw_L3, L3padrao_csv, L3inexato_csv)
