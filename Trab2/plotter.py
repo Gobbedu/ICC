@@ -1,4 +1,5 @@
 #!/bin/python3
+from os import minor
 import matplotlib.pyplot as plt
 import pandas as pd
 import csv
@@ -56,6 +57,7 @@ def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot):
     plt.subplots_adjust(bottom=0.15, left=0.14, right=0.96)
     plt.xticks(df.index, x[:len(df.index)], rotation=50) # magica em python  
     # plt.legend(legenda)
+    plt.grid()
     plt.xlabel("dimensão N da Função de Rosenbrock")
     if log:
         plt.yscale('log')                                               # especificado no Inexatotrabalho
@@ -180,7 +182,8 @@ if __name__ == "__main__":
     
     d = 'data/csvs/raw_csv/'
     src = 'data/csvs/curated_csv/'
-    out = 'data/plots/curated_plots/'
+    # out = 'data/plots/curated_plots/'
+    out = 'data/aux/'
     # parse raw csv to compare opt to noopt
     # moero_shinso_yo(t,n,s,d,metrica)
     
