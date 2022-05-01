@@ -84,7 +84,7 @@ def parse_FLOPS(log_file, padraoDP_out, inexatDP_out, padraoAVX_out=None, inexat
 
 if __name__ == "__main__":
     logp = 'data/logs/'
-    curp = 'data/csvs/curated_csv/'
+    curp = 'data/csvs/raw_csv/'
     
     tipos = ['noOPT_', 'OPT_']
     newt  = ['Padrao', 'Inexato']

@@ -4,10 +4,10 @@ METRICA="L3 L2CACHE FLOPS_DP"
 FUNCAO="../data/funcoesrosenbrock.dat"
 TESTE="../data/teste.dat"
 
-SAIDACSV="../data/csvs/curated_csv/"
+SAIDACSV="../data/csvs/raw_csv/"
 SAIDALOG="../data/logs/"
 
-RODAR=${TESTE}
+RODAR=${FUNCAO}
 
 ./gera_rosenbrock.sh > 'data/funcoesrosenbrock.dat'
 
