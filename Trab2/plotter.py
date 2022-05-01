@@ -180,19 +180,18 @@ if __name__ == "__main__":
     s = ['METODO', 'GRAD', 'HESS', 'SISTLIN']
     metrica = ['tempo', 'L3', 'L2', 'FLOPS_DP', 'FLOPS_AVX']
     
-    d = 'data/csvs/raw_csv/'
-    src = 'data/csvs/curated_csv/'
-    # out = 'data/plots/curated_plots/'
-    out = 'data/aux/'
+    src  = 'data/csvs/opt_csv/'
+    curp = 'data/csvs/opt_curated/'
+    out  = 'data/plots/opt_plots/'
     # parse raw csv to compare opt to noopt
-    # moero_shinso_yo(t,n,s,d,metrica)
+    moero_shinso_yo(t,n,s,curp,metrica)
     
     # estrutura files [metrica][marker][metodo]
     for m in metrica:
         for marker in s:
             for metodo in n:
-                plotter(src+m+marker+metodo+'.csv',
-                        out+m+marker+metodo+'.png',
+                plotter(curp+m+marker+metodo+'.csv',
+                        out+m+'_'+marker+metodo+'.png',
                         showoffx(marker)+' Newton ' +metodo,
                         showoffy(m), 
                         m == 'tempo',

@@ -19,13 +19,13 @@ SistNl_t *lerSistNL(void)
         SnL = alocaSistNl(n);
         if (!SnL) return NULL;
         
-        scanf("%s", SnL->funcao);
+        assert(scanf("%s", SnL->funcao) > 0);
 
         for(int i = 0; i < n; i++)
-            scanf("%lf", &(SnL->chute[i]));
+            assert(scanf("%lf", &(SnL->chute[i])) > 0);
 
-        scanf("%lf", &(SnL->eps));
-        scanf("%i", &(SnL->iteracao));
+        assert(scanf("%lf", &(SnL->eps)) > 0);
+        assert(scanf("%i", &(SnL->iteracao)) > 0);
 
     }
   

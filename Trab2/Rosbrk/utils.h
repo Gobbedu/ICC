@@ -21,7 +21,7 @@
 
 #include "Rosenbrock.h"
 
-//#define LIKWID_PERFMONI
+#define LIKWID_PERFMONI
 #ifdef LIKWID_PERFMONI
 #include <likwid.h>
 #endif

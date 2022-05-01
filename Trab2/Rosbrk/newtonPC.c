@@ -10,7 +10,7 @@
 #include "NewtonPadrao.h"
 #include "NewtonInexato.h"
 // #define LIKWID_PERFMONI  -> Inclui likwid na compilacao, mudar em utils.h
-// #define FULLPRINT_ON   //-> Imprime resultado de cara iteração
+// #define FULLPRINT_ON   //-> Imprime resultado de cada iteração
 // #define _method 'o'// QUAL METODO EXECUTAR: p=newtonPadrao \ i=newtonInexato
 
 
@@ -24,11 +24,6 @@ int main(int argc, char **argv) {
     SistNl_t *snl;
     Tempo_t tPadrao, tInexat;              // tempo de cada metodo
 
-    // tPadrao.derivadas = tInexat.derivadas = 0;
-    // tPadrao.Gradiente = tInexat.Gradiente = 0;
-    // tPadrao.Hessiana = tInexat.Hessiana = 0;
-    // tPadrao.totalMetodo = tInexat.totalMetodo = 0;
-    // tPadrao.totalSL = tInexat.totalSL = 0;
 
     double *respPadrao, *respInexat; 
 
@@ -47,32 +42,39 @@ int main(int argc, char **argv) {
     }
 
     // saida csv para 1 metodo separador ;
+    #ifndef FULLPRINT_ON
     fprintf(saida, "Aplicacao_metodo_Newton; Calculo_Gradiente; Calculo_Hessiana; Resolucao_Sistema_Linear\n");
+    #endif 
+
     while(snl = lerSistNL())
     {   
     	initTempo(&tPadrao);
-	initTempo(&tInexat);
+	    initTempo(&tInexat);
+
+        respPadrao = malloc(sizeof(double) * snl->iteracao);
+        respInexat = malloc(sizeof(double) * snl->iteracao);
+
 
         #ifdef FULLPRINT_ON
             fprintf(saida, "%i\n", snl->n);         // grau da funcao
             fprintf(saida, "%s\n", snl->funcao);    // a funcao
+            NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
+            NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         #endif
 
         // calcula o He & o Ge dentro de cada metodo usando np/nm/ni
+        #ifndef FULLPRINT_ON
         if(_method == 'p'){
-            respPadrao = malloc(sizeof(double) * snl->iteracao);
             NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
         }
         else if(_method == 'i'){
-            respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
         else{
-            respPadrao = malloc(sizeof(double) * snl->iteracao);
             NewtonPadrao(snl, respPadrao, &tPadrao, &iterPadrao);
-            respInexat = malloc(sizeof(double) * snl->iteracao);
             NewtonInexato(snl,respInexat,&tInexat,&iterInexat);
         }
+        #endif
         
         #ifdef FULLPRINT_ON
         fprintf(saida, "#Iteração \t| Newton Padrão \t| Newton Inexato\n");
@@ -84,7 +86,7 @@ int main(int argc, char **argv) {
             printCol(respInexat, i, iterInexat, saida);
   	        fprintf(saida, "\n");
             // se todos acabaram
-            if( (i+1 >= iterPadrao) && (i+1 >= iterModifi) && (i+1>=iterInexat) )
+            if( (i+1 >= iterPadrao) && (i+1>=iterInexat) )
                 break;
         }
         // saida com os 2 metodos
@@ -95,21 +97,26 @@ int main(int argc, char **argv) {
 
         // saida para csv com metodo Padrao
         // LIBERA respMETODO
-        if(_method =='p'){
+        #ifndef FULLPRINT_ON
+        if(_method =='p')
             fprintf(saida, "%f; %f; %f; %f\n", 
             tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
-            free(respPadrao);
-        }
-        else if(_method == 'i'){
+
+        else if(_method == 'i')
             fprintf(saida, "%f; %f; %f; %f\n", 
             tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
-            free(respInexat);
-        }
-        else{
-            free(respPadrao);
-            free(respInexat);
-        }
 
+        else{
+            fprintf(saida, "%f; %f; %f; %f\n", 
+            tPadrao.totalMetodo, tPadrao.Gradiente, tPadrao.Hessiana, tPadrao.totalSL);
+            fprintf(saida, "%f; %f; %f; %f\n", 
+            tInexat.totalMetodo, tInexat.Gradiente, tInexat.Hessiana, tInexat.totalSL);
+        }
+        #endif
+
+
+        free(respPadrao);
+        free(respInexat);
         liberaSistNl(snl);
     }    
     if(argc == 3)

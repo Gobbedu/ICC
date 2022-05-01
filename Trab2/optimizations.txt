@@ -14,6 +14,7 @@ o que foi feito:
 + foi feita a fusao de loops 
 + utilizado repasse de ponteiros no lugar de copias em memoria
 - nao foi implementado loop unroll & jam para evitar TLB misses e diminuir o risco de cache thrashing (bem zoado implementar)
+- poderia dar register spilling nos loops caso fosse feito um unroll
 
 *******************
 Flat profile:

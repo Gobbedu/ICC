@@ -19,13 +19,13 @@ SistNl_t *lerSistNL(void)
         SnL = alocaSistNl(n);
         if (!SnL) return NULL;
         
-        scanf("%s", SnL->funcao);
+        assert(scanf("%s", SnL->funcao) > 0);
 
         for(int i = 0; i < n; i++)
-            scanf("%lf", &(SnL->chute[i]));
+            assert(scanf("%lf", &(SnL->chute[i])) > 0);
 
-        scanf("%lf", &(SnL->eps));
-        scanf("%i", &(SnL->iteracao));
+        assert(scanf("%lf", &(SnL->eps)) > 0);
+        assert(scanf("%i", &(SnL->iteracao)) > 0);
 
     }
   
@@ -46,10 +46,30 @@ int Parada(double *delta, double eps, int n)
 
 void calcDelta(SnlVar_t *var, int n){
     // allow for loop unrolling
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < n - (n%8); i+=8){
+        var->x1[i] = var->x0[i] + var->delta[i];
+        var->x1[i+1] = var->x0[i+1] + var->delta[i+1];
+        var->x1[i+2] = var->x0[i+2] + var->delta[i+2];
+        var->x1[i+3] = var->x0[i+3] + var->delta[i+3];
+        var->x1[i+4] = var->x0[i+4] + var->delta[i+4];
+        var->x1[i+5] = var->x0[i+5] + var->delta[i+5];
+        var->x1[i+6] = var->x0[i+6] + var->delta[i+6];
+        var->x1[i+7] = var->x0[i+7] + var->delta[i+7];
+    }
+    for(int i = n-(n%8); i < n; i++)
         var->x1[i] = var->x0[i] + var->delta[i];
 
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < n-(n%8); i+=8){
+        var->x0[i] = var->x1[i];
+        var->x0[i+1] = var->x1[i+1];
+        var->x0[i+2] = var->x1[i+2];
+        var->x0[i+3] = var->x1[i+3];
+        var->x0[i+4] = var->x1[i+4];
+        var->x0[i+5] = var->x1[i+5];
+        var->x0[i+6] = var->x1[i+6];
+        var->x0[i+7] = var->x1[i+7];
+    }
+    for(int i = n - (n%8); i < n; i++)
         var->x0[i] = var->x1[i];
 
 }
@@ -91,13 +111,12 @@ SnlVar_t *alocaSnlVar(double *chute, int n)
     // var->sl = alocaSistLinear(n);
     var->t = malloc(n * sizeof(int));
 
+    memset(var->x0, 0, n*sizeof(double));
+    memset(var->x1, 0, n*sizeof(double));
+    memset(var->delta, 1, n*sizeof(double));
+
     for(int i = 0; i < n; i++)
-    {
-        var->delta[i] = 1;
-        var->x0[i] =    0;
-        var->x1[i] =    0;
         var->t[i] = i;
-    }
 
     // aloca He e libera var caso erro
     var->He = (double **) malloc(sizeof(double*)*n);
@@ -163,13 +182,34 @@ void liberaSnlVar(SnlVar_t *var, int n)
 
 void calcHessiana(double **He, int n, double *x0)
 {
-    for(int i = 0; i < n ; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < n ; i++){
+        for(int j = 0; j < n-(n%8); j+=8){
             He[i][j] = rosenbrock_dxdy(i, j, x0, n);
+            He[i][j+1] = rosenbrock_dxdy(i, j+1, x0, n);
+            He[i][j+2] = rosenbrock_dxdy(i, j+2, x0, n);
+            He[i][j+3] = rosenbrock_dxdy(i, j+3, x0, n);
+            He[i][j+4] = rosenbrock_dxdy(i, j+4, x0, n);
+            He[i][j+5] = rosenbrock_dxdy(i, j+5, x0, n);
+            He[i][j+6] = rosenbrock_dxdy(i, j+6, x0, n);
+            He[i][j+7] = rosenbrock_dxdy(i, j+7, x0, n);
+        }
+        for(int j = n-(n%8); j < n; j++)
+            He[i][j] = rosenbrock_dxdy(i, j, x0, n);
+    }
 }
 
 void calcGradiente(double *Ge, int n, double *x0)
 {
+    for(int i = 0; i < n-(n%8); i+=8){
+        Ge[i] = rosenbrock_dx(i, x0, n);
+        Ge[i+1] = rosenbrock_dx(i+1, x0, n);
+        Ge[i+2] = rosenbrock_dx(i+2, x0, n);
+        Ge[i+3] = rosenbrock_dx(i+3, x0, n);
+        Ge[i+4] = rosenbrock_dx(i+4, x0, n);
+        Ge[i+5] = rosenbrock_dx(i+5, x0, n);
+        Ge[i+6] = rosenbrock_dx(i+6, x0, n);
+        Ge[i+7] = rosenbrock_dx(i+7, x0, n);
+    }
     for(int i = 0; i < n ; i++)
         Ge[i] = rosenbrock_dx(i, x0, n);
 }

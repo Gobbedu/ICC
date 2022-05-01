@@ -67,10 +67,10 @@ void NewtonInexato(SistNl_t *snl, double* resposta, Tempo_t *t, int *nIter)
 		LIKWID_MARKER_STOP(mSL);			
 		#endif
         
-        // calcDelta(ni, n);                  // X[i+1] = X[i] + delta[i]
+        calcDelta(ni, n);                  // X[i+1] = X[i] + delta[i]
         // X[i+1] = X[i] + delta[i]
-		for(int i = 0; i < n; i++)	ni->x1[i] = ni->x0[i] + ni->delta[i];
-		for(int i = 0; i < n; i++)	ni->x0[i] = ni->x1[i];
+		// for(int i = 0; i < n; i++)	ni->x1[i] = ni->x0[i] + ni->delta[i];
+		// for(int i = 0; i < n; i++)	ni->x0[i] = ni->x1[i];
 
         
         tTotal = timestamp() - tTotal;
@@ -120,7 +120,7 @@ void gauss_seidel(SnlVar_t *var, int n)
             for(j=i+1; j< n;++j)
                 soma+=var->He[i][j]*var->delta[j];
 
-            xk=(var->Ge[i]-soma)/var->He[i][i];
+            xk=(-var->Ge[i]-soma)/var->He[i][i];
 
             diff=fabs(xk-var->delta[i]);
             if(diff>norma)

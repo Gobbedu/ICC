@@ -1,6 +1,5 @@
-
     CC     = gcc -g -O3 -mavx -march=native
-    LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval 
+    # LFLAGS = -Wl,-rpath -Wl, -lm -lmatheval 
 	LIKWID = -L${LIKWID_LIB} -llikwid
 
     PROG = newtonPC
@@ -20,7 +19,8 @@ local:
 	$(CC) -c $(CODE) newtonPC.c
 	$(CC) -o $(PROG) newtonPC.o $(OBJS) $(LFLAGS)
 
-clean: 
+
+clear: 
 	@rm $(OBJS) newtonPC.o
 
 purge:
