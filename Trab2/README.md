@@ -17,11 +17,11 @@ Ao fim do programa será imprimido os valores aproximados de f(x) a cada iteraç
 Para reproduzir os resultados aqui obtidos, pode-se rodar o script full_script.sh.
 Ajustes finos nos arquivos full_script.sh, extractinfo.py, plotter.py, utils.h e newtonPC.c podem ser necessários. 
 Tais ajustes consistem em:
-    - Especificar o diretório onde serão salvos o csv do likwid e a métrica de tempo em full_script.sh, como SAIDACSV e SAIDALOG
-    - Especificar o diretórios de SAIDALOG em extractinfo.py na variavel logp, filtrando os dados do likwid em um csv utilizavel no diretório especificado por curp
-    - Especificar em plotter.py:
-        - o diretório onde se encontram os diretórios filtrados na variável src (metodo; grad; hess; sistlin)
-        - o diretorio onde salvar os csvs que comparam o desempenho (otimizado; nao otimizado)
-        - o local onde se salvar as imagens dos graficos na variavel out
-    - Para que o script rode É NECESSÁRIO que a biblioteca likwid esteja instalada, e que seja possivel mudar o modo de operação da cpu com echo "perfomance/powersave" > scaling_governor. 
+- Especificar o diretório onde serão salvos o csv do likwid e a métrica de tempo em full_script.sh, como SAIDACSV e SAIDALOG
+- Especificar o diretórios de SAIDALOG em extractinfo.py na variavel logp, filtrando os dados do likwid em um csv utilizavel no diretório especificado por curp
+- Especificar em plotter.py:
+- o diretório onde se encontram os diretórios filtrados na variável src (metodo; grad; hess; sistlin)
+- o diretorio onde salvar os csvs que comparam o desempenho (otimizado; nao otimizado)
+- o local onde se salvar as imagens dos graficos na variavel out
+- Para que o script rode É NECESSÁRIO que a biblioteca likwid esteja instalada, e que seja possivel mudar o modo de operação da cpu com echo "perfomance/powersave" > scaling_governor. 
 

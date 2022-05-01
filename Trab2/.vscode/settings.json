@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "time.h": "c"
+        "time.h": "c",
+        "newtonPC.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
