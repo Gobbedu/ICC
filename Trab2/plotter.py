@@ -157,11 +157,56 @@ def MABIKI(src, dest, metr_NoOpt_I, metr_Opt_I, metr_NoOpt_P, metr_Opt_P, MP, MI
         GI_out  .writerow([l_OptI[i][1], l_NoOptI[i][1]])
         HI_out  .writerow([l_OptI[i][2], l_NoOptI[i][2]])
         SLI_out .writerow([l_OptI[i][3], l_NoOptI[i][3]])
-        
+  
+  
+   
+def MABIKI2(metr_NoOpt, metr_Opt, M, G, H, SL):
+    aux1 = open(metr_NoOpt)
+    NoOptI = csv.reader(aux1, delimiter=';')
+    l_NoOpt = list(NoOptI)
+    
+    aux2 = open(metr_Opt)
+    OptI   = csv.reader(aux2, delimiter=';')
+    l_Opt = list(OptI)
+    
+
+    # d = 'data/csvs/curated_csv/'
+    fim = '.csv'
+    
+    auxM_out = open(M+fim, "w")
+    auxG_out = open(G+fim, "w")
+    auxH_out = open(H+fim, "w")
+    auxSL_out= open(SL+fim, "w")
+    
+    M_out = csv.writer(auxM_out,  delimiter=';')
+    G_out = csv.writer(auxG_out,  delimiter=';')
+    H_out = csv.writer(auxH_out,  delimiter=';')
+    SL_out = csv.writer(auxSL_out, delimiter=';')
+
+    headerr = "Otimizado; Não Otimizado\n"
+
+    auxM_out.write(headerr)
+    auxG_out.write(headerr)
+    auxH_out.write(headerr)
+    auxSL_out.write(headerr)
+
+    
+    for i in range(1, 20):
+        M_out  .writerow([l_Opt[i][0], l_NoOpt[i][0]])
+        G_out  .writerow([l_Opt[i][1], l_NoOpt[i][1]])
+        H_out  .writerow([l_Opt[i][2], l_NoOpt[i][2]])
+        SL_out .writerow([l_Opt[i][3], l_NoOpt[i][3]])
+
+
+      
 def moero_shinso_yo(src, dest, t,n,s,metrica):
-# (metr_NoOpt_I, metr_Opt_I,
-# metr_NoOpt_P, metr_Opt_P,
-# MP, MI, GP, GI, HP, HI, SLP, SLI):
+# MABIKI(src, dest, 
+#       metr_NoOpt_I, metr_Opt_I, 
+#       metr_NoOpt_P, metr_Opt_P, 
+#       MP, MI,
+#       GP, GI,
+#       HP, HI,
+#       SLP, SLI):
     for m in metrica:
         print(m)
         MABIKI(src, dest,
@@ -172,7 +217,18 @@ def moero_shinso_yo(src, dest, t,n,s,metrica):
                 m+s[2]+n[1], m+s[2]+n[0],
                 m+s[3]+n[1], m+s[3]+n[0])
 
-                
+def curate_raw_csv(src, dest, t,n,s,metrica):
+    for newton in n:
+        for m in metrica:
+            print(m)
+            MABIKI2(
+                    src+t[0]+m+newton+'.csv', src+t[1]+m+newton+'.csv',
+                    dest+m+s[0]+newton,
+                    dest+m+s[1]+newton,
+                    dest+m+s[2]+newton,
+                    dest+m+s[3]+newton)
+
+    
 
 if __name__ == "__main__":
     
@@ -181,11 +237,14 @@ if __name__ == "__main__":
     s = ['METODO', 'GRAD', 'HESS', 'SISTLIN']
     metrica = ['tempo', 'L3', 'L2', 'FLOPS_DP', 'FLOPS_AVX']
     
-    src  = 'data/csvs/opt_csv/'
-    curp = 'data/csvs/opt_curated/'
-    out  = 'data/plots/opt_plots/'
+    src  = 'data/csvs/raw_csv/'
+    curp = 'data/csvs/curated_csv/'
+    # out  = 'data/plots/opt_plots/'
+    out = 'data/plots/aux/'
+    
     # parse raw csv to compare opt to noopt
-    moero_shinso_yo(src, curp, t,n,s,curp,metrica)
+    # moero_shinso_yo(src, curp, t,n,s,metrica)
+    curate_raw_csv(src, curp, t,n,s,metrica)
     
     # estrutura files [metrica][marker][metodo]
     for m in metrica:
