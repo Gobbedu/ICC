@@ -64,7 +64,7 @@ echo "calculando tempo inexato OTIMIZADO "
 for m in ${METRICA}
 do
     echo "calculando likwid OTIMIZADO ${m} ..."
-    likwid-perfctr -O -C 3 -g ${m} -m ./newtonPC < ${RODAR} > ${SAIDALOG}noOPT_${m}.log
+    likwid-perfctr -O -C 3 -g ${m} -m ./newtonPC < ${RODAR} > ${SAIDALOG}OPT_${m}.log
 done
 
 # echo "powersave" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
@@ -73,7 +73,7 @@ make purge
 cd ..
 
 # =================== CRIA PLOTS ===================
-pwd
-./extractinfo.py
-./plotter.py
+# pwd
+# ./extractinfo.py
+# ./plotter.py
 

@@ -69,36 +69,60 @@ def plotter(input_file, out_plot, nameMetodo, metrica, log, save_plot):
         
     plt.close()
         
+
+def showoffy(metrica):
+    swicther = {
+        'tempo': 'tempo em ms',
+        'L3': 'L3 Memory bandwidth [MBytes/s]',
+        'L2': 'L2 data cache miss ratio',
+        'FLOPS_DP': 'FLOPS DP [MFLOP/s]',
+        'FLOPS_AVX': 'FLOPS AVX [MFLOP/s]'
+    }
     
-def MABIKI(metr_NoOpt_I, metr_Opt_I, metr_NoOpt_P, metr_Opt_P, MP, MI, GP, GI, HP, HI, SLP, SLI):
-    aux1 = open(metr_NoOpt_I )
+    return swicther.get(metrica)
+
+
+def showoffx(marker):
+    swicther = {
+        'METODO': 'Metodo',
+        'GRAD': 'Gradiente',
+        'HESS': 'Hessiana',
+        'SISTLIN': 'Sistema Linear',
+    }
+    
+    return 'Avalicação '+swicther.get(marker)+': '
+
+
+    
+def MABIKI(src, dest, metr_NoOpt_I, metr_Opt_I, metr_NoOpt_P, metr_Opt_P, MP, MI, GP, GI, HP, HI, SLP, SLI):
+    aux1 = open(src+metr_NoOpt_I )
     NoOptI = csv.reader(aux1, delimiter=';')
     l_NoOptI = list(NoOptI)
     
-    aux2 = open(metr_NoOpt_P )
+    aux2 = open(src+metr_NoOpt_P )
     NoOptP = csv.reader(aux2, delimiter=';')
     l_NoOptP = list(NoOptP)
     
-    aux3 = open(metr_Opt_I )
+    aux3 = open(src+metr_Opt_I )
     OptI   = csv.reader(aux3, delimiter=';')
     l_OptI = list(OptI)
     
-    aux4 = open(metr_Opt_P )
+    aux4 = open(src+metr_Opt_P )
     OptP   = csv.reader(aux4, delimiter=';')
     l_OptP = list(OptP)
 
-    d = 'data/csvs/'
+    # d = 'data/csvs/curated_csv/'
     fim = '.csv'
     
-    auxMP_out = open(d+MP+fim, "w")
-    auxGP_out = open(d+GP+fim, "w")
-    auxHP_out = open(d+HP+fim, "w")
-    auxSLP_out= open(d+SLP+fim, "w")
+    auxMP_out = open(dest+MP+fim, "w")
+    auxGP_out = open(dest+GP+fim, "w")
+    auxHP_out = open(dest+HP+fim, "w")
+    auxSLP_out= open(dest+SLP+fim, "w")
     
-    auxMI_out = open(d+MI+fim, "w")
-    auxGI_out = open(d+GI+fim, "w")
-    auxHI_out = open(d+HI+fim, "w")
-    auxSLI_out= open(d+SLI+fim, "w") 
+    auxMI_out = open(dest+MI+fim, "w")
+    auxGI_out = open(dest+GI+fim, "w")
+    auxHI_out = open(dest+HI+fim, "w")
+    auxSLI_out= open(dest+SLI+fim, "w") 
     
     MP_out = csv.writer(auxMP_out,  delimiter=';')
     GP_out = csv.writer(auxGP_out,  delimiter=';')
@@ -134,44 +158,21 @@ def MABIKI(metr_NoOpt_I, metr_Opt_I, metr_NoOpt_P, metr_Opt_P, MP, MI, GP, GI, H
         HI_out  .writerow([l_OptI[i][2], l_NoOptI[i][2]])
         SLI_out .writerow([l_OptI[i][3], l_NoOptI[i][3]])
         
-def moero_shinso_yo(t,n,s,d,metrica):
+def moero_shinso_yo(src, dest, t,n,s,metrica):
 # (metr_NoOpt_I, metr_Opt_I,
 # metr_NoOpt_P, metr_Opt_P,
 # MP, MI, GP, GI, HP, HI, SLP, SLI):
     for m in metrica:
         print(m)
-        MABIKI( d+t[0]+m+n[0]+'.csv', d+t[1]+m+n[0]+'.csv', 
-                d+t[0]+m+n[1]+'.csv', d+t[1]+m+n[1]+'.csv', 
+        MABIKI(src, dest,
+                t[0]+m+n[0]+'.csv', t[1]+m+n[0]+'.csv', 
+                t[0]+m+n[1]+'.csv', t[1]+m+n[1]+'.csv', 
                 m+s[0]+n[1], m+s[0]+n[0],
                 m+s[1]+n[1], m+s[1]+n[0],
                 m+s[2]+n[1], m+s[2]+n[0],
-                m+s[3]+n[1], m+s[3]+n[0]
-        )
-    
+                m+s[3]+n[1], m+s[3]+n[0])
 
-def showoffy(metrica):
-    swicther = {
-        'tempo': 'tempo em ms',
-        'L3': 'L3 Memory bandwidth [MBytes/s]',
-        'L2': 'L2 data cache miss ratio',
-        'FLOPS_DP': 'FLOPS DP [MFLOP/s]',
-        'FLOPS_AVX': 'FLOPS AVX [MFLOP/s]'
-    }
-    
-    return swicther.get(metrica)
-
-
-def showoffx(marker):
-    swicther = {
-        'METODO': 'Metodo',
-        'GRAD': 'Gradiente',
-        'HESS': 'Hessiana',
-        'SISTLIN': 'Sistema Linear',
-    }
-    
-    return 'Avalicação '+swicther.get(marker)+': '
-
-
+                
 
 if __name__ == "__main__":
     
@@ -184,7 +185,7 @@ if __name__ == "__main__":
     curp = 'data/csvs/opt_curated/'
     out  = 'data/plots/opt_plots/'
     # parse raw csv to compare opt to noopt
-    moero_shinso_yo(t,n,s,curp,metrica)
+    moero_shinso_yo(src, curp, t,n,s,curp,metrica)
     
     # estrutura files [metrica][marker][metodo]
     for m in metrica:
